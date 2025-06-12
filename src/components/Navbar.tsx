@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Menu, Moon, Sun, UserRound } from "lucide-react";
 
-import Sidebar from "./Sidebar";
 import useDarkMode from "@/hooks/useToggleTheme";
+
+import Sidebar from "./Sidebar";
 
 const Navbar = () => {
 
@@ -19,7 +20,7 @@ const Navbar = () => {
       {/* Sidebar */}
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
-      <nav className=" max-w-[90%] md:max-w-[85%] mx-auto h-full flex items-center justify-between">
+      <nav className=" max-w-[95%] xl:max-w-[85%] mx-auto h-full flex items-center justify-between">
 
         <div className=" flex items-center">
 

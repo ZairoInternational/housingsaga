@@ -48,11 +48,13 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
       document.body.appendChild(portalRef.current);
     }
 
-    return () => {
-      if (portalRef.current) {
-        document.body.removeChild(portalRef.current);
-      }
-    }
+    {/* Commented this code as this remove sidebar-root when useEffect finishes */ }
+    // return () => {
+    //   if (portalRef.current) {
+    //     document.body.removeChild(portalRef.current);
+    //   }
+    //   console.log("portal Ref: ", portalRef.current);
+    // }
 
   }, [])
 
@@ -93,7 +95,7 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
       <button
         type="button"
         onClick={() => setIsDarkMode(!isDarkMode)}
-        className=" border-2 border-neutral-800 dark:border-white rounded-3xl flex p-1 w-20 mx-auto mt-4"
+        className=" border-2 border-neutral-800 dark:border-white rounded-3xl flex p-1 w-20 mx-auto mt-4 cursor-pointer"
       >
         <motion.span
           className={` w-6 h-6 flex justify-center items-center dark:bg-white bg-neutral-800 rounded-full`}
@@ -106,7 +108,7 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
       </button>
 
 
-    </aside >
+    </aside>
     , document.getElementById("sidebar-root") as HTMLElement
   )
 }

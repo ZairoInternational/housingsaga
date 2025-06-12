@@ -95,6 +95,7 @@ interface HouseInterface {
 interface HouseCardType {
   id: string;
   name: string;
+  description: string;
 
   // location details
   address: string;
