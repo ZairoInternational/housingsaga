@@ -1,12 +1,15 @@
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
+import { connectDb } from "@/lib/db";
 import { UserInterface } from "@/lib/types";
 import { HousingUsers } from "@/models/housingUser";
 
 interface reqBodyType extends UserInterface {
   confirmPassword: string;
 }
+
+connectDb();
 
 export async function POST(req: NextRequest) {
   const reqBody = await req.json();
@@ -21,13 +24,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // const isUserAlreadyPresent = await HousingUsers.findOne({ email });
-    // if (isUserAlreadyPresent) {
-    //   return NextResponse.json(
-    //     { error: "User already exists" },
-    //     { status: 409 }
-    //   );
-    // }
+    const isUserAlreadyPresent = await HousingUsers.findOne({ email });
+    if (isUserAlreadyPresent) {
+      return NextResponse.json(
+        { error: "User already exists" },
+        { status: 409 }
+      );
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -44,7 +47,6 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (err) {
-    console.log("Error creating user:", err);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 400 }

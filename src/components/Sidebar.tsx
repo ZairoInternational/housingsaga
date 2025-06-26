@@ -7,63 +7,75 @@ import { Moon, Sun, X } from "lucide-react";
 import useDarkMode from "@/hooks/useToggleTheme";
 
 interface SidebarProps {
-  open: boolean,
+  open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
-
   const portalRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const [isDarkMode, setIsDarkMode] = useDarkMode();
 
-  {/* Handling Outside click to close sidebar */ }
+  {
+    /* Handling Outside click to close sidebar */
+  }
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
         onOpenChange(false);
       }
-    }
+    };
 
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
-      document.body.style.overflow = "hidden";  // Disable scrolling when sidebar is open
+      document.body.style.overflow = "hidden"; // Disable scrolling when sidebar is open
     } else {
       document.body.style.overflow = "";
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [open, onOpenChange])
+    };
+  }, [open, onOpenChange]);
 
-  {/* Creating and appending container to body for rendering sidebar in it */ }
+  {
+    /* Creating and appending container to body for rendering sidebar in it */
+  }
   useEffect(() => {
     if (!portalRef.current) {
       portalRef.current = document.createElement("div");
       portalRef.current.id = "sidebar-root";
 
-      {/* Append portal to body */ }
+      {
+        /* Append portal to body */
+      }
       document.body.appendChild(portalRef.current);
     }
 
-    {/* Commented this code as this remove sidebar-root when useEffect finishes */ }
+    {
+      /* Commented this code as this remove sidebar-root when useEffect finishes */
+    }
     // return () => {
     //   if (portalRef.current) {
     //     document.body.removeChild(portalRef.current);
     //   }
     //   console.log("portal Ref: ", portalRef.current);
     // }
-
-  }, [])
+  }, []);
 
   if (!portalRef.current) return null;
-  if (!open) return null;
+  // if (!open) return null;
 
   return createPortal(
-    <aside
+    <motion.aside
       ref={sidebarRef}
+      initial={{ x: "-100%" }}
+      animate={{ x: open ? 0 : "-100%" }}
+      transition={{ duration: 0.2 }}
       className=" bg-white dark:bg-neutral-900 absolute left-0 top-0 h-full w-64 p-2 z-50"
     >
       <button
@@ -73,11 +85,10 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
         <X />
       </button>
 
-
       {/* Nav Links */}
       <div className=" flex flex-col items-center mt-12 gap-y-4">
-        {
-          ["Home", "Real Estate", "FAQs", "Blogs", "Contact"].map((item, index) => (
+        {["Home", "Real Estate", "FAQs", "Blogs", "Contact"].map(
+          (item, index) => (
             <Link
               key={index}
               href={`/${item.toLowerCase().split(" ").join("-")}`}
@@ -86,10 +97,9 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
             >
               {item}
             </Link>
-          ))
-        }
+          )
+        )}
       </div>
-
 
       {/* Theme Toggle Button */}
       <button
@@ -103,13 +113,15 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
           animate={isDarkMode ? { x: 42 } : { x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          {isDarkMode ? <Moon fill="black" size={24} /> : <Sun color="white" size={20} />}
+          {isDarkMode ? (
+            <Moon fill="black" size={24} />
+          ) : (
+            <Sun color="white" size={20} />
+          )}
         </motion.span>
       </button>
-
-
-    </aside>
-    , document.getElementById("sidebar-root") as HTMLElement
-  )
-}
-export default Sidebar
+    </motion.aside>,
+    document.getElementById("sidebar-root") as HTMLElement
+  );
+};
+export default Sidebar;

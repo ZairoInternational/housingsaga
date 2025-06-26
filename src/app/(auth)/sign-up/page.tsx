@@ -2,11 +2,14 @@
 
 import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
+import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
-import { ArrowLeft, Eye, EyeClosed } from "lucide-react";
+import { ArrowLeft, Eye, EyeClosed, LucideLoader2 } from "lucide-react";
 
+import { useAuthStore } from "@/store/AuthStore";
 import { userSchema } from "@/schemas/housingUser.schema";
 
 interface User {
@@ -18,7 +21,16 @@ interface User {
 }
 
 const SignUp = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Redirect to home if user is already logged in
+  useEffect(() => {
+    if (useAuthStore.getState().accessToken) {
+      router.push("/");
+    }
+  }, []);
 
   const [user, setUser] = useState<User>({
     name: "",
@@ -62,7 +74,15 @@ const SignUp = () => {
       return;
     }
 
-    await axios.post("/api/users/create-user", user);
+    try {
+      setIsLoading(true);
+      await axios.post("/api/users/create-user", user);
+      toast.success("User created successfully");
+    } catch (err: any) {
+      toast.error(err.response.data.error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -145,7 +165,9 @@ const SignUp = () => {
             type="text"
             id="email"
             required
-            onChange={(e) => setUser({ ...user, email: e.target.value })}
+            onChange={(e) =>
+              setUser({ ...user, email: e.target.value.toLowerCase() })
+            }
             className=" rounded-md border border-gray-600 p-2 w-full"
           />
           {error.email && (
@@ -206,7 +228,11 @@ const SignUp = () => {
             className=" w-[70%] bg-teal-700 text-white hover:bg-teal-800 font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
             onClick={handleSubmit}
           >
-            Register
+            {isLoading ? (
+              <LucideLoader2 className=" animate-spin mx-auto" />
+            ) : (
+              "Register"
+            )}
           </button>
         </div>
       </div>

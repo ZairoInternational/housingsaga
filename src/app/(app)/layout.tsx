@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "react-hot-toast";
 
 // const poppins = Poppins({
 //   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

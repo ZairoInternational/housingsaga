@@ -1,7 +1,67 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, LucideLoader2 } from "lucide-react";
+
+import axios from "@/lib/axios";
+import { useAuthStore } from "@/store/AuthStore";
 
 const SignIn = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const setAccessToken = useAuthStore((s) => s.setAccessToken);
+  const REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  // Redirect to home if user is already logged in
+  useEffect(() => {
+    if (useAuthStore.getState().accessToken) {
+      router.push("/");
+    }
+  }, []);
+
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async () => {
+    setError({
+      email: "",
+      password: "",
+    });
+
+    if (!REGEX.test(user.email)) {
+      setError((prev) => ({
+        ...prev,
+        email: "Invalid email address",
+      }));
+      return;
+    }
+    if (user.password.length === 0) {
+      setError((prev) => ({ ...prev, password: "Password cannot be empty" }));
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const res = await axios.post("/users/user-login", user);
+      setAccessToken(res.data.accessToken);
+      toast.success("Login successful");
+      router.push("/");
+    } catch (err: any) {
+      toast.error(err.response.data.error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section className=" w-full h-screen dark:bg-secondary flex relative">
       {/* Image */}
@@ -36,10 +96,17 @@ const SignIn = () => {
             Email
           </label>
           <input
-            type="text"
+            type="email"
             id="email"
+            value={user.email}
+            onChange={(e) =>
+              setUser({ ...user, email: e.target.value.toLowerCase() })
+            }
             className=" rounded-md border border-gray-600 p-2 w-full"
           />
+          {error.email && (
+            <p className=" text-sm text-red-600">{error.email}</p>
+          )}
         </div>
 
         {/*password*/}
@@ -51,12 +118,24 @@ const SignIn = () => {
             type="text"
             id="password"
             className=" rounded-md border border-gray-600 p-2 w-full"
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
+          {error.password && (
+            <p className=" text-sm text-red-600">{error.password}</p>
+          )}
         </div>
 
         <div className=" w-full flex justify-center mt-8">
-          <button className=" w-[70%] bg-teal-700 text-white hover:bg-teal-800 font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer ">
-            Login
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className=" w-[70%] bg-teal-700 text-white hover:bg-teal-800 font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
+          >
+            {isLoading ? (
+              <LucideLoader2 className=" animate-spin mx-auto" />
+            ) : (
+              "Login"
+            )}
           </button>
         </div>
       </div>
