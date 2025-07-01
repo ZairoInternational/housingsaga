@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, Moon, Sun, UserRound } from "lucide-react";
 
@@ -8,13 +9,16 @@ import useDarkMode from "@/hooks/useToggleTheme";
 import { useAuthStore } from "@/store/AuthStore";
 
 import Sidebar from "./Sidebar";
+import Modal from "./ProfileModal";
 
 const Navbar = () => {
+  const router = useRouter();
   const { isLoggedIn, logout } = useAuthStore();
   const [isDarkMode, setIsDarkMode] = useDarkMode();
 
   const [isClient, setIsClient] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -22,7 +26,8 @@ const Navbar = () => {
 
   const handleAuthToggle = () => {
     if (isLoggedIn) {
-      logout();
+      // logout();
+      router.push("/profile");
     } else {
       // login();
     }
@@ -134,17 +139,24 @@ const Navbar = () => {
           <div>
             {isLoggedIn ? (
               <div
-                className=" rounded-full p-2 bg-slate-300 cursor-pointer hover:bg-slate-400 transition-colors"
-                onClick={handleAuthToggle} // For testing - remove in production
+                className=" rounded-full p-2 bg-slate-300 cursor-pointer hover:bg-slate-400 transition-colors relative"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
               >
                 <UserRound size={20} />
+                <Modal
+                  open={isProfileOpen}
+                  onOpenChange={setIsProfileOpen}
+                  className=" absolute right-16 top-24"
+                />
               </div>
             ) : (
               <button
                 onClick={handleAuthToggle} // For testing - replace with actual login function
                 className="dark:text-white mx-4 font-medium cursor-pointer px-4 py-2 rounded-md bg-teal-500 hover:bg-teal-600 transition-colors"
               >
-                <Link href={"/sign-in"} className="text-white">Login</Link>
+                <Link href={"/sign-in"} className="text-white">
+                  Login
+                </Link>
               </button>
             )}
           </div>

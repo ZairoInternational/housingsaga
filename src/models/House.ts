@@ -15,7 +15,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
 
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "Owners",
+      ref: "HousingUsers",
       required: true,
     },
 
