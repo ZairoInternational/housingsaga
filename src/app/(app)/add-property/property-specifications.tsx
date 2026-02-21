@@ -64,6 +64,7 @@ export default function PropertySpecifications() {
             type="number"
             id="bedrooms"
             name="bedrooms"
+            min={0}
             value={formData.bedrooms}
             onChange={handleInputChange}
             placeholder="Number of bedrooms"
@@ -79,6 +80,7 @@ export default function PropertySpecifications() {
             type="number"
             id="bathrooms"
             name="bathrooms"
+            min={0}
             value={formData.bathrooms}
             onChange={handleInputChange}
             placeholder="Number of bathrooms"
@@ -94,6 +96,7 @@ export default function PropertySpecifications() {
             type="number"
             id="balconies"
             name="balconies"
+            min={0}
             value={formData.balconies}
             onChange={handleInputChange}
             placeholder="Number of balconies"
@@ -111,6 +114,7 @@ export default function PropertySpecifications() {
             type="number"
             id="carpetArea"
             name="carpetArea"
+            min={0}
             value={formData.carpetArea}
             onChange={handleInputChange}
             placeholder="Carpet area in sq ft"
@@ -129,6 +133,7 @@ export default function PropertySpecifications() {
             type="number"
             id="builtUpArea"
             name="builtUpArea"
+            min={0}
             value={formData.builtUpArea}
             onChange={handleInputChange}
             placeholder="Built-up area in sq ft"
@@ -143,6 +148,7 @@ export default function PropertySpecifications() {
             type="number"
             id="floors"
             name="floors"
+            min={0}
             value={formData.floors}
             onChange={handleInputChange}
             placeholder="Total floors"
@@ -161,6 +167,7 @@ export default function PropertySpecifications() {
             type="number"
             id="propertyOnFloor"
             name="propertyOnFloor"
+            min={0}
             value={formData.propertyOnFloor}
             onChange={handleInputChange}
             placeholder="Which floor"
@@ -178,6 +185,7 @@ export default function PropertySpecifications() {
             type="number"
             id="constructionYear"
             name="constructionYear"
+            min={0}
             value={formData.constructionYear}
             onChange={handleInputChange}
             placeholder="Year of construction"

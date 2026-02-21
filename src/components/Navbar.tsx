@@ -9,16 +9,43 @@ import useDarkMode from "@/hooks/useToggleTheme";
 import { useAuthStore } from "@/store/AuthStore";
 
 import Sidebar from "./Sidebar";
-import Modal from "./ProfileModal";
+import { signOut } from "next-auth/react";
+import { useRef } from "react";
 
 const Navbar = () => {
   const router = useRouter();
-  const { isLoggedIn, logout } = useAuthStore();
+  const { isLoggedIn, logout, role } = useAuthStore();
   const [isDarkMode, setIsDarkMode] = useDarkMode();
 
   const [isClient, setIsClient] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    if (isProfileOpen) document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [isProfileOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsProfileOpen(false);
+      }
+    };
+    if (isProfileOpen) {
+      document.addEventListener("keydown", handleEsc);
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [isProfileOpen]);
 
   useEffect(() => {
     setIsClient(true);
@@ -114,7 +141,7 @@ const Navbar = () => {
                 >
                   {item}
                 </Link>
-              )
+              ),
             )}
           </div>
         </div>
@@ -138,23 +165,109 @@ const Navbar = () => {
 
           <div>
             {isLoggedIn ? (
-              <div
-                className=" rounded-full p-2 bg-slate-300 cursor-pointer hover:bg-slate-400 transition-colors relative"
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-              >
-                <UserRound size={20} />
-                <Modal
-                  open={isProfileOpen}
-                  onOpenChange={setIsProfileOpen}
-                  className=" absolute right-16 top-24"
-                />
+              <div className="relative" ref={profileRef}>
+                <button
+                  aria-haspopup="menu"
+                  aria-expanded={isProfileOpen}
+                  onClick={() => setIsProfileOpen((v) => !v)}
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 hover:shadow-md transition"
+                >
+                  <UserRound size={18} />
+                </button>
+
+                {/* Popover */}
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg ring-1 ring-black/5 p-2 animate-in fade-in-0 zoom-in-95 z-[9999]">
+                    <div className="px-3 py-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                          <UserRound size={18} />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium">Account</div>
+                          <div className="text-xs text-gray-500">
+                            Manage your account
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-gray-100 dark:border-gray-800 mt-2" />
+
+                    <div className="flex flex-col py-2" role="menu" id="profile-menu">
+                      <Link
+                        role="menuitem"
+                        href="/profile"
+                        className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
+                      >
+                        My Profile
+                      </Link>
+                      {role === "OWNER" && (
+                        <Link
+                          role="menuitem"
+                          href="/my-listings"
+                          className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
+                        >
+                          My Listings
+                        </Link>
+                      )}
+                      {role === "BUYER" && (
+                        <Link
+                          role="menuitem"
+                          href="/my-purchases"
+                          className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
+                        >
+                          My Purchases
+                        </Link>
+                      )}
+                      <Link
+                        role="menuitem"
+                        href="/dashboard"
+                        className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        role="menuitem"
+                        href="/settings"
+                        className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded"
+                      >
+                        Settings
+                      </Link>
+                    </div>
+
+                    <div className="border-t border-gray-100 dark:border-gray-800 mt-2" />
+
+                    <div className="px-3 py-2">
+                      <button
+                        type="button"
+                        className="w-full text-left px-3 py-2 rounded text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900"
+                        onClick={async () => {
+                          try {
+                            await signOut({ redirect: false });
+                          } catch {
+                            // ignore
+                          }
+                          await logout();
+                          setIsProfileOpen(false);
+                          router.push("/");
+                        }}
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <button
                 onClick={handleAuthToggle} // For testing - replace with actual login function
                 className="dark:text-white mx-4 font-medium cursor-pointer px-4 py-2 rounded-md bg-teal-500 hover:bg-teal-600 transition-colors"
               >
-                <Link href={"/sign-in"} className="text-white">
+                <Link
+                  href="/sign-in"
+                  className="dark:text-white mx-4 font-medium cursor-pointer px-4 py-2 rounded-md bg-teal-500 hover:bg-teal-600 transition-colors text-white"
+                >
                   Login
                 </Link>
               </button>

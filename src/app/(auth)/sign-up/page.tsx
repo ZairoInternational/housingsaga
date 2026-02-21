@@ -1,6 +1,7 @@
-"use client";
+ "use client";
 
-import axios from "axios";
+import axios from "@/lib/axios";
+import { isAxiosError } from "axios";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
@@ -30,7 +31,7 @@ const SignUp = () => {
     if (useAuthStore.getState().accessToken) {
       router.push("/");
     }
-  }, []);
+  }, [router]);
 
   const [user, setUser] = useState<User>({
     name: "",
@@ -48,7 +49,8 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     const result = userSchema.safeParse(user);
     setError({
       name: "",
@@ -76,10 +78,17 @@ const SignUp = () => {
 
     try {
       setIsLoading(true);
-      await axios.post("/api/users/create-user", user);
-      toast.success("User created successfully");
-    } catch (err: any) {
-      toast.error(err.response.data.error);
+      await axios.post("/users/create-user", user);
+      toast.success("User created successfully. Please sign in.");
+      router.replace("/sign-in");
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        toast.error(err.response?.data?.error ?? err.message);
+      } else if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -122,6 +131,7 @@ const SignUp = () => {
             type="text"
             id="name"
             required
+            value={user.name}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
             className=" rounded-md border border-gray-600 p-2 w-full"
           />
@@ -149,6 +159,7 @@ const SignUp = () => {
               borderRadius: "6px 0 0 6px",
               padding: "5px",
             }}
+            value={user.phone ? user.phone.toString() : ""}
             onChange={(e) => setUser({ ...user, phone: parseInt(e) })}
           />
           {error.phone && (
@@ -162,9 +173,10 @@ const SignUp = () => {
             Email
           </label>
           <input
-            type="text"
+            type="email"
             id="email"
             required
+            value={user.email}
             onChange={(e) =>
               setUser({ ...user, email: e.target.value.toLowerCase() })
             }
@@ -184,6 +196,7 @@ const SignUp = () => {
             type={showPassword ? "text" : "password"}
             id="password"
             required
+            value={user.password}
             onChange={(e) => setUser({ ...user, password: e.target.value })}
             className=" rounded-md border border-gray-600 p-2 w-full"
           />
@@ -214,6 +227,7 @@ const SignUp = () => {
             type="password"
             id="confirmPassword"
             className=" rounded-md border border-gray-600 p-2 w-full"
+            value={user.confirmPassword}
             onChange={(e) =>
               setUser({ ...user, confirmPassword: e.target.value })
             }
@@ -223,10 +237,10 @@ const SignUp = () => {
           )}
         </div>
 
-        <div className=" w-full flex justify-center mt-8">
+        <form className=" w-full flex justify-center mt-8" onSubmit={handleSubmit}>
           <button
+            type="submit"
             className=" w-[70%] bg-teal-700 text-white hover:bg-teal-800 font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
-            onClick={handleSubmit}
           >
             {isLoading ? (
               <LucideLoader2 className=" animate-spin mx-auto" />
@@ -234,7 +248,7 @@ const SignUp = () => {
               "Register"
             )}
           </button>
-        </div>
+        </form>
       </div>
     </section>
   );

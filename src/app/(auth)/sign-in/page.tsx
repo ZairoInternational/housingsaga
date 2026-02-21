@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -7,20 +7,43 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, LucideLoader2 } from "lucide-react";
 
 import axios from "@/lib/axios";
+import { isAxiosError, type AxiosError } from "axios";
 import { useAuthStore } from "@/store/AuthStore";
+import { signIn } from "next-auth/react";
+
+// Google Identity Services types (top-level so it's allowed by TS)
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (opts: {
+            client_id: string;
+            callback: (res: { credential: string }) => void;
+          }) => void;
+          renderButton: (parent: HTMLElement | null, options?: Record<string, unknown>) => void;
+          prompt: () => void;
+        };
+      };
+    };
+  }
+}
 
 const SignIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
   // Redirect to home if user is already logged in
   useEffect(() => {
     if (useAuthStore.getState().accessToken) {
       router.push("/");
     }
-  }, []);
+  }, [router]);
+
+ 
 
   const [user, setUser] = useState({
     email: "",
@@ -31,7 +54,8 @@ const SignIn = () => {
     password: "",
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setError({
       email: "",
       password: "",
@@ -54,13 +78,22 @@ const SignIn = () => {
       const res = await axios.post("/users/user-login", user);
       setAccessToken(res.data.accessToken);
       toast.success("Login successful");
-      router.push("/");
-    } catch (err: any) {
-      toast.error(err.response.data.error);
+      router.replace("/");
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        const axiosErr = err as AxiosError<{ error?: string }>;
+        toast.error(axiosErr.response?.data?.error ?? axiosErr.message);
+      } else if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Use NextAuth signIn for Google
 
   return (
     <section className=" w-full h-screen dark:bg-secondary flex relative">
@@ -115,8 +148,9 @@ const SignIn = () => {
             Password
           </label>
           <input
-            type="text"
+            type="password"
             id="password"
+            value={user.password}
             className=" rounded-md border border-gray-600 p-2 w-full"
             onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
@@ -125,9 +159,9 @@ const SignIn = () => {
           )}
         </div>
 
-        <div className=" w-full flex justify-center mt-8">
+        <form className=" w-full flex justify-center mt-8" onSubmit={handleSubmit}>
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading}
             className=" w-[70%] bg-teal-700 text-white hover:bg-teal-800 font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
           >
@@ -137,6 +171,27 @@ const SignIn = () => {
               "Login"
             )}
           </button>
+        </form>
+        <div className=" w-full flex justify-center mt-4">
+          {googleClientId ? (
+            <button
+              type="button"
+              onClick={() => signIn("google", { callbackUrl: "/" })}
+              className=" w-[70%] bg-white border border-gray-300 text-black font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
+            >
+              Sign in with Google
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() =>
+                toast.error("Set NEXT_PUBLIC_GOOGLE_CLIENT_ID in your .env")
+              }
+              className=" w-[70%] bg-red-600 text-white font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
+            >
+              Sign in with Google
+            </button>
+          )}
         </div>
       </div>
     </section>

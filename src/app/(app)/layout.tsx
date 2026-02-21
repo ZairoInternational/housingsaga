@@ -5,6 +5,7 @@ import "../globals.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
+import ClientProviders from "@/components/ClientProviders";
 
 // const poppins = Poppins({
 //   subsets: ["latin"],
@@ -24,11 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* <div id="sidebar-root"></div> */}
+        {/* Client-side providers mounted here */}
         <Navbar />
-        {children}
-        <Footer />
-        <Toaster position="top-right" />
+        <ClientProviders>
+          {children}
+          <Footer />
+          <Toaster position="top-right" />
+        </ClientProviders>
       </body>
     </html>
   );
