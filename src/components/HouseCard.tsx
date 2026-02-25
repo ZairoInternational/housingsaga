@@ -1,50 +1,38 @@
 import { MapPin } from "lucide-react";
+import type { HouseCardType } from "@/data/types";
 
-interface HouseCardData {
-  HouseCardData: HouseCardType
+interface HouseCardProps {
+  house: HouseCardType;
 }
 
-const HouseCard = ({ HouseCardData }: HouseCardData) => {
+const HouseCard = ({ house }: HouseCardProps) => {
   return (
     <article className="max-w-2xl mx-auto bg- dark:bg-neutral-900 rounded-lg overflow-hidden md:max-w-2xl hover:shadow-lg transition-shadow duration-300 border text-black dark:text-white ">
       <header>
-        <img
-          className="w-full h-96 object-cover"
-          src={HouseCardData.images[0]}
-          alt="Descriptive alt text"
-        />
+        <img className="w-full h-96 object-cover" src={house.images[0]} alt={house.name} />
       </header>
 
       <section className="p-4 flex flex-col gap-2">
 
         <div className=" flex justify-between">
-          <h2 className="text-2xl font-semibold">
-            {HouseCardData.name}
-          </h2>
-          <p className=" font-semibold bg-[#148991] text-white rounded-sm p-1 text-xs sm:text-sm">
-            ₹ {HouseCardData.price}
-          </p>
+          <h2 className="text-2xl font-semibold">{house.name}</h2>
+          <p className=" font-semibold bg-[#148991] text-white rounded-sm p-1 text-xs sm:text-sm">₹ {house.price}</p>
         </div>
 
         <p className=" flex gap-x-1 text-sm lg:text-base">
           <MapPin className=" size-5 text-neutral-800 dark:text-white" />
-          {HouseCardData.address}, {" "}
-          {HouseCardData.city}, {" "}
-          {HouseCardData.state}, {" "}
-          {HouseCardData.country}
+          {house.address}, {house.city}, {house.state}, {house.country}
         </p>
 
         <div className=" flex gap-2 flex-wrap">
-          {HouseCardData.amenities.map((amenity, index) => (
+          {house.amenities.map((amenity, index) => (
             <p key={index} className=" border rounded-sm px-2 text-sm">
               {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
             </p>
           ))}
         </div>
 
-        <p className=" text-neutral-500 text-sm">
-          {HouseCardData.description}
-        </p>
+        <p className=" text-neutral-500 text-sm">{house.description}</p>
 
       </section>
 

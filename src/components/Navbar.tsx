@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, Moon, Sun, UserRound } from "lucide-react";
+import { Menu, Moon, Sun, UserRound, Phone, ArrowRight } from "lucide-react";
 
 import useDarkMode from "@/hooks/useToggleTheme";
 import { useAuthStore } from "@/store/AuthStore";
@@ -24,7 +24,10 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target as Node)
+      ) {
         setIsProfileOpen(false);
       }
     };
@@ -63,106 +66,131 @@ const Navbar = () => {
   // placeholder till the client side is rendered
   if (!isClient) {
     return (
-      <header id="header_id" className="w-full h-20">
-        <nav className=" max-w-[95%] xl:max-w-[85%] mx-auto h-full flex items-center justify-between">
-          <div className=" flex items-center">
-            {/* LOGO */}
-            <Link href={"/"}>
-              <img
-                src={"https://vacationsaga.b-cdn.net/assets/vsround.png"}
-                alt="logo"
-                className=" w-14 h-14 md:w-16 md:h-16"
-              />
+      <header className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-[95%] xl:max-w-[90%] mx-auto py-4">
+          <div className="h-12 bg-gray-800 rounded-full flex items-center px-4 md:px-6 gap-6">
+            <Link href={"/"} className="flex items-center gap-3">
+              <img src="/housinglogo.png" alt="logo" className="w-8 h-8" />
+              <span className="hidden md:inline text-white font-semibold">
+                HousingSaga
+              </span>
             </Link>
 
-            {/* Navigation Links */}
-            <div className=" hidden md:block">
-              {["Home", "Real Estate", "FAQs", "Blogs", "Contact"].map(
+            <div className="flex-1 hidden md:flex items-center gap-6 justify-center">
+              {["Home", "Pages", "Services", "Projects", "Blog", "Contact"].map(
                 (item, index) => (
-                  <Link
+                  <span
                     key={index}
-                    href={`/${item.toLowerCase().split(" ").join("-")}`}
-                    className="mx-4 font-medium cursor-pointer dark:text-white"
+                    className="text-gray-300 text-sm cursor-pointer transform-gpu transition-transform duration-300 hover:text-white hover:translate-y-1 hover:translate-x-1"
                   >
                     {item}
-                  </Link>
-                )
+                  </span>
+                ),
               )}
             </div>
+
+            <div className="flex items-center gap-4 ml-auto">
+              <div className="hidden md:flex items-center gap-3 bg-gray-700 text-white rounded-full px-3 py-1 text-sm">
+                <Phone size={16} />
+                <span>+1890 123 456</span>
+              </div>
+              <div className="hidden md:block bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-1 rounded-full text-sm">
+                Get In Touch
+              </div>
+              <Menu
+                className="md:hidden text-white"
+                onClick={() => setSidebarOpen(true)}
+              />
+            </div>
           </div>
-
-          <div className=" flex flex-row-reverse md:flex-row items-center gap-x-4">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className=" cursor-pointer hidden md:block"
-            >
-              {isDarkMode ? <Moon /> : <Sun />}
-            </button>
-
-            {/* Hamburger Menu */}
-            <Menu
-              onClick={() => setSidebarOpen(true)}
-              className={`cursor-pointer md:hidden`}
-            />
-
-            {/* Loading state for auth button */}
-            <div className="w-20 h-10 bg-gray-300 animate-pulse rounded-md"></div>
-          </div>
-        </nav>
+        </div>
       </header>
     );
   }
 
   return (
-    <header id="header_id" className="w-full h-20">
-      {/* Sidebar */}
+    <header className="absolute top-0 left-0 right-0 z-50 flex items-center border px-2">
       <Sidebar open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
-      <nav className=" max-w-[95%] xl:max-w-[85%] mx-auto h-full flex items-center justify-between">
-        <div className=" flex items-center">
-          {/* LOGO */}
-          <Link href={"/"}>
-            <img
-              src={"https://vacationsaga.b-cdn.net/assets/vsround.png"}
-              alt="logo"
-              className=" w-14 h-14 md:w-16 md:h-16"
-            />
+      <div className="w-full max-w-[95%] xl:max-w-[95%] mx-auto py-4 flex items-center gap-8">
+        {/* DARK NAV PILL (logo + nav only) */}
+        <div className="h-16 bg-[#22272e] rounded-full px-6 flex items-center gap-10">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3">
+            <img src="/housinglogo.png" alt="logo" className="w-10 h-12" />
+            <span className="hidden md:inline text-white font-semibold text-lg">
+              HousingSaga
+            </span>
           </Link>
 
-          {/* Navigation Links */}
-          <div className=" hidden md:block">
-            {["Home", "Real Estate", "FAQs", "Blogs", "Contact"].map(
-              (item, index) => (
+          {/* Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            {["Home", "Pages", "Services", "Projects", "Blog", "Contact"].map(
+              (item) => (
                 <Link
-                  key={index}
-                  href={`/${item.toLowerCase().split(" ").join("-")}`}
-                  className="mx-4 font-medium cursor-pointer dark:text-white"
+                  key={item}
+                  href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="relative block overflow-hidden h-5 group"
                 >
-                  {item}
+                  {/* Default text */}
+                  <span
+                    className="
+      block
+      transition-transform duration-300 ease-out
+      group-hover:translate-y-full
+    "
+                  >
+                    {item}
+                  </span>
+
+                  {/* Hover text */}
+                  <span
+                    className="
+      absolute left-0 top-0
+      block
+      -translate-y-full
+      transition-transform duration-300 ease-out
+      group-hover:translate-y-0
+    "
+                  >
+                    {item}
+                  </span>
                 </Link>
               ),
             )}
           </div>
         </div>
 
-        <div className=" flex flex-row-reverse md:flex-row items-center gap-x-4">
-          {/* Dark Mode Toggle */}
-          {isClient && (
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className=" cursor-pointer hidden md:block"
-            >
-              {isDarkMode ? <Moon /> : <Sun />}
-            </button>
-          )}
+        {/* RIGHT SIDE ACTIONS (outside dark pill) */}
+        <div className="flex items-center gap-4 ml-auto">
+          <div className="hidden md:flex items-center gap-3 bg-[#22272e] text-emerald-300 rounded-3xl px-3 py-1 text-sm">
+            <div className="border rounded-full p-2 -ml-2 bg-emerald-300">
+              <Phone size={16} className="text-black" />
+            </div>
+            <span className="text-white hover:text-emerald-300 transition-colors">Call us: +1890 123 456</span>
+          </div>
 
-          {/* Hamburger Menu */}
+          <Link
+            href="/contact"
+            className="hidden md:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-3 rounded-full text-sm font-medium"
+          >
+            <span>Get In Touch</span>
+            <ArrowRight size={16} />
+          </Link>
+
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="hidden md:block text-gray-300"
+          >
+            {isDarkMode ? <Moon /> : <Sun />}
+          </button>
+          {/* Hamburger */}
           <Menu
             onClick={() => setSidebarOpen(true)}
-            className={`cursor-pointer md:hidden`}
+            className="md:hidden text-white"
           />
 
+          {/* Auth / Profile */}
           <div>
             {isLoggedIn ? (
               <div className="relative" ref={profileRef}>
@@ -194,7 +222,11 @@ const Navbar = () => {
 
                     <div className="border-t border-gray-100 dark:border-gray-800 mt-2" />
 
-                    <div className="flex flex-col py-2" role="menu" id="profile-menu">
+                    <div
+                      className="flex flex-col py-2"
+                      role="menu"
+                      id="profile-menu"
+                    >
                       <Link
                         role="menuitem"
                         href="/profile"
@@ -261,20 +293,15 @@ const Navbar = () => {
               </div>
             ) : (
               <button
-                onClick={handleAuthToggle} // For testing - replace with actual login function
-                className="dark:text-white mx-4 font-medium cursor-pointer px-4 py-2 rounded-md bg-teal-500 hover:bg-teal-600 transition-colors"
+                onClick={handleAuthToggle}
+                className="hidden md:inline-flex items-center px-4 py-3 rounded-full bg-emerald-500 text-white text-sm"
               >
-                <Link
-                  href="/sign-in"
-                  className="dark:text-white mx-4 font-medium cursor-pointer px-4 py-2 rounded-md bg-teal-500 hover:bg-teal-600 transition-colors text-white"
-                >
-                  Login
-                </Link>
+                Login
               </button>
             )}
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 };

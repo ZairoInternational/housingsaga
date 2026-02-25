@@ -11,14 +11,12 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, process.env.TOKEN_SECRET!) as any;
+    const decoded = jwt.verify(refreshToken, process.env.TOKEN_SECRET!) as { userId: string };
     const newAccessToken = generateAccessToken(decoded.userId);
 
     return NextResponse.json({ accessToken: newAccessToken });
   } catch (err) {
-    return NextResponse.json(
-      { message: "Invalid refresh token" },
-      { status: 403 }
-    );
+    console.error("refresh-user error:", err);
+    return NextResponse.json({ message: "Invalid refresh token" }, { status: 403 });
   }
 }

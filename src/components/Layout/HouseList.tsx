@@ -1,3 +1,4 @@
+import { HouseInterface } from "@/data/types";
 import HouseCard from "../HouseCard";
 
 export const HousesData: HouseInterface[] = [
@@ -443,11 +444,9 @@ const HouseList = () => {
       <p className=" text-neutral-600">1 to 5 out of 5 Properties</p>
 
       <div className=" grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 py-4 justify-items-center">
-        {
-          HousesData.map((house: HouseInterface) => (
-            <HouseCard key={house.id} HouseCardData={house} />
-          ))
-        }
+        {HousesData.map((house: HouseInterface) => (
+          <HouseCard key={house.id} house={house} />
+        ))}
       </div>
 
     </section>

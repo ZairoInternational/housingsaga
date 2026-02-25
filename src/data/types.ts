@@ -1,4 +1,4 @@
-interface HouseInterface {
+export interface HouseInterface {
   id: string;
   name: string;
   description: string;
@@ -92,7 +92,7 @@ interface HouseInterface {
   updatedAt: Date;
 }
 
-interface HouseCardType {
+export interface HouseCardType {
   id: string;
   name: string;
   description: string;

@@ -47,9 +47,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (err) {
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 400 }
-    );
+    console.error("create-user error:", err);
+    return NextResponse.json({ error: "Something went wrong" }, { status: 400 });
   }
 }
