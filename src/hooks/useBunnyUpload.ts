@@ -71,7 +71,8 @@ export const useBunnyUpload = () => {
 
       setLoading(false);
       return { imageUrls, error: null };
-    } catch (error) {
+    } catch (err) {
+      console.error("Error uploading files:", err);
       setLoading(false);
       return {
         imageUrls: [],

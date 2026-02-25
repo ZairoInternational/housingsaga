@@ -8,9 +8,20 @@ import { useBunnyUpload } from "@/hooks/useBunnyUpload";
 
 export default function MediaSection() {
   const { formData, updateField } = useHouseFormStore();
-  const { uploadFiles, loading } = useBunnyUpload();
+  const { uploadFiles } = useBunnyUpload();
 
   const imageRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const fileArray = Array.from(files);
+    const { imageUrls, error } = await uploadFiles(fileArray);
+
+    if (!error && imageUrls.length > 0) {
+      updateField("images", [...formData.images, ...imageUrls]);
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -31,7 +42,7 @@ export default function MediaSection() {
           <label htmlFor="images" className="block text-sm font-medium mb-2">
             Property Images (URLs)
           </label>
-          <input ref={imageRef} type="file" />
+          <input ref={imageRef} type="file" multiple onChange={handleImageUpload} />
           <div
             onClick={() => imageRef.current?.click()}
             className=" h-36 w-36 flex flex-col justify-center items-center rounded-md border border-dotted border-white mx-auto cursor-pointer"

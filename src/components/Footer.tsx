@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Facebook, Instagram, Linkedin, Mail, Menu, Phone, Twitter, X } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, Menu, Phone, Twitter } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const Footer = () => {

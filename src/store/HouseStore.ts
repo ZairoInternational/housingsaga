@@ -51,7 +51,7 @@ export interface HouseFormData {
 
 interface HouseFormStore {
   formData: HouseFormData;
-  updateField: (field: keyof HouseFormData, value: any) => void;
+  updateField: <K extends keyof HouseFormData>(field: K, value: HouseFormData[K]) => void;
   updateArrayField: (
     field: "amenities" | "utilities" | "images",
     value: string

@@ -3,7 +3,6 @@
 import { motion } from "motion/react";
 import { createPortal } from "react-dom";
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 
 import { useAuthStore } from "@/store/AuthStore";
 import Link from "next/link";
@@ -15,7 +14,6 @@ interface ProfileModalProps {
 }
 
 const Modal = ({ open, onOpenChange, className }: ProfileModalProps) => {
-  const router = useRouter();
   const portalRef = useRef<HTMLDivElement>(null);
   const profileModalRef = useRef<HTMLDivElement>(null);
 

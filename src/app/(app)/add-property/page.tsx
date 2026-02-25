@@ -15,7 +15,7 @@ import AmenitiesUtilities from "./amenities-utilities";
 import PropertySpecifications from "./property-specifications";
 
 export default function HouseForm() {
-  const [formData, setFormData] = useState({
+  const [formData] = useState({
     name: "",
     description: "",
     owner: "",
@@ -61,31 +61,13 @@ export default function HouseForm() {
     isAvailable: false,
     isFeatured: false,
     isNew: false,
-  });
+  } as const);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+  // Input handling is performed inside child components (they use the HouseStore).
+  // Kept local formData state for now; remove or wire handlers if migrating to local-only form.
 
-  const handleArrayChange = (name: string, value: string) => {
-    setFormData((prev) => {
-      const currentArray = prev[name as keyof typeof prev] as string[];
-      const newArray = currentArray.includes(value)
-        ? currentArray.filter((item) => item !== value)
-        : [...currentArray, value];
-      return { ...prev, [name]: newArray };
-    });
-  };
+  // Note: array field updates are handled in child components via the HouseStore.
+  // Removed local handler that was unused to avoid the 'declared but never read' warning.
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

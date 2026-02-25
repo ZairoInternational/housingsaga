@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ObjectId } from "mongodb";
 
-const houseValidationSchema = z.object({
+export const houseValidationSchema = z.object({
   name: z.string(),
   description: z.string().length(30, "Description must be at least 30 characters long"),
 

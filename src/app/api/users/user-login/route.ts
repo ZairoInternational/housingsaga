@@ -7,7 +7,7 @@ import { generateAccessToken, generateRefreshToken } from "@/lib/token";
 
 connectDb();
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const reqBody = await req.json();
   const { email, password } = reqBody;
 
@@ -25,15 +25,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const accessToken = generateAccessToken(user._id.toString());
     const refreshToken = generateRefreshToken(user._id.toString());
 
-    const res = NextResponse.json({ accessToken });
-    res.cookies.set("refreshToken", refreshToken, {
+    const response = NextResponse.json({ accessToken });
+    response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return res;
+    return response;
   } catch (err) {
     console.log(err);
     if (err instanceof Error) {

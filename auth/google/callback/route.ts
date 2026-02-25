@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDb } from "@/server/db";
-import { signToken } from "@/server/utils/jwt";
-import Users from "@/models/users";
+import { connectDb } from "@/lib/db";
+import jwt from "jsonwebtoken";
+import { HousingUsers as Users } from "@/models/housingUser";
 
 // Force dynamic rendering - this route uses searchParams
 export const dynamic = "force-dynamic";
@@ -171,12 +171,16 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Generate JWT token
-    const token = signToken({
-      id: user._id.toString(),
-      email: user.email,
-      role: user.role || "Traveller", // Default role for token, will be updated after profile completion
-    });
+    // Generate JWT token (used to carry basic user info to the client after OAuth)
+    const token = jwt.sign(
+      {
+        id: user._id.toString(),
+        email: user.email,
+        role: user.role || "Traveller",
+      },
+      process.env.TOKEN_SECRET!,
+      { expiresIn: "1h" }
+    );
 
     // Determine redirect URL - use APP_URL to ensure correct port
     let redirectUrl: URL;
