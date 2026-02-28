@@ -1,31 +1,30 @@
-import Hero from "@/components/Hero";
-import HouseList from "@/components/Layout/HouseList";
-import AboutSection from "@/components/AboutSection";
-import ProjectsSection from "@/components/ProjectsSection";
+import Hero from "@/components/homepage/Hero";
+import AboutSection from "@/components/homepage/AboutSection";
+import ProjectsSection from "@/components/homepage/ProjectsSection";
+import RealEstateExcellenceSection from "@/components/homepage/RealEstateExcellenceSection";
+import ResidenceVideoHero from "@/components/homepage/ResidenceVideoHero";
+import HowWeBuildSuccessSection from "@/components/homepage/HowWeBuildSuccessSection";
+import TestimonialSection from "@/components/homepage/TestimonialSection";
+import TeamSection from "@/components/homepage/TeamSection";
+import ContactSection from "@/components/homepage/ContactSection";
 
 export default function Home() {
   return (
-    <main>
+    <main className="flex flex-col ">
       <Hero />
       <AboutSection />
-
       <ProjectsSection />
-
-      {/* <div className=" absolute bottom-1/3 mx-auto z-20">
-        <SearchBar />
-        </div> */}
-      {/* <div className=" h-28 border border-white relative">
-        <SearchBar className=" absolute -top-15 left-1/2" />
-      </div> */}
-
+      <RealEstateExcellenceSection />
+      <ResidenceVideoHero />
+      <HowWeBuildSuccessSection />
+      <TestimonialSection />
+      <TeamSection />
+      <ContactSection />
 
       {/* House List */}
-      <section className=" max-w-[95%] xl:max-w-[85%] mx-auto mt-40 sm:mt-20 ">
+      {/* <section className="max-w-[95%] xl:max-w-[85%] mx-auto pb-16 sm:pb-24 lg:pb-32">
         <HouseList />
-      </section>
-
-
-
+      </section> */}
     </main>
   );
 }

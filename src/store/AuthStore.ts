@@ -5,9 +5,9 @@ import { persist } from "zustand/middleware";
 interface AuthStoreInterface {
   isLoggedIn: boolean;
   accessToken: string | null;
-  role: "OWNER" | "BUYER" | null;
+  role: "owner" | "buyer" | "admin" | null;
   setAccessToken: (token: string | null) => void;
-  setRole: (role: "OWNER" | "BUYER" | null) => void;
+  setRole: (role: "owner" | "buyer" | "admin" | null) => void;
   refreshToken: () => Promise<void>;
   logout: () => void;
 }
@@ -19,7 +19,7 @@ export const useAuthStore = create<AuthStoreInterface>()(
       accessToken: null,
       role: null,
       setAccessToken: (token) =>
-        set({ accessToken: token, isLoggedIn: Boolean(token) }),
+        set({ accessToken: token, isLoggedIn: Boolean(token)  }),
       setRole: (role) => set({ role }),
       refreshToken: async () => {
         try {
@@ -40,6 +40,7 @@ export const useAuthStore = create<AuthStoreInterface>()(
           { withCredentials: true }
         );
         set({ accessToken: null, isLoggedIn: false });
+        localStorage.removeItem("auth-storage");
       },
     }),
     { name: "auth-storage" } // unique name for localStorage key

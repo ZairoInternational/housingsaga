@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/AuthStore";
 
 export const useAuthGuard = () => {
-  const { accessToken, refreshToken } = useAuthStore();
+  const { accessToken, refreshToken, role } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -20,5 +20,5 @@ export const useAuthGuard = () => {
     };
 
     checkAuth();
-  }, [accessToken, refreshToken, router]);
+  }, [accessToken, refreshToken, router, role]);
 };

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -106,7 +107,7 @@ const initialFormData: HouseFormData = {
   isAvailable: false,
   isFeatured: false,
   isNew: false,
-};
+};  
 
 export const useHouseFormStore = create<HouseFormStore>()(
   persist(
@@ -142,9 +143,15 @@ export const useHouseFormStore = create<HouseFormStore>()(
         set({ formData: initialFormData });
       },
 
-      submitForm: () => {
+      submitForm: async () => {
         const { formData } = get();
         console.log("Form submitted:", formData);
+        try {
+          const response = await axios.post("/api/houses", formData);
+          console.log("Response:", response);
+        } catch (error) {
+          console.error("Error submitting form:", error);
+        }
         // Here you would typically send the data to your API
       },
     }),

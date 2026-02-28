@@ -33,6 +33,7 @@ const SignIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
+  const setRole = useAuthStore((s) => s.setRole);
   const REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -77,6 +78,7 @@ const SignIn = () => {
       setIsLoading(true);
       const res = await axios.post("/users/user-login", user);
       setAccessToken(res.data.accessToken);
+      setRole(res.data.role);
       toast.success("Login successful");
       router.replace("/");
     } catch (err: unknown) {

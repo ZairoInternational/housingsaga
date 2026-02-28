@@ -6,7 +6,7 @@ import { useAuthStore } from "@/store/AuthStore";
 
 type NextAuthUser = {
   id?: string;
-  role?: "OWNER" | "BUYER";
+  role?: "owner" | "buyer" | "admin";
   name?: string | null;
   email?: string | null;
   image?: string | null;
@@ -14,6 +14,7 @@ type NextAuthUser = {
 
 type NextAuthSession = {
   accessToken?: string;
+  role?: "owner" | "buyer" | "admin" | null;
   user?: NextAuthUser | null;
 } | null;
 
@@ -30,8 +31,8 @@ export default function AuthSync(): React.ReactElement | null {
       if (s.accessToken) {
         setAccessToken(s.accessToken);
       }
-      if (s.user?.role) {
-        setRole(s.user.role);
+      if (s.role) {
+        setRole(s.role);
       }
     };
 

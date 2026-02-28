@@ -6,10 +6,12 @@ const userSchema = new mongoose.Schema<UserValidationSchema>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: Number, required: true },
+    phone: { type: String, default: null },
+    role: { type: String, default: null, enum: ["owner", "buyer" , "admin", null] },
     password: { type: String, required: true },
     profilePic: { type: String },
     isVerified: { type: Boolean, default: false },
+    onboarded: { type: Boolean, default: false },
     verifyToken: String,
     verifyTokenExpiry: Date,
   },
