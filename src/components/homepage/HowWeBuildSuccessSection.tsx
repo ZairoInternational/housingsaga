@@ -34,61 +34,76 @@ const HowWeBuildSuccessSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const image = sectionRef.current?.querySelector(".house-image");
-      const cardsContainer =
-        sectionRef.current?.querySelector(".cards-container");
+useLayoutEffect(() => {
+  const ctx = gsap.context(() => {
+    const image = sectionRef.current?.querySelector(
+      ".house-image",
+    ) as HTMLElement;
+    const cardsContainer = sectionRef.current?.querySelector(
+      ".cards-container",
+    ) as HTMLElement;
 
-      if (image && cardsContainer) {
-        const tl = gsap.timeline({
+    if (!image || !cardsContainer) return;
+
+    const container = sectionRef.current as HTMLElement;
+
+    const containerHeight = container.offsetHeight;
+    const imageHeight = image.offsetHeight;
+    const imageTop = image.offsetTop;
+
+    // space available below image
+    const spaceBelow = containerHeight+100 - (imageTop + imageHeight);
+
+    // movement limit (never exceed container)
+    const maxMove = Math.min(120, spaceBelow);
+      
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1.2,
+      },
+    });
+
+    tl.to(
+      image,
+      {
+        y: maxMove,
+        ease: "none",
+      },
+      0,
+    );
+
+    tl.to(
+      cardsContainer,
+      {
+        y: 20,
+        ease: "none",
+      },
+      0,
+    );
+
+    cardsRef.current.forEach((card) => {
+      gsap.fromTo(
+        card,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1.2,
+            trigger: card,
+            start: "top 85%",
           },
-        });
+        },
+      );
+    });
+  }, sectionRef);
 
-        tl.to(
-          image,
-          {
-            y: 120,
-            ease: "none",
-          },
-          "<",
-        );
-
-        tl.to(
-          cardsContainer,
-          {
-            y: 20,
-            ease: "none",
-          },
-          0,
-        );
-      }
-
-      cardsRef.current.forEach((card) => {
-        gsap.fromTo(
-          card,
-          { y: 60, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            },
-          },
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  return () => ctx.revert();
+}, []);
 
   return (
     <section

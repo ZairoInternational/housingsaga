@@ -14,41 +14,41 @@ const columns: FooterColumn[] = [
   {
     title: "Quick Links",
     links: [
-      { label: "Overview", href: "#" },
-      { label: "Features", href: "#" },
-      { label: "Solutions", href: "#" },
-      { label: "Tutorials", href: "#" },
-      { label: "Pricing", href: "#" },
+      { label: "Overview", href: "/overview" },
+      { label: "Features", href: "/features" },
+      { label: "Solutions", href: "/solutions" },
+      { label: "Tutorials", href: "/tutorials" },
+      { label: "Pricing", href: "/pricing" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "News", href: "#" },
-      { label: "Media Kit", href: "#" },
-      { label: "Contact", href: "#" },
+      { label: "About Us", href: "/about-us" },
+      { label: "Our Team", href: "/our-team" },
+      { label: "News", href: "/news" },
+      { label: "Media Kit", href: "/media-kit" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Blog", href: "#" },
-      { label: "Help Center", href: "#" },
-      { label: "Tutorials", href: "#" },
-      { label: "Support", href: "#" },
-      { label: "Services", href: "#" },
+      { label: "Blog", href: "/blogs" },
+      { label: "Help Center", href: "/help-center" },
+      { label: "Tutorials", href: "/tutorials" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Services", href: "/services" },
     ],
   },
   {
     title: "Collaborate",
     links: [
-      { label: "Partners", href: "#" },
-      { label: "Partners Program", href: "#" },
-      { label: "Affiliate Program", href: "#" },
-      { label: "Community", href: "#" },
-      { label: "HR Partner Program", href: "#" },
+      { label: "Partners", href: "/partners" },
+      { label: "Partners Program", href: "/partners-program" },
+      { label: "Affiliate Program", href: "/affiliate-program" },
+      { label: "Community", href: "/community" },
+      { label: "HR Partner Program", href: "/hr-partner-program" },
     ],
   },
 ];
@@ -85,9 +85,9 @@ export default function Footer() {
           <p>Copyright © 2026 Housing Saga. All rights reserved</p>
 
           <div className="flex gap-6">
-            <Link href="#">Privacy Policy</Link>
-            <Link href="#">Contact</Link>
-            <Link href="#">Terms And Conditions</Link>
+            <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/terms-and-conditions">Terms And Conditions</Link>
           </div>
         </div>
       </div>
