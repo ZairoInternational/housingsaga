@@ -146,13 +146,9 @@ export const useHouseFormStore = create<HouseFormStore>()(
       submitForm: async () => {
         const { formData } = get();
         console.log("Form submitted:", formData);
-        try {
-          const response = await axios.post("/api/houses", formData);
-          console.log("Response:", response);
-        } catch (error) {
-          console.error("Error submitting form:", error);
-        }
-        // Here you would typically send the data to your API
+        const response = await axios.post("/api/houses", formData);
+        console.log("Response:", response.data);
+        return response.data;
       },
     }),
     {

@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+
 import { useHouseFormStore } from "@/store/HouseStore";
 import { Toggle, SectionTitle, Field, Input } from "./FormFields";
 import { Info } from "lucide-react";
@@ -15,6 +18,17 @@ const STATUS_FIELDS = [
 export default function StepStatus() {
   const { formData, updateField } = useHouseFormStore();
 
+  const { data: session } = useSession();
+  const ownerId =
+    (session?.user && "id" in session.user ? (session.user as { id?: string }).id : undefined) ??
+    formData.owner;
+
+  useEffect(() => {
+    if (ownerId && ownerId !== formData.owner) {
+      updateField("owner", ownerId);
+    }
+  }, [ownerId, formData.owner, updateField]);
+
   return (
     <div className="space-y-6">
       {/* Owner */}
@@ -23,14 +37,15 @@ export default function StepStatus() {
         <Field
           label="Owner ID"
           required
-          hint="Your account ID or registered owner identifier"
+          hint="Automatically linked to your logged-in account"
         >
           <Input
             type="text"
             name="owner"
-            defaultValue={formData.owner}
-            onChange={e => updateField("owner", e.target.value)}
-            placeholder="e.g., usr_01HXXX…"
+            value={ownerId ?? ""}
+            readOnly
+            disabled
+            placeholder="Sign in to see your owner ID"
           />
         </Field>
       </div>

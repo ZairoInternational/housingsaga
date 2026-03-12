@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 
 export const houseValidationSchema = z.object({
   name: z.string(),
-  description: z.string().length(30, "Description must be at least 30 characters long"),
+  description: z.string().min(20, "Description must be at least 20 characters long"),
 
   owner: z
     .instanceof(ObjectId)
