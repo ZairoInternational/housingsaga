@@ -42,7 +42,7 @@ export default function RootLayout({
       <body>
         {/* Client-side providers mounted here */}
         <Navbar />
-        <ClientProviders>
+        <ClientProviders >
           {children}
           <Footer />
           <Toaster position="top-right" />

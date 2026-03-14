@@ -2,6 +2,8 @@ import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type FormNumberValue = string | number;
+
 export interface HouseFormData {
   name: string;
   description: string;
@@ -10,36 +12,36 @@ export interface HouseFormData {
   city: string;
   state: string;
   country: string;
-  postalCode: number;
-  houseNumber: number;
+  postalCode: FormNumberValue;
+  houseNumber: FormNumberValue;
   latitude: string;
   longitude: string;
   propertyType: string;
   livingArea: boolean;
-  bedrooms: number;
-  bathrooms: number;
-  balconies: number;
-  carpetArea: number;
-  builtUpArea: number;
-  floors: number;
-  propertyOnFloor: number;
+  bedrooms: FormNumberValue;
+  bathrooms: FormNumberValue;
+  balconies: FormNumberValue;
+  carpetArea: FormNumberValue;
+  builtUpArea: FormNumberValue;
+  floors: FormNumberValue;
+  propertyOnFloor: FormNumberValue;
   facing: string;
   ownership: string;
   furnishing: string;
   flooring: string;
-  constructionYear: number;
+  constructionYear: FormNumberValue;
   amenities: string[];
   utilities: string[];
   images: string[];
   video: string;
-  leaseTerm: number;
+  leaseTerm: FormNumberValue;
   titleDeed: boolean;
   titleDeedFromPreviousOwner: boolean;
   conversionCertificate: boolean;
   encumbranceCertificate: boolean;
   isPlotFreeOfAnyLegalIssues: boolean;
-  price: number;
-  depositAmount: number;
+  price: FormNumberValue;
+  depositAmount: FormNumberValue;
   negotiable: boolean;
   allInclusivePrice: boolean;
   govChargesIncluded: boolean;
@@ -57,11 +59,12 @@ interface HouseFormStore {
     field: "amenities" | "utilities" | "images",
     value: string
   ) => void;
+  setFormData: (data: HouseFormData) => void;
   resetForm: () => void;
-  submitForm: () => void;
+  submitForm: (options?: { propertyId?: string; isEditMode?: boolean }) => Promise<unknown>;
 }
 
-const initialFormData: HouseFormData = {
+export const initialHouseFormData: HouseFormData = {
   name: "",
   description: "",
   owner: "",
@@ -112,7 +115,7 @@ const initialFormData: HouseFormData = {
 export const useHouseFormStore = create<HouseFormStore>()(
   persist(
     (set, get) => ({
-      formData: initialFormData,
+      formData: initialHouseFormData,
 
       updateField: (field, value) => {
         set((state) => ({
@@ -139,14 +142,21 @@ export const useHouseFormStore = create<HouseFormStore>()(
         });
       },
 
-      resetForm: () => {
-        set({ formData: initialFormData });
+      setFormData: (data) => {
+        set({ formData: data });
       },
 
-      submitForm: async () => {
+      resetForm: () => {
+        set({ formData: initialHouseFormData });
+      },
+
+      submitForm: async (options) => {
         const { formData } = get();
         console.log("Form submitted:", formData);
-        const response = await axios.post("/api/houses", formData);
+        const response =
+          options?.isEditMode && options.propertyId
+            ? await axios.patch(`/api/houses/${options.propertyId}`, formData)
+            : await axios.post("/api/houses", formData);
         console.log("Response:", response.data);
         return response.data;
       },

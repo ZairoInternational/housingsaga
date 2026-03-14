@@ -22,7 +22,12 @@ type PropertyCardProps = {
   card: PropertyCardData;
   href?: string;
   isNavigationBlocked?: boolean;
-  style?: React.CSSProperties; // ← IMPORTANT
+  style?: React.CSSProperties;
+  /**
+   * "default"  → original tall card, ideal for wide/hero grids
+   * "compact"  → shorter card for narrow sidebar / multi-column layouts
+   */
+  size?: "default" | "compact";
 };
 
 // ─── Internal icon set ───────────────────────────────────────────────────────
@@ -99,25 +104,15 @@ const StatIcon = ({ name }: { name: "area" | "beds" | "baths" | "cars" }) => {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-/**
- * PropertyCard
- *
- * Self-contained card with:
- *  - Parallax image shift on hover
- *  - Expanding location pill with staggered stat reveal
- *  - Spring-entrance CTA button
- *  - Subtle lift + shadow on hover
- *
- * All hover states are driven by Tailwind's `group` + arbitrary variants.
- * No JS animation logic lives here — parent can simply drop it inside any layout.
- */
 const PropertyCard: React.FC<PropertyCardProps> = ({
   card,
   href,
   isNavigationBlocked = false,
   style,
+  size = "default",
 }) => {
   const destination = href ?? `/projects/${card.id}`;
+  const isCompact = size === "compact";
 
   const stats: {
     name: "area" | "beds" | "baths" | "cars";
@@ -136,13 +131,21 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         group relative bg-[#111] rounded-2xl overflow-hidden
         shadow-[0_4px_24px_rgba(0,0,0,0.35)]
         hover:shadow-[0_28px_60px_rgba(0,0,0,0.55)]
-
         transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.1,0.64,1)]
         will-change-transform
       "
     >
       {/* ── Image ─────────────────────────────────────────── */}
-      <div className="relative h-[360px] sm:h-[440px] lg:h-[550px] overflow-hidden">
+      <div
+        className={`
+          relative overflow-hidden
+          ${
+            isCompact
+              ? "h-[270px] sm:h-[260px]"
+              : "h-[360px] sm:h-[440px] lg:h-[550px]"
+          }
+        `}
+      >
         <img
           src={card.img}
           alt={card.title}
@@ -172,47 +175,49 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           >
             {/* Tag */}
             <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-              <IoLocationOutline size={16} color="rgb(52 211 153)"/>
+              <IoLocationOutline size={16} color="rgb(52 211 153)" />
               <span className="font-medium">{card.tag}</span>
             </div>
 
-            {/* Drawer — expands on group hover */}
-            {/* Drawer — true slide panel */}
+            {/* Stat drawer — width scales with size prop */}
             <div
-              className="
-    relative flex items-center
-    overflow-hidden
-    w-0 group-hover:w-[200px]
-    transition-[width] duration-500 ease-[cubic-bezier(0.34,1.2,0.64,1)]
-  "
+              className={`
+                relative flex items-center overflow-hidden
+                w-0 transition-[width] duration-500 ease-[cubic-bezier(0.34,1.2,0.64,1)]
+                ${isCompact ? "group-hover:w-[140px]" : "group-hover:w-[200px]"}
+              `}
             >
               <div
                 className="
-      flex items-center gap-3
-      ml-3 pl-3 border-l border-white/15
-      whitespace-nowrap
-
-      opacity-0 translate-x-4
-      group-hover:opacity-100 group-hover:translate-x-0
-
-      transition-[opacity,transform] duration-400
-    "
+                  flex items-center gap-3
+                  ml-3 pl-3 border-l border-white/15
+                  whitespace-nowrap
+                  opacity-0 translate-x-4
+                  group-hover:opacity-100 group-hover:translate-x-0
+                  transition-[opacity,transform] duration-400
+                "
               >
-                {stats.map(({ name, value }, i) => (
-                  <div
-                    key={name}
-                    className="
-          flex items-center gap-1
-          opacity-0 translate-y-1.5
-          group-hover:opacity-100 group-hover:translate-y-0
-          transition-[opacity,transform] duration-300
-        "
-                    style={{ transitionDelay: `${120 + i * 60}ms` }}
-                  >
-                    <StatIcon name={name} />
-                    <span className="text-white/75">{value}</span>
-                  </div>
-                ))}
+                {/*
+                  Compact: show only beds + baths (most relevant, prevents overflow)
+                  Default: show all four stats
+                */}
+                {(isCompact ? stats.slice(1, 3) : stats).map(
+                  ({ name, value }, i) => (
+                    <div
+                      key={name}
+                      className="
+                      flex items-center gap-1
+                      opacity-0 translate-y-1.5
+                      group-hover:opacity-100 group-hover:translate-y-0
+                      transition-[opacity,transform] duration-300
+                    "
+                      style={{ transitionDelay: `${120 + i * 60}ms` }}
+                    >
+                      <StatIcon name={name} />
+                      <span className="text-white/75">{value}</span>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </div>
@@ -220,42 +225,45 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
         {/* ── Footer ────────────────────────────────────────── */}
         <div
-          className="
+          className={`
             absolute bottom-0 left-0 w-full
             flex items-end justify-between
-            px-6 pb-5
             z-10
-          "
+            ${isCompact ? "px-4 pb-4" : "px-6 pb-5"}
+          `}
         >
-          <h3 className="text-[1.55rem] font-semibold leading-snug text-white tracking-tight">
+          <h3
+            className={`
+              font-semibold leading-snug text-white tracking-tight
+              ${isCompact ? "text-[1.1rem]" : "text-[1.55rem]"}
+            `}
+          >
             {card.title}
           </h3>
 
-          {/* CTA button — spring entrance */}
+          {/* CTA button — spring entrance (animation untouched) */}
           <div
             className="
-                  ml-4 shrink-0
-    opacity-0 scale-0 
-    pointer-events-none
-    transition-all duration-300 ease-out
-    group-hover:opacity-100 
-    group-hover:scale-140 
-
-    group-hover:pointer-events-auto
+              ml-4 shrink-0
+              opacity-0 scale-0
+              pointer-events-none
+              transition-all duration-300 ease-out
+              group-hover:opacity-100
+              group-hover:scale-140
+              group-hover:pointer-events-auto
             "
           >
             <Link
               href={destination}
               onClick={(e) => isNavigationBlocked && e.preventDefault()}
-              className="
-                inline-flex items-center justify-center
-                w-10 h-10 rounded-full
-                bg-emerald-400 text-black
-                hover:bg-emerald-300
+              className={`
+                inline-flex items-center justify-center rounded-full
+                bg-emerald-400 text-black hover:bg-emerald-300
                 transition-colors duration-150
-              "
+                ${isCompact ? "w-8 h-8" : "w-10 h-10"}
+              `}
             >
-              <ArrowUpRight size={17} />
+              <ArrowUpRight size={isCompact ? 14 : 17} />
             </Link>
           </div>
         </div>

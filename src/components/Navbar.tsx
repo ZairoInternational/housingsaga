@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 
-const NAV_LINKS = ["Home", "Pages", "Services", "Projects", "Blog", "Contact"];
+const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blog", "Contact"];
 
 const Navbar = () => {
   const router = useRouter();
@@ -70,7 +70,7 @@ const Navbar = () => {
           {/* ── DARK PILL: logo + nav ── */}
           <div
             className={`
-              bg-[#22272e] rounded-full flex items-center
+                bg-[#22272e] rounded-full flex items-center
               px-3 sm:px-5 lg:px-6 max-w-fit 
               h-12 sm:h-14 lg:h-16
               gap-4 sm:gap-6 lg:gap-10

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Home,
@@ -16,11 +16,13 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import type { AxiosError } from "axios";
 
+import type { HouseFormData } from "@/store/HouseStore";
 import { useHouseFormStore } from "@/store/HouseStore";
 import StepBasic from "./StepBasic";
 import StepLocation from "./StepLocation";
@@ -67,9 +69,11 @@ const STEPS = [
   { id: "status", label: "Status", icon: Settings, desc: "Listing settings" },
 ] as const;
 
+const PROPERTY_TYPES = ["apartment", "house", "villa", "rk", "farmhouse"] as const;
+
 const basicSchema = z.object({
   name: z.string().min(3, "Property name must be at least 3 characters"),
-  propertyType: z.string().min(2, "Property type is required"),
+  propertyType: z.enum(PROPERTY_TYPES, { message: "Property type is required" }),
   description: z.string().min(20, "Description must be at least 20 characters"),
   livingArea: z.boolean().optional(),
 });
@@ -116,18 +120,31 @@ const STEP_SCHEMAS: Record<string, z.ZodTypeAny> = {
   pricing: pricingSchema,
 };
 
-export default function HouseFormClient() {
+interface HouseFormClientProps {
+  initialFormData?: HouseFormData;
+  propertyId?: string;
+  isEditMode?: boolean;
+}
+
+export default function HouseFormClient({
+  initialFormData,
+  propertyId,
+  isEditMode = false,
+}: HouseFormClientProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { formData, submitForm } = useHouseFormStore();
+  const { formData, submitForm, setFormData } = useHouseFormStore();
 
-  const methods = useForm({
+  const methods = useForm<HouseFormData>({
     mode: "onChange",
-    resolver: zodResolver(STEP_SCHEMAS[STEPS[currentStep].id] ?? z.object({})),
-    defaultValues: formData as z.infer<typeof basicSchema>,
+    resolver: zodResolver(
+      STEP_SCHEMAS[STEPS[currentStep].id] ?? z.object({})
+    ) as Resolver<HouseFormData>,
+    defaultValues: initialFormData ?? formData,
   });
 
   const {
@@ -135,6 +152,17 @@ export default function HouseFormClient() {
     formState: { errors },
   } = methods;
   const hasErrors = Object.keys(errors).length > 0;
+
+  useEffect(() => {
+    if (!initialFormData || !isEditMode) return;
+
+    setFormData(initialFormData);
+    methods.reset(initialFormData);
+    setCurrentStep(0);
+    setCompletedSteps(new Set());
+    setSubmitError(null);
+    setSubmitted(false);
+  }, [initialFormData, isEditMode, methods, setFormData]);
 
   const goNext = useCallback(async () => {
     const stepId = STEPS[currentStep].id;
@@ -155,9 +183,38 @@ export default function HouseFormClient() {
     setIsSubmitting(true);
     await new Promise((r) => setTimeout(r, 1200));
     try {
-      await submitForm();
+      setSubmitError(null);
+      await submitForm({ propertyId, isEditMode });
       setSubmitted(true);
     } catch (error) {
+      let message = "Something went wrong while submitting your listing.";
+
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const axiosError = error as AxiosError<{
+          error?: string;
+          details?: unknown;
+        }>;
+
+        const data = axiosError.response?.data;
+        const backendMessage = data?.error;
+        const details = data?.details;
+
+        const firstIssueMessage =
+          Array.isArray(details) && details.length > 0
+            ? (() => {
+                const issue = details[0] as { message?: unknown };
+                return typeof issue?.message === "string" ? issue.message : null;
+              })()
+            : null;
+
+        if (typeof firstIssueMessage === "string" && firstIssueMessage.trim().length > 0) {
+          message = firstIssueMessage;
+        } else if (typeof backendMessage === "string" && backendMessage.trim().length > 0) {
+          message = backendMessage;
+        }
+      }
+
+      setSubmitError(message);
       console.error("Submit listing failed:", error);
     } finally {
       setIsSubmitting(false);
@@ -165,7 +222,7 @@ export default function HouseFormClient() {
   };
 
   if (submitted) {
-    return <SuccessScreen />;
+    return <SuccessScreen isEditMode={isEditMode} />;
   }
 
   const StepComponent = [
@@ -192,11 +249,13 @@ export default function HouseFormClient() {
                 <Home size={18} className="text-white" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                List Your Property
+                {isEditMode ? "Edit Your Property" : "List Your Property"}
               </h1>
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400 ml-12">
-              Complete all sections to publish your listing on HousingSaga
+              {isEditMode
+                ? "Update the details below to keep your listing accurate on HousingSaga"
+                : "Complete all sections to publish your listing on HousingSaga"}
             </p>
           </div>
 
@@ -326,6 +385,17 @@ export default function HouseFormClient() {
                     transition={{ duration: 0.2 }}
                     className="p-6"
                   >
+                    {submitError && (
+                      <div className="mb-4 flex items-start gap-2.5 px-4 py-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-xl">
+                        <AlertCircle
+                          size={15}
+                          className="text-red-500 flex-shrink-0 mt-0.5"
+                        />
+                        <p className="text-xs text-red-600 dark:text-red-400">
+                          {submitError}
+                        </p>
+                      </div>
+                    )}
                     {hasErrors && (
                       <div className="mb-5 flex items-start gap-2.5 px-4 py-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-xl">
                         <AlertCircle
@@ -363,11 +433,11 @@ export default function HouseFormClient() {
                         {isSubmitting ? (
                           <>
                             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
-                            Submitting…
+                            {isEditMode ? "Saving…" : "Submitting…"}
                           </>
                         ) : (
                           <>
-                            <Check size={16} /> Submit Listing
+                            <Check size={16} /> {isEditMode ? "Save Changes" : "Submit Listing"}
                           </>
                         )}
                       </button>
@@ -392,7 +462,7 @@ export default function HouseFormClient() {
   );
 }
 
-function SuccessScreen() {
+function SuccessScreen({ isEditMode }: { isEditMode: boolean }) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] flex items-center justify-center p-6">
       <motion.div
@@ -404,11 +474,12 @@ function SuccessScreen() {
           <Check size={36} className="text-emerald-500" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          Listing Submitted!
+          {isEditMode ? "Listing Updated!" : "Listing Submitted!"}
         </h2>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-          Your property has been submitted for review. We&apos;ll notify you once
-          it&apos;s live on HousingSaga.
+          {isEditMode
+            ? "Your property changes have been saved successfully. HousingSaga now reflects the latest details."
+            : "Your property has been submitted for review. We&apos;ll notify you once it&apos;s live on HousingSaga."}
         </p>
         <Link
           href="/"

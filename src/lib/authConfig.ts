@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
 
     async jwt(params: { token: JWT; user?: { email?: string | null } }) {
       const { token, user } = params;
-      console.log("[NextAuth][jwt] called user:", user?.email);
+      // console.log("[NextAuth][jwt] called user:", user?.email);
       if (user?.email) {
         const dbUser = await HousingUsers.findOne({ email: user.email });
         console.log("[NextAuth][jwt] dbUser found:", !!dbUser, "email:", user.email);
@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
           }
         }
       }
-      console.log("[NextAuth][jwt] returning token:", token);
+      // console.log("[NextAuth][jwt] returning token:", token);
       return token;
     },
 
@@ -87,7 +87,7 @@ export const authOptions: NextAuthOptions = {
       session: DefaultSession;
       token: JWT;
     }) {
-      console.log("[NextAuth][session] token:", token);
+      // console.log("[NextAuth][session] token:", token);
       session.user = session.user ?? {};
       (session.user as Record<string, unknown>).id = (token as Record<string, unknown>)
         .userId as string | undefined;
@@ -113,12 +113,12 @@ export const authOptions: NextAuthOptions = {
         | boolean
         | undefined;
 
-      console.log("[NextAuth][session] returning session:", session);
+      // console.log("[NextAuth][session] returning session:", session);
       return session;
     },
 
     async redirect({ url, baseUrl }) {
-      console.log("[NextAuth][redirect] called with url:", url, "baseUrl:", baseUrl);
+      // console.log("[NextAuth][redirect] called with url:", url, "baseUrl:", baseUrl);  
       // Allow absolute URLs
       if (url.startsWith("/")) {
         return `${baseUrl}${url}`;

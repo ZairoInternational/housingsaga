@@ -223,4 +223,6 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
 );
 
 export const House =
-  mongoose.models?.House || mongoose.model<HouseValidationSchema>("House", HouseSchema);
+  mongoose.models?.House ||
+  mongoose.model<HouseValidationSchema>("House", HouseSchema);
+

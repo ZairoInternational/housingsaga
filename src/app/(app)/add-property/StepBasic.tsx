@@ -1,15 +1,38 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import type { FieldError } from "react-hook-form";
 import { useHouseFormStore } from "@/store/HouseStore";
-import { Field, Input, Textarea, Toggle } from "./FormFields";
+import { Field, Input, Select, Textarea, Toggle } from "./FormFields";
+
+const PROPERTY_TYPES = ["apartment", "house", "villa", "rk", "farmhouse"] as const;
+type PropertyType = (typeof PROPERTY_TYPES)[number];
+
+const toOption = (v: string) => ({
+  value: v,
+  label: v.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+});
 
 export default function StepBasic() {
   const { register, formState: { errors }, watch, setValue } = useFormContext();
   const { formData, updateField } = useHouseFormStore();
 
   const livingArea = watch("livingArea", formData.livingArea);
+  const propertyType = watch("propertyType", formData.propertyType) as string | undefined;
+
+  useEffect(() => {
+    const isValid = PROPERTY_TYPES.includes(propertyType as PropertyType);
+    if (!propertyType || !isValid) {
+      setValue("propertyType", "", {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+      updateField("propertyType", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="space-y-5">
@@ -26,12 +49,14 @@ export default function StepBasic() {
         </Field>
 
         <Field label="Property Type" error={errors.propertyType as FieldError | undefined} required>
-          <Input
+          <Select
             {...register("propertyType", {
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => updateField("propertyType", e.target.value)
+              onChange: (e: React.ChangeEvent<HTMLSelectElement>) =>
+                updateField("propertyType", e.target.value),
             })}
             defaultValue={formData.propertyType}
-            placeholder="e.g., Villa, Apartment, House"
+            options={PROPERTY_TYPES.map(toOption)}
+            placeholder="Select property type"
             error={!!errors.propertyType}
           />
         </Field>
