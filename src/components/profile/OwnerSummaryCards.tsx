@@ -16,9 +16,9 @@ export default function OwnerSummaryCards({
       label: "Total listings",
       value: totalListings,
       icon: RiHome4Line,
-      accent: "text-emerald-600 dark:text-emerald-400",
-      iconBg: "bg-emerald-50 dark:bg-emerald-500/10",
-      bar: "bg-emerald-500",
+      accent: "text-lime-600 dark:text-lime-400",
+      iconBg: "bg-lime-50 dark:bg-lime-500/10",
+      bar: "bg-lime-500",
       barWidth: totalListings > 0 ? "100%" : "0%",
     },
     {

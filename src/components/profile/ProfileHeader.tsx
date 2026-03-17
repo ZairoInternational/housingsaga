@@ -27,8 +27,8 @@ const roleConfig: Record<
   owner: {
     label: "Property Owner",
     classes:
-      "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/25",
-    dot: "bg-emerald-500",
+      "bg-lime-50 text-lime-700 ring-1 ring-lime-200 dark:bg-lime-500/10 dark:text-lime-400 dark:ring-lime-500/25",
+    dot: "bg-lime-500",
   },
   buyer: {
     label: "Home Buyer",
@@ -81,6 +81,7 @@ export default function ProfileHeader({
                 {config.label}
               </span>
             )}
+            
           </div>
 
           <p className="max-w-2xl text-base md:text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -112,7 +113,7 @@ export default function ProfileHeader({
           <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-lime-300/20 blur-3xl dark:bg-lime-400/10" />
           <div className="relative flex items-start gap-5">
             <div className="relative shrink-0">
-              <div className="relative h-24 w-24 overflow-hidden rounded-2xl bg-gradient-to-br from-lime-400 to-emerald-600 text-white shadow-lg flex items-center justify-center text-2xl font-semibold">
+            <div className="relative h-24 w-24 overflow-hidden rounded-2xl bg-gradient-to-br from-lime-400 to-lime-600 text-white shadow-lg flex items-center justify-center text-2xl font-semibold">
                 {profilePic ? (
                   <Image
                     src={profilePic}

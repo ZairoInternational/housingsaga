@@ -18,6 +18,7 @@ export interface HouseForForm {
   coordinates?: HouseCoordinates;
   name: string;
   description: string;
+  summary: string;
   propertyType: string;
   livingArea: boolean;
   bedrooms: number;
@@ -36,6 +37,8 @@ export interface HouseForForm {
   utilities: string[];
   images: string[];
   video?: string;
+  videoUrl?: string;
+  floorMapImage?: string;
   leaseTerm: string;
   titleDeed: boolean;
   titleDeedFromPreviousOwner: boolean;
@@ -74,6 +77,7 @@ export function buildHousePayload(
   return houseValidationSchema.parse({
     name: raw.name,
     description: raw.description,
+    summary: raw.summary,
     owner: ownerId,
     address: raw.address,
     city: raw.city,
@@ -103,6 +107,8 @@ export function buildHousePayload(
     utilities: raw.utilities,
     images: raw.images,
     video: raw.video || undefined,
+    videoUrl: raw.videoUrl || undefined,
+    floorMapImage: raw.floorMapImage || undefined,
     leaseTerm: String(raw.leaseTerm),
     titleDeed: Boolean(raw.titleDeed),
     titleDeedFromPreviousOwner: Boolean(raw.titleDeedFromPreviousOwner),
@@ -127,6 +133,7 @@ export function toHouseFormData(house: HouseForForm): HouseFormData {
   return {
     name: house.name,
     description: house.description,
+    summary: house.summary,
     owner:
       typeof house.owner === "string" ? house.owner : house.owner.toString(),
     address: house.address,
@@ -155,6 +162,8 @@ export function toHouseFormData(house: HouseForForm): HouseFormData {
     utilities: house.utilities ?? [],
     images: house.images ?? [],
     video: house.video ?? "",
+    videoUrl: house.videoUrl ?? "",
+    floorMapImage: house.floorMapImage ?? "",
     leaseTerm: house.leaseTerm ?? "",
     titleDeed: house.titleDeed,
     titleDeedFromPreviousOwner: house.titleDeedFromPreviousOwner,

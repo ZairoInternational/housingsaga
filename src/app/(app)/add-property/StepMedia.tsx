@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CloudUpload, X, Video, ImageIcon, Loader2 } from "lucide-react";
+import { CloudUpload, X, Video, ImageIcon, Loader2, Map as MapIcon } from "lucide-react";
 import { useHouseFormStore } from "@/store/HouseStore";
 import { useBunnyUpload } from "@/hooks/useBunnyUpload";
 import { Field, Input } from "./FormFields";
@@ -60,13 +60,13 @@ export default function StepMedia() {
           className={`
             w-full border-2 border-dashed rounded-2xl py-10 flex flex-col items-center gap-3 transition-all
             ${uploading
-              ? "border-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/10 cursor-wait"
-              : "border-gray-200 dark:border-gray-700 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
+              ? "border-lime-400 bg-lime-50/50 dark:bg-lime-950/10 cursor-wait"
+              : "border-gray-200 dark:border-gray-700 hover:border-lime-400 dark:hover:border-lime-600 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
             }
           `}
         >
           {uploading ? (
-            <Loader2 size={32} className="text-emerald-500 animate-spin" />
+            <Loader2 size={32} className="text-lime-500 animate-spin" />
           ) : (
             <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
               <CloudUpload size={24} className="text-gray-400" />
@@ -113,7 +113,7 @@ export default function StepMedia() {
                   <X size={12} className="text-white" />
                 </button>
                 {i === 0 && (
-                  <span className="absolute bottom-1.5 left-1.5 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded-md font-medium">
+                  <span className="absolute bottom-1.5 left-1.5 text-[10px] bg-lime-500 text-white px-1.5 py-0.5 rounded-md font-medium">
                     Cover
                   </span>
                 )}
@@ -135,10 +135,32 @@ export default function StepMedia() {
             </span>
             <Input
               type="url"
-              name="video"
-              defaultValue={formData.video}
-              onChange={e => updateField("video", e.target.value)}
+              name="videoUrl"
+              defaultValue={formData.videoUrl}
+              onChange={e => updateField("videoUrl", e.target.value)}
               placeholder="https://youtube.com/watch?v=…"
+              className="pl-8"
+            />
+          </div>
+        </Field>
+      </div>
+
+      {/* Floor map image URL */}
+      <div>
+        <Field
+          label="Floor Map Image URL"
+          hint="Optional image showing the floor plan layout"
+        >
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <MapIcon size={14} />
+            </span>
+            <Input
+              type="url"
+              name="floorMapImage"
+              defaultValue={formData.floorMapImage}
+              onChange={e => updateField("floorMapImage", e.target.value)}
+              placeholder="https://example.com/floorplan.jpg"
               className="pl-8"
             />
           </div>

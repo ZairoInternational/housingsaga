@@ -42,8 +42,8 @@ export default function StepAmenities() {
       </div>
 
       {(formData.amenities.length > 0 || formData.utilities.length > 0) && (
-        <div className="pt-2 p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200 dark:border-emerald-900">
-          <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+        <div className="pt-2 p-3 bg-lime-50 dark:bg-lime-950/20 rounded-xl border border-lime-200 dark:border-lime-900">
+          <p className="text-xs font-medium text-lime-700 dark:text-lime-400">
             ✓ {formData.amenities.length} amenities · {formData.utilities.length} utilities selected
           </p>
         </div>

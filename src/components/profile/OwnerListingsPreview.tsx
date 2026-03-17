@@ -79,7 +79,7 @@ export default function OwnerListingsPreview({
           </p>
           <a
             href="/add-property"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-all shadow-sm"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-lime-700 transition-all shadow-sm"
           >
             <RiAddLine className="h-4 w-4" />
             List your first property
@@ -120,7 +120,7 @@ export default function OwnerListingsPreview({
                 </div>
 
                 <div className="absolute top-4 right-4 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 text-white px-3 py-1.5 text-xs font-semibold shadow-lg">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-lime-500 text-white px-3 py-1.5 text-xs font-semibold shadow-lg">
                     <RiEditLine className="h-3.5 w-3.5" />
                     Edit listing
                   </span>
@@ -131,12 +131,12 @@ export default function OwnerListingsPreview({
                   <span
                     className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur-sm border ${
                       listing.isActive
-                        ? "bg-emerald-500/20 border-emerald-400/30 text-emerald-300"
+                        ? "bg-lime-500/20 border-lime-400/30 text-lime-300"
                         : "bg-black/20 border-white/10 text-gray-300"
                     }`}
                   >
                     <RiCircleLine
-                      className={`h-2.5 w-2.5 ${listing.isActive ? "text-emerald-400" : "text-gray-400"}`}
+                      className={`h-2.5 w-2.5 ${listing.isActive ? "text-lime-400" : "text-gray-400"}`}
                     />
                     {listing.isActive ? "Active" : "Inactive"}
                   </span>
@@ -195,7 +195,7 @@ export default function OwnerListingsPreview({
                     </span>
                     <span className="text-xs">baths</span>
                   </div>
-                  <span className="ml-auto text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="ml-auto text-xs font-semibold text-lime-600 dark:text-lime-400">
                     Hover to edit
                   </span>
                 </div>

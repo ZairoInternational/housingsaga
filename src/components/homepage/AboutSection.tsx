@@ -34,8 +34,8 @@ const AboutSection: React.FC = () => {
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 lg:gap-10">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-3 text-xs text-emerald-500 mb-5 lg:mb-6 tracking-wide">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+            <div className="flex items-center gap-3 text-xs text-lime-500 mb-5 lg:mb-6 tracking-wide">
+              <span className="w-2 h-2 rounded-full bg-lime-400 inline-block" />
               <span className="uppercase">About The Property</span>
             </div>
 
@@ -47,7 +47,7 @@ const AboutSection: React.FC = () => {
           </div>
 
           <div className="shrink-0">
-            <button className="inline-flex items-center gap-2 bg-emerald-400 hover:bg-emerald-500 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300">
+            <button className="inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-500 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300">
               More About Us
               <ArrowUpRight size={16} />
             </button>
@@ -60,7 +60,7 @@ const AboutSection: React.FC = () => {
             <div key={index} className="flex flex-col gap-5 sm:gap-6">
               {/* TEXT BLOCK */}
               <div className="flex items-start gap-4 sm:gap-5 mb-6 sm:mb-8 lg:mb-10">
-                <div className="w-14 h-10 sm:w-16 sm:h-12 lg:w-20 lg:h-14 flex items-center justify-center text-emerald-500 shrink-0">
+                <div className="w-14 h-10 sm:w-16 sm:h-12 lg:w-20 lg:h-14 flex items-center justify-center text-lime-500 shrink-0">
                   <img
                     src={`/${item.icon}`}
                     alt={item.title}

@@ -63,7 +63,7 @@ export default function StepLocation() {
 
       <div className="pt-2 border-t border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-2 mb-4">
-          <MapPin size={14} className="text-emerald-500" />
+          <MapPin size={14} className="text-lime-500" />
           <SectionTitle>GPS Coordinates <span className="normal-case font-normal text-gray-400">(optional)</span></SectionTitle>
         </div>
 

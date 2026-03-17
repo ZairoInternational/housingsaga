@@ -52,7 +52,7 @@ export default function StepPricing() {
             />
           </div>
           {price && formatINR(price) && (
-            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+            <span className="text-xs text-lime-600 dark:text-lime-400 font-medium mt-1">
               ≈ {formatINR(String(price))}
             </span>
           )}

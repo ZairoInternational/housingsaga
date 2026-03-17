@@ -12,6 +12,10 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
       type: String,
       required: true,
     },
+    summary: {
+      type: String,
+      required: true,
+    },
 
     owner: {
       type: Schema.Types.ObjectId,
@@ -150,6 +154,12 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
       default: [],
     },
     video: {
+      type: String,
+    },
+    videoUrl: {
+      type: String,
+    },
+    floorMapImage: {
       type: String,
     },
 

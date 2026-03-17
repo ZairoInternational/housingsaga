@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { Menu, Moon, Sun, UserRound, Phone, ArrowRight} from "lucide-react";
+import { Menu, UserRound, Phone, ArrowRight} from "lucide-react";
 
-import useDarkMode from "@/hooks/useToggleTheme";
+// import useDarkMode from "@/hooks/useToggleTheme";
 import { useAuthStore } from "@/store/AuthStore";
 import Sidebar from "./Sidebar";
 import { signOut } from "next-auth/react";
@@ -16,7 +16,7 @@ const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blog", "Conta
 const Navbar = () => {
   const router = useRouter();
   const { isLoggedIn, logout, role } = useAuthStore();
-  const [isDarkMode, setIsDarkMode] = useDarkMode();
+  // const [isDarkMode, setIsDarkMode] = useDarkMode();
 
   const [isClient, setIsClient] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -101,7 +101,8 @@ const Navbar = () => {
               {NAV_LINKS.map((item) => (
                 <Link
                   key={item}
-                  href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  // href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  href = {item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
                   className="relative block overflow-hidden h-5 text-gray-300 hover:text-white text-sm font-medium group"
                 >
                   <span className="block transition-transform duration-300 ease-out group-hover:translate-y-full">
@@ -118,8 +119,9 @@ const Navbar = () => {
             <nav className="hidden md:flex lg:hidden items-center gap-4">
               {["Home", "Services", "Projects", "Contact"].map((item) => (
                 <Link
-                  key={item}
-                  href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  key={item}  
+                  // href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  href = {item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
                   className="relative block overflow-hidden h-5 text-gray-300 hover:text-white text-xs font-medium group"
                 >
                   <span className="block transition-transform duration-300 ease-out group-hover:translate-y-full">
@@ -136,11 +138,11 @@ const Navbar = () => {
           {/* ── RIGHT SIDE ACTIONS ── */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {/* Phone badge — hidden below lg */}
-            <div className="hidden lg:flex items-center gap-2 bg-[#22272e] text-emerald-300 rounded-3xl px-3 py-1 text-sm whitespace-nowrap">
-              <div className="border rounded-full p-2 -ml-2 bg-emerald-300 flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-2 bg-[#22272e] text-lime-300 rounded-3xl px-3 py-1 text-sm whitespace-nowrap">
+              <div className="border rounded-full p-2 -ml-2 bg-lime-300 flex-shrink-0">
                 <Phone size={14} className="text-black" />
               </div>
-              <span className="text-white hover:text-emerald-300 transition-colors text-xs xl:text-sm">
+              <span className="text-white hover:text-lime-300 transition-colors text-xs xl:text-sm">
                 Call us: +1890 123 456
               </span>
             </div>
@@ -148,20 +150,20 @@ const Navbar = () => {
             {/* Get In Touch — hidden on mobile */}
             <Link
               href="/contact"
-              className="hidden sm:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white px-3 lg:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
+              className="hidden sm:inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white px-3 lg:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
             >
               <span>Get In Touch</span>
               <ArrowRight size={14} />
             </Link>
 
             {/* Dark mode toggle — hidden on mobile */}
-            <button
+            {/* <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               className="hidden md:flex items-center justify-center w-9 h-9 rounded-full bg-[#22272e] text-gray-300 hover:text-white transition-colors"
               aria-label="Toggle dark mode"
             >
               {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
-            </button>
+            </button> */}
 
             {/* Auth / Profile */}
             {isClient && (
@@ -267,7 +269,7 @@ const Navbar = () => {
                 ) : (
                   <button
                     onClick={handleAuthToggle}
-                    className="hidden md:inline-flex items-center px-4 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white text-sm font-medium transition-colors"
+                    className="hidden md:inline-flex items-center px-4 py-2.5 rounded-full bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white text-sm font-medium transition-colors"
                   >
                     Login
                   </button>

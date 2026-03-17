@@ -35,8 +35,8 @@ export function RoleSelector({ selected, onSelect }: RoleSelectorProps) {
           onClick={() => onSelect("owner")}
           className={`p-6 rounded-lg border-2 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
             selected === "owner"
-              ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 shadow-lg"
-              : "border-gray-200 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-600"
+              ? "border-lime-500 bg-lime-50 dark:bg-lime-900/20 shadow-lg"
+              : "border-gray-200 dark:border-gray-700 hover:border-lime-300 dark:hover:border-lime-600"
           }`}
         >
           <div className="text-4xl mb-3">📢</div>

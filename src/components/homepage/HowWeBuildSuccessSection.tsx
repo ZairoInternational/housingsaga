@@ -114,7 +114,7 @@ useLayoutEffect(() => {
         {/* LEFT COLUMN */}
         <div className="flex flex-col justify-start lg:justify-between">
           <div>
-            <div className="text-xs sm:text-sm text-emerald-500 mb-4 font-medium">
+            <div className="text-xs sm:text-sm text-lime-500 mb-4 font-medium">
               • How We Work
             </div>
 

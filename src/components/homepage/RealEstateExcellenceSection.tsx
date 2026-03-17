@@ -43,7 +43,7 @@ const RealEstateExcellenceSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Left */}
           <div>
-            <div className="text-xs sm:text-sm text-emerald-500 mb-4 font-medium">
+            <div className="text-xs sm:text-sm text-lime-500 mb-4 font-medium">
               • What We Offer
             </div>
 

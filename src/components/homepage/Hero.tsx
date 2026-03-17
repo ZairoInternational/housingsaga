@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
               {/* LEFT CONTENT */}
               <div className="w-full lg:w-[80%] text-white">
                 <div className="flex items-center gap-3 text-xs sm:text-sm mb-4">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="w-2 h-2 rounded-full bg-lime-400" />
                   <span className="uppercase tracking-wide">
                     Modern Homes For Modern Life
                   </span>

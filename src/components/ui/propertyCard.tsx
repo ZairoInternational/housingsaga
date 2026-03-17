@@ -258,7 +258,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               onClick={(e) => isNavigationBlocked && e.preventDefault()}
               className={`
                 inline-flex items-center justify-center rounded-full
-                bg-emerald-400 text-black hover:bg-emerald-300
+                bg-lime-400 text-black hover:bg-lime-300
                 transition-colors duration-150
                 ${isCompact ? "w-8 h-8" : "w-10 h-10"}
               `}

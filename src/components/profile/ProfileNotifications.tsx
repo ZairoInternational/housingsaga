@@ -30,9 +30,9 @@ const toneConfig: Record<
 > = {
   success: {
     icon: RiCheckboxCircleLine,
-    badge: "text-emerald-700 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-500/10",
-    iconWrap: "bg-emerald-100 dark:bg-emerald-500/15",
-    iconClass: "text-emerald-700 dark:text-emerald-400",
+    badge: "text-lime-700 bg-lime-50 dark:text-lime-400 dark:bg-lime-500/10",
+    iconWrap: "bg-lime-100 dark:bg-lime-500/15",
+    iconClass: "text-lime-700 dark:text-lime-400",
   },
   info: {
     icon: RiSparklingLine,

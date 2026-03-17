@@ -75,6 +75,7 @@ const basicSchema = z.object({
   name: z.string().min(3, "Property name must be at least 3 characters"),
   propertyType: z.enum(PROPERTY_TYPES, { message: "Property type is required" }),
   description: z.string().min(20, "Description must be at least 20 characters"),
+  summary: z.string().min(10, "Summary must be at least 10 characters"),
   livingArea: z.boolean().optional(),
 });
 
@@ -245,7 +246,7 @@ export default function HouseFormClient({
         <div className="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+              <div className="w-9 h-9 rounded-xl bg-lime-500 flex items-center justify-center shadow-lg shadow-lime-500/30">
                 <Home size={18} className="text-white" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
@@ -275,7 +276,7 @@ export default function HouseFormClient({
                       group flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all duration-200
                       ${
                         isActive
-                          ? "bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30"
+                          ? "bg-lime-500/10 dark:bg-lime-500/15 border border-lime-500/30"
                           : isDone
                             ? "hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
                             : "cursor-default opacity-60"
@@ -285,11 +286,11 @@ export default function HouseFormClient({
                     <div
                       className={`
                       w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all
-                      ${isActive ? "bg-emerald-500 shadow-md shadow-emerald-500/40" : isDone ? "bg-emerald-500/20" : "bg-gray-200 dark:bg-gray-700"}
+                      ${isActive ? "bg-lime-500 shadow-md shadow-lime-500/40" : isDone ? "bg-lime-500/20" : "bg-gray-200 dark:bg-gray-700"}
                     `}
                     >
                       {isDone && !isActive ? (
-                        <Check size={13} className="text-emerald-500" />
+                        <Check size={13} className="text-lime-500" />
                       ) : (
                         <Icon
                           size={13}
@@ -303,7 +304,7 @@ export default function HouseFormClient({
                     </div>
                     <div>
                       <div
-                        className={`text-xs font-semibold leading-tight ${isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-700 dark:text-gray-300"}`}
+                        className={`text-xs font-semibold leading-tight ${isActive ? "text-lime-600 dark:text-lime-400" : "text-gray-700 dark:text-gray-300"}`}
                       >
                         {step.label}
                       </div>
@@ -322,7 +323,7 @@ export default function HouseFormClient({
                 </div>
                 <div className="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                    className="h-full bg-lime-500 rounded-full transition-all duration-500"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -341,7 +342,7 @@ export default function HouseFormClient({
                       onClick={() => (isDone ? setCurrentStep(i) : undefined)}
                       className={`
                         flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all
-                        ${isActive ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/30" : isDone ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-gray-100 dark:bg-gray-800 text-gray-400"}
+                        ${isActive ? "bg-lime-500 text-white shadow-md shadow-lime-500/30" : isDone ? "bg-lime-500/10 text-lime-600 dark:text-lime-400" : "bg-gray-100 dark:bg-gray-800 text-gray-400"}
                       `}
                     >
                       {isDone && !isActive ? (
@@ -360,7 +361,7 @@ export default function HouseFormClient({
                   <div className="flex items-center gap-3">
                     {(() => {
                       const Icon = STEPS[currentStep].icon;
-                      return <Icon size={18} className="text-emerald-500" />;
+                      return <Icon size={18} className="text-lime-500" />;
                     })()}
                     <div>
                       <h2 className="text-base font-semibold text-gray-900 dark:text-white">
@@ -428,7 +429,7 @@ export default function HouseFormClient({
                         type="button"
                         onClick={onFinalSubmit}
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white shadow-md shadow-emerald-500/30 disabled:opacity-60 transition-all"
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white shadow-md shadow-lime-500/30 disabled:opacity-60 transition-all"
                       >
                         {isSubmitting ? (
                           <>
@@ -445,7 +446,7 @@ export default function HouseFormClient({
                       <button
                         type="button"
                         onClick={goNext}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white shadow-md shadow-emerald-500/30 transition-all"
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white shadow-md shadow-lime-500/30 transition-all"
                       >
                         Continue
                         <ChevronRight size={16} />
@@ -470,8 +471,8 @@ function SuccessScreen({ isEditMode }: { isEditMode: boolean }) {
         animate={{ scale: 1, opacity: 1 }}
         className="text-center max-w-md"
       >
-        <div className="w-20 h-20 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-6 border-2 border-emerald-500/40">
-          <Check size={36} className="text-emerald-500" />
+        <div className="w-20 h-20 rounded-full bg-lime-500/15 flex items-center justify-center mx-auto mb-6 border-2 border-lime-500/40">
+          <Check size={36} className="text-lime-500" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {isEditMode ? "Listing Updated!" : "Listing Submitted!"}
@@ -483,7 +484,7 @@ function SuccessScreen({ isEditMode }: { isEditMode: boolean }) {
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm transition-colors shadow-lg shadow-emerald-500/30"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-lime-500 hover:bg-lime-600 text-white font-medium text-sm transition-colors shadow-lg shadow-lime-500/30"
         >
           <Home size={16} />
           Back to Home

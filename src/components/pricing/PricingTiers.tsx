@@ -45,7 +45,7 @@ export default function PricingTiers() {
     <section className="bg-[#0f1115] text-white py-20 sm:py-24 lg:py-28">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12 text-center">
-          <p className="text-xs sm:text-sm text-emerald-400 mb-3 uppercase tracking-[0.22em]">
+          <p className="text-xs sm:text-sm text-lime-400 mb-3 uppercase tracking-[0.22em]">
             Plans For Every Journey
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight mb-3">
@@ -62,7 +62,7 @@ export default function PricingTiers() {
             <div
               key={tier.name}
               className={`rounded-2xl border ${
-                tier.highlighted ? "border-emerald-400 bg-white/5" : "border-white/10 bg-white/5"
+                tier.highlighted ? "border-lime-400 bg-white/5" : "border-white/10 bg-white/5"
               } p-7 sm:p-8 flex flex-col justify-between`}
             >
               <div>
@@ -72,7 +72,7 @@ export default function PricingTiers() {
                 <ul className="space-y-2 text-sm text-gray-300">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-lime-400" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -81,7 +81,7 @@ export default function PricingTiers() {
               <button
                 className={`mt-8 inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition ${
                   tier.highlighted
-                    ? "bg-emerald-400 text-black hover:bg-emerald-300"
+                    ? "bg-lime-400 text-black hover:bg-lime-300"
                     : "bg-white/10 hover:bg-white/20 text-white"
                 }`}
               >

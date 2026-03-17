@@ -29,7 +29,7 @@ export default function PartnersProgramContent() {
     <section className="bg-[#f5f5f5] text-[#111] py-20 sm:py-24 lg:py-28">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-10 sm:mb-12">
-          <p className="text-xs sm:text-sm text-emerald-500 mb-3 uppercase tracking-[0.22em]">
+          <p className="text-xs sm:text-sm text-lime-500 mb-3 uppercase tracking-[0.22em]">
             Program Overview
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight">
@@ -51,7 +51,7 @@ export default function PartnersProgramContent() {
                 <ul className="space-y-2 text-sm text-gray-700">
                   {tier.perks.map((perk) => (
                     <li key={perk} className="flex items-start gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-lime-500" />
                       <span>{perk}</span>
                     </li>
                   ))}

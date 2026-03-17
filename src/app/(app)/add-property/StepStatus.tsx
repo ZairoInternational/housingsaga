@@ -77,11 +77,11 @@ export default function StepStatus() {
       </div>
 
       {/* Summary */}
-      <div className="mt-2 p-4 bg-emerald-50 dark:bg-emerald-950/15 border border-emerald-200 dark:border-emerald-900 rounded-xl">
-        <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-1">
+      <div className="mt-2 p-4 bg-lime-50 dark:bg-lime-950/15 border border-lime-200 dark:border-lime-900 rounded-xl">
+        <p className="text-xs font-semibold text-lime-700 dark:text-lime-400 mb-1">
           Almost done! 🎉
         </p>
-        <p className="text-xs text-emerald-600/80 dark:text-emerald-500 leading-relaxed">
+        <p className="text-xs text-lime-600/80 dark:text-lime-500 leading-relaxed">
           Review your settings above and click <strong>Submit Listing</strong> to publish. Our team will review the listing within 24 hours.
         </p>
       </div>

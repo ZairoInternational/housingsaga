@@ -50,8 +50,8 @@ const ProjectsSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="mb-12">
-          <div className="flex items-center gap-2.5 text-xs text-emerald-400 mb-5 tracking-widest uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+          <div className="flex items-center gap-2.5 text-xs text-lime-400 mb-5 tracking-widest uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-lime-400 inline-block" />
             <span>Highlighted Real Projects</span>
           </div>
 

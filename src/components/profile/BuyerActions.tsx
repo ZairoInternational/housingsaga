@@ -39,7 +39,7 @@ export default function BuyerActions() {
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link href="/">
-              <button className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 active:scale-95 transition-all">
+              <button className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 active:scale-95 transition-all">
                 <RiCompass3Line className="h-4 w-4" />
                 Explore properties
               </button>
@@ -53,7 +53,7 @@ export default function BuyerActions() {
       </article>
 
       {/* Smart search card */}
-      <article className="relative overflow-hidden rounded-2xl border border-lime-200/70 dark:border-lime-500/15 bg-gradient-to-br from-lime-50 to-emerald-50/60 dark:from-lime-500/8 dark:to-emerald-500/5 px-6 py-6">
+      <article className="relative overflow-hidden rounded-2xl border border-lime-200/70 dark:border-lime-500/15 bg-gradient-to-br from-lime-50 to-lime-50/60 dark:from-lime-500/8 dark:to-lime-500/5 px-6 py-6">
         <div className="flex items-start gap-3 mb-3">
           <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-lime-100 dark:bg-lime-500/15">
             <RiMagicLine className="h-4 w-4 text-lime-600 dark:text-lime-400" />

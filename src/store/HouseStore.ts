@@ -7,6 +7,7 @@ type FormNumberValue = string | number;
 export interface HouseFormData {
   name: string;
   description: string;
+  summary: string;
   owner: string;
   address: string;
   city: string;
@@ -34,6 +35,8 @@ export interface HouseFormData {
   utilities: string[];
   images: string[];
   video: string;
+  videoUrl: string;
+  floorMapImage: string;
   leaseTerm: FormNumberValue;
   titleDeed: boolean;
   titleDeedFromPreviousOwner: boolean;
@@ -67,6 +70,7 @@ interface HouseFormStore {
 export const initialHouseFormData: HouseFormData = {
   name: "",
   description: "",
+  summary: "",
   owner: "",
   address: "",
   city: "",
@@ -94,6 +98,8 @@ export const initialHouseFormData: HouseFormData = {
   utilities: [],
   images: [],
   video: "",
+  videoUrl: "",
+  floorMapImage: "",
   leaseTerm: 0,
   titleDeed: false,
   titleDeedFromPreviousOwner: false,

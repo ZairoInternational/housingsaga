@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 export const houseValidationSchema = z.object({
   name: z.string(),
   description: z.string().min(20, "Description must be at least 20 characters long"),
+  summary: z.string().min(10, "Summary must be at least 10 characters long"),
 
   owner: z
     .instanceof(ObjectId)
@@ -71,6 +72,8 @@ export const houseValidationSchema = z.object({
 
   images: z.array(z.string()),
   video: z.string().optional(),
+  videoUrl: z.string().url().optional(),
+  floorMapImage: z.string().url().optional(),
 
   leaseTerm: z.string(),
   titleDeed: z.boolean(),
@@ -85,7 +88,7 @@ export const houseValidationSchema = z.object({
   allInclusivePrice: z.boolean(),
   govChargesIncluded: z.boolean(),
 
-  isActive: z.boolean(),
+  isActive: z.boolean(),                           
   isVerified: z.boolean(),
   isAvailable: z.boolean(),
   isFeatured: z.boolean(),

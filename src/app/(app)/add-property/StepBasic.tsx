@@ -79,6 +79,24 @@ export default function StepBasic() {
         />
       </Field>
 
+      <Field
+        label="Short Summary"
+        error={errors.summary as FieldError | undefined}
+        required
+        hint="A concise 1–2 sentence summary that will appear in highlights and detail pages."
+      >
+        <Textarea
+          {...register("summary", {
+            onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              updateField("summary", e.target.value),
+          })}
+          defaultValue={formData.summary}
+          placeholder="Briefly summarize the property in one or two sentences."
+          rows={3}
+          error={!!errors.summary}
+        />
+      </Field>
+
       <div className="p-4 bg-gray-50 dark:bg-[#0f1117] rounded-xl border border-gray-200 dark:border-gray-700">
         <Toggle
           id="livingArea"

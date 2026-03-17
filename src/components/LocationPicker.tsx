@@ -230,7 +230,7 @@ export default function LocationPicker({
             ref={inputRef}
             type="text"
             placeholder={placeholder}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141827] text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/40 transition"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141827] text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/30 focus:border-lime-500/40 transition"
             aria-label="Search location"
           />
         </div>
@@ -242,7 +242,7 @@ export default function LocationPicker({
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400">
           {confirmText ? (
             <span className="inline-flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="h-2 w-2 rounded-full bg-lime-500" />
               {confirmText}
             </span>
           ) : (

@@ -11,7 +11,7 @@ const baseInput = `
   border transition-all duration-200 outline-none
   text-gray-900 dark:text-white
   placeholder:text-gray-400 dark:placeholder:text-gray-500
-  focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500
+  focus:ring-2 focus:ring-lime-500/40 focus:border-lime-500
   disabled:opacity-50
 `;
 
@@ -33,7 +33,7 @@ export function Field({ label, error, required, hint, children, className = "" }
     <div className={`flex flex-col gap-1.5 ${className}`}>
       <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
         {label}
-        {required && <span className="text-emerald-500 ml-1">*</span>}
+        {required && <span className="text-lime-500 ml-1">*</span>}
       </label>
       {children}
       {error ? (
@@ -127,7 +127,7 @@ export function Toggle({ id, label, checked, onChange, hint }: ToggleProps) {
         />
         <div className={`
           w-10 h-5.5 rounded-full transition-all duration-200 relative
-          ${checked ? "bg-emerald-500" : "bg-gray-200 dark:bg-gray-700"}
+          ${checked ? "bg-lime-500" : "bg-gray-200 dark:bg-gray-700"}
         `}
           style={{ height: "22px" }}
         >
@@ -163,12 +163,12 @@ export function CheckChip({ label, checked, onChange }: ChipProps) {
       className={`
         flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150
         ${checked
-          ? "bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/50 text-emerald-700 dark:text-emerald-400"
+          ? "bg-lime-500/10 dark:bg-lime-500/15 border border-lime-500/50 text-lime-700 dark:text-lime-400"
           : "bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600"
         }
       `}
     >
-      <div className={`w-3.5 h-3.5 rounded-[4px] border flex items-center justify-center flex-shrink-0 transition-all ${checked ? "bg-emerald-500 border-emerald-500" : "border-gray-300 dark:border-gray-600"}`}>
+      <div className={`w-3.5 h-3.5 rounded-[4px] border flex items-center justify-center flex-shrink-0 transition-all ${checked ? "bg-lime-500 border-lime-500" : "border-gray-300 dark:border-gray-600"}`}>
         {checked && <Check size={9} className="text-white" strokeWidth={3} />}
       </div>
       <span className="capitalize">{label}</span>

@@ -49,7 +49,7 @@ export default function StepLegal() {
         </div>
         <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+            className="h-full bg-lime-500 rounded-full transition-all duration-300"
             style={{ width: `${(checkedCount / LEGAL_FIELDS.length) * 100}%` }}
           />
         </div>
