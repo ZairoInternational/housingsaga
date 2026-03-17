@@ -11,43 +11,43 @@ export type TeamMember = {
 
 export default function TeamGrid() {
  const teamMembers: TeamMember[] = [
-    {
-      id: 1,
-      name: "Mira Thompson",
-      role: "CEO & Founder",
-      image: "/team-5.jpg",
-    },
-    {
-      id: 2,
-      name: "James Anderson",
-      role: "Real Estate Consultant",
-      image: "/team-4.jpg",
-    },
-    {
-      id: 3,
-      name: "Andrea Willson",
-      role: "Operations Manager",
-      image: "/team-1.jpg",
-    },
-    {
-      id: 4,
-      name: "Oliver Black",
-      role: "Director of Architecture",
-      image: "/team-2.jpg",
-    },
-    {
-      id: 5,
-      name: "Laura Bennett",
-      role: "Marketing Manager",
-      image: "/team-3.jpg",
-    },
-    {
-      id: 6,
-      name: "Katy Hator",
-      role: "Real Estate Consultant",
-      image: "/team-6.jpg",
-    },
-  ];
+   {
+     id: 1,
+     name: "Maria saridou",
+     role: "CEO & Founder",
+     image: "/team-1.png",
+   },
+   {
+     id: 2,
+     name: "Seda Celen",
+     role: "Real Estate Consultant",
+     image: "/team-2.png",
+   },
+   {
+     id: 3,
+     name: "Maria Boutali",
+     role: "Real Estate Consultant",
+     image: "/team-3.png",
+   },
+   {
+     id: 4,
+     name: "Siddartha Jain",
+     role: "Chief Marketing Officer",
+     image: "/team-4.jpeg",
+   },
+   {
+     id: 5,
+     name: "Laura Bennett",
+     role: "Marketing Manager",
+     image: "/team-3.jpg",
+   },
+   {
+     id: 6,
+     name: "Katy Hator",
+     role: "Real Estate Consultant",
+     image: "/team-6.jpg",
+   },
+ ];
   return (
     <section className="py-28 bg-white dark:bg-[#0f0f0f]">
       <div className="max-w-[1300px] mx-auto px-6">

@@ -4,8 +4,8 @@ export default function TermsHero() {
   return (
     <section className="relative w-full h-[420px] sm:h-[480px] flex items-center justify-center text-white">
       <Image
-        src="/legal-hero.webp"
-        alt="Terms and conditions hero"
+        src="/3d-house-2.png"
+        alt="Abstract housing illustration"
         fill
         priority
         className="object-cover"

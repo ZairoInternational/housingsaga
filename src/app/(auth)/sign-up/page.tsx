@@ -3,10 +3,11 @@
 import axios from "@/lib/axios";
 import { isAxiosError } from "axios";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { ArrowLeft, Eye, EyeClosed, LucideLoader2 } from "lucide-react";
 
@@ -25,6 +26,21 @@ const SignUp = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const inputBase = useMemo(
+    () =>
+      [
+        "w-full rounded-xl px-4 py-3 text-sm",
+        "bg-white dark:bg-white/5",
+        "border border-gray-200 dark:border-white/10",
+        "text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500",
+        "outline-none",
+        "focus:ring-2 focus:ring-lime-500/30 focus:border-lime-500/40",
+        "transition",
+      ].join(" "),
+    [],
+  );
 
   // Redirect to home if user is already logged in
   useEffect(() => {
@@ -95,160 +111,299 @@ const SignUp = () => {
   };
 
   return (
-    <section className=" w-full h-screen dark:bg-secondary flex relative">
+    <section className="w-full h-screen bg-gray-50 dark:bg-[#0f1117] flex relative overflow-hidden">
       {/* Image */}
-      <aside className=" w-1/2 h-full hidden sm:block">
-        <img src={"/form-3.jpeg"} className=" w-full h-full" />
+      <aside className="relative w-1/2 h-screen hidden lg:block">
+        <Image
+          src="/3d-house-2.png"
+          alt="3D house render"
+          fill
+          priority
+          sizes="50vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/35 to-transparent" />
+
+        <div className="absolute top-10 left-10">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-full bg-black/40 backdrop-blur px-4 py-2 text-xs font-semibold text-white ring-1 ring-white/10 hover:bg-black/55 transition"
+          >
+            <ArrowLeft size={14} />
+            Back to home
+          </Link>
+        </div>
+        <div className="absolute bottom-10 left-10 right-10">
+          <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-lime-300/90">
+            HousingSaga
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white leading-tight">
+            Create your account.
+          </h2>
+          <p className="mt-2 text-sm text-white/75 max-w-md leading-relaxed">
+            Join to list properties, save favourites, and access personalized
+            recommendations.
+          </p>
+        </div>
       </aside>
 
-      <div className=" w-8 h-8 rounded-full opacity-80 absolute right-6 top-8 bg-radial-[at_25%_25%] from-teal-400 to-teal-900 to-75%" />
-      <div className=" w-8 h-8 rounded-full opacity-80 absolute right-8 top-12 bg-radial-[at_25%_25%] from-teal-400 to-teal-900 to-75%" />
-      <div className=" w-8 h-8 rounded-full opacity-80 absolute right-4 top-12 bg-radial-[at_25%_25%] from-teal-400 to-teal-900 to-75%" />
+      {/* Accent glow */}
+      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-lime-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-10 top-16 h-10 w-10 rounded-full bg-lime-400/20 blur-xl" />
 
       {/* Form */}
-      <div className=" flex flex-col w-full sm:w-1/2 gap-y-2 justify-center items-center">
-        {/* Back Button and Sign-in */}
-        <div className=" w-[70%] flex justify-between items-center mb-8">
-          <Link href={"/"}>
-            <button className=" flex gap-x-1 items-center bg-black hover:bg-black/80 cursor-pointer p-2 rounded-md text-white">
-              <ArrowLeft size={18} />
+      <div className="flex flex-col w-full lg:w-1/2 justify-center items-center px-5 sm:px-8 py-6">
+        <div className="w-full max-w-md">
+          {/* Top row */}
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-full bg-white/80 dark:bg-white/5 backdrop-blur px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-gray-200 dark:ring-white/10 hover:bg-white dark:hover:bg-white/8 transition"
+            >
+              <ArrowLeft size={14} />
               Back
-            </button>
-          </Link>
+            </Link>
+            <Link
+              href="/sign-in"
+              className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-lime-600 dark:hover:text-lime-400 transition-colors"
+            >
+              Sign in
+            </Link>
+          </div>
 
-          {/* Sign-in Button */}
-          <Link href={"/sign-in"} className=" font-semibold underline">
-            Sign In
-          </Link>
+          {/* Card */}
+          <div className="rounded-3xl border border-gray-200/80 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur shadow-sm p-5 sm:p-6">
+            <div className="mb-4">
+              <p className="text-xs font-semibold tracking-[0.22em] uppercase text-lime-600 dark:text-lime-400">
+                Sign up
+              </p>
+              <h1 className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Create your HousingSaga account
+              </h1>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
+                It only takes a minute. You can update your profile later.
+              </p>
+            </div>
+
+            <form
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              onSubmit={handleSubmit}
+            >
+              {/* -------- NAME -------- */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={user.name}
+                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                  placeholder="Full name"
+                  className={`${inputBase} mt-2 ${
+                    error.name
+                      ? "border-red-400/70 focus:ring-red-500/25 focus:border-red-500/40"
+                      : ""
+                  }`}
+                />
+                {error.name && (
+                  <p className="mt-1 text-xs font-medium text-red-600">
+                    {error.name}
+                  </p>
+                )}
+              </div>
+
+              {/* -------- PHONE -------- */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  Phone
+                </label>
+
+                <div className="mt-2 relative">
+                  <PhoneInput
+                    country="in"
+                    value={user.phone ? user.phone.toString() : ""}
+                    onChange={(value) =>
+                      setUser({ ...user, phone: parseInt(value || "0") })
+                    }
+                    containerClass="!w-full"
+                    inputClass={`
+      !w-full
+      !h-[48px]
+      !pl-[52px]
+      !pr-4
+      !rounded-xl
+      !border
+      !border-gray-200
+      dark:!border-white/10
+      !bg-white
+      dark:!bg-white/5
+      !text-sm
+      !text-gray-900
+      dark:!text-white
+      !placeholder:text-gray-400
+      dark:!placeholder:text-gray-500
+      focus:!outline-none
+      focus:!ring-2
+      focus:!ring-lime-500/30
+    `}
+                    buttonClass={`
+      !absolute
+      !left-0
+      !top-0
+      !h-[48px]
+      !w-[48px]
+      !bg-transparent
+      !border-0
+      hover:!bg-gray-100/70
+      dark:hover:!bg-white/10
+    `}
+                    dropdownClass="!rounded-xl !shadow-lg !border !border-gray-200 dark:!border-white/10 dark:!bg-[#13161f]"
+                    searchClass="!rounded-lg !border !border-gray-200 dark:!border-white/10 dark:!bg-white/5"
+                  />
+
+                  {/* Error */}
+                  {error.phone && (
+                    <p className="mt-1 text-xs font-medium text-red-600">
+                      {error.phone}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* -------- EMAIL -------- */}
+              <div className="sm:col-span-2">
+                <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={user.email}
+                  onChange={(e) =>
+                    setUser({ ...user, email: e.target.value.toLowerCase() })
+                  }
+                  placeholder="you@example.com"
+                  className={`${inputBase} mt-2 ${
+                    error.email
+                      ? "border-red-400/70 focus:ring-red-500/25 focus:border-red-500/40"
+                      : ""
+                  }`}
+                />
+                {error.email && (
+                  <p className="mt-1 text-xs font-medium text-red-600">
+                    {error.email}
+                  </p>
+                )}
+              </div>
+
+              {/* -------- PASSWORD -------- */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  Password
+                </label>
+
+                <div className="relative mt-2">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={user.password}
+                    onChange={(e) =>
+                      setUser({ ...user, password: e.target.value })
+                    }
+                    placeholder="Password"
+                    className={`${inputBase} pr-11 ${
+                      error.password
+                        ? "border-red-400/70 focus:ring-red-500/25 focus:border-red-500/40"
+                        : ""
+                    }`}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100/80 dark:hover:bg-white/10 transition"
+                  >
+                    {showPassword ? <Eye size={16} /> : <EyeClosed size={16} />}
+                  </button>
+                </div>
+
+                {error.password && (
+                  <p className="mt-1 text-xs font-medium text-red-600">
+                    {error.password}
+                  </p>
+                )}
+              </div>
+
+              {/* -------- CONFIRM PASSWORD -------- */}
+              <div>
+                <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  Confirm Password
+                </label>
+
+                <div className="relative mt-2">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={user.confirmPassword}
+                    onChange={(e) =>
+                      setUser({ ...user, confirmPassword: e.target.value })
+                    }
+                    placeholder="Repeat password"
+                    className={`${inputBase} pr-11 ${
+                      error.confirmPassword
+                        ? "border-red-400/70 focus:ring-red-500/25 focus:border-red-500/40"
+                        : ""
+                    }`}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100/80 dark:hover:bg-white/10 transition"
+                  >
+                    {showConfirmPassword ? (
+                      <Eye size={16} />
+                    ) : (
+                      <EyeClosed size={16} />
+                    )}
+                  </button>
+                </div>
+
+                {error.confirmPassword && (
+                  <p className="mt-1 text-xs font-medium text-red-600">
+                    {error.confirmPassword}
+                  </p>
+                )}
+              </div>
+
+              {/* -------- SUBMIT -------- */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="sm:col-span-2 w-full flex items-center justify-center gap-2 rounded-xl bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white font-semibold px-4 py-3 text-sm shadow-md shadow-lime-500/25 disabled:opacity-60 disabled:cursor-not-allowed transition"
+              >
+                {isLoading ? (
+                  <>
+                    <LucideLoader2 className="animate-spin" />
+                    Creating account…
+                  </>
+                ) : (
+                  "Create account"
+                )}
+              </button>
+            </form>
+
+            <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+              Already have an account?{" "}
+              <Link
+                href="/sign-in"
+                className="font-semibold text-lime-700 dark:text-lime-400 hover:underline"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
         </div>
-
-        {/* Name */}
-        <div className=" flex flex-col w-[70%]">
-          <label htmlFor="name" className="font-semibold text-lg">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            required
-            value={user.name}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-            className=" rounded-md border border-gray-600 p-2 w-full"
-          />
-          {error.name && <p className=" text-sm text-red-600">{error.name}</p>}
-        </div>
-
-        {/* Phone */}
-        <div className=" flex flex-col w-[70%]">
-          <label htmlFor="phone" className="font-semibold text-lg">
-            Phone
-          </label>
-          {/* <PhoneInput /> */}
-          <PhoneInput
-            country={"in"}
-            inputStyle={{
-              borderColor: "#4a5565",
-              padding: "20px",
-              marginLeft: "30px",
-              // borderWidth: "20px",
-              borderRadius: "6px",
-              width: "94%",
-            }}
-            buttonStyle={{
-              borderColor: "gray",
-              borderRadius: "6px 0 0 6px",
-              padding: "5px",
-            }}
-            value={user.phone ? user.phone.toString() : ""}
-            onChange={(e) => setUser({ ...user, phone: parseInt(e) })}
-          />
-          {error.phone && (
-            <p className=" text-sm text-red-600">{error.phone}</p>
-          )}
-        </div>
-
-        {/*email*/}
-        <div className=" flex flex-col w-[70%]">
-          <label htmlFor="email" className="font-semibold text-lg">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            required
-            value={user.email}
-            onChange={(e) =>
-              setUser({ ...user, email: e.target.value.toLowerCase() })
-            }
-            className=" rounded-md border border-gray-600 p-2 w-full"
-          />
-          {error.email && (
-            <p className=" text-sm text-red-600">{error.email}</p>
-          )}
-        </div>
-
-        {/*password*/}
-        <div className=" flex flex-col w-[70%] relative">
-          <label htmlFor="password" className="font-semibold text-lg">
-            Password
-          </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            required
-            value={user.password}
-            onChange={(e) => setUser({ ...user, password: e.target.value })}
-            className=" rounded-md border border-gray-600 p-2 w-full"
-          />
-          {showPassword ? (
-            <Eye
-              size={18}
-              className=" absolute right-2 top-10 cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            />
-          ) : (
-            <EyeClosed
-              size={18}
-              className=" absolute right-2 top-10 cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            />
-          )}
-          {error.password && (
-            <p className=" text-sm text-red-600">{error.password}</p>
-          )}
-        </div>
-
-        {/* Confirm Password */}
-        <div className=" flex flex-col w-[70%]">
-          <label htmlFor="confirmPassword" className="font-semibold text-lg">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            className=" rounded-md border border-gray-600 p-2 w-full"
-            value={user.confirmPassword}
-            onChange={(e) =>
-              setUser({ ...user, confirmPassword: e.target.value })
-            }
-          />
-          {error.confirmPassword && (
-            <p className=" text-red-600 text-sm">Password does not match</p>
-          )}
-        </div>
-
-        <form className=" w-full flex justify-center mt-8" onSubmit={handleSubmit}>
-          <button
-            type="submit"
-            className=" w-[70%] bg-teal-700 text-white hover:bg-teal-800 font-semibold px-4 py-2 rounded-md mx-auto cursor-pointer "
-          >
-            {isLoading ? (
-              <LucideLoader2 className=" animate-spin mx-auto" />
-            ) : (
-              "Register"
-            )}
-          </button>
-        </form>
       </div>
     </section>
   );

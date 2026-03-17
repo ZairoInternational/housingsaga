@@ -7,30 +7,32 @@ import EmployeeCard, { TeamMember } from "@/components/ui/EmployeeCard";
 const teamMembers: TeamMember[] = [
   {
     id: 1,
-    name: "Mira Thompson",
+    name: "Maria saridou",
     role: "CEO & Founder",
-    image: "/team-5.jpg",
+    image: "/team-1.png",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
+  
+    
   },
   {
     id: 2,
-    name: "Katy Hator",
-    role: "Executive Assistant",
-    image: "/team-4.jpg",
+    name: "Seda Celen",
+    role: "Real Estate Consultant",
+    image: "/team-2.png",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
   {
     id: 3,
-    name: "Oliver Black",
-    role: "Director of Architecture",
-    image: "/team-2.jpg",
+    name: "Maria Boutali",
+    role: "Real Estate Consultant",
+    image: "/team-3.png",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
   {
     id: 4,
-    name: "Andrea Willson",
-    role: "Operations Manager",
-    image: "/team-1.jpg",
+    name: "Siddartha Jain",
+    role: "Chief Marketing Officer",
+    image: "/team-4.jpeg",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
 ];
