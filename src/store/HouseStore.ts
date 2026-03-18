@@ -64,6 +64,7 @@ interface HouseFormStore {
   ) => void;
   setFormData: (data: HouseFormData) => void;
   resetForm: () => void;
+  clearPersistedForm: () => void;
   submitForm: (options?: { propertyId?: string; isEditMode?: boolean }) => Promise<unknown>;
 }
 
@@ -154,6 +155,18 @@ export const useHouseFormStore = create<HouseFormStore>()(
 
       resetForm: () => {
         set({ formData: initialHouseFormData });
+      },
+
+      clearPersistedForm: () => {
+        try {
+          useHouseFormStore.persist.clearStorage();
+        } catch (err) {
+          // Fallback if persist API changes or in non-browser contexts
+          if (typeof window !== "undefined") {
+            window.localStorage.removeItem("house-form-storage");
+          }
+          console.warn("Failed to clear persisted form storage:", err);
+        }
       },
 
       submitForm: async (options) => {

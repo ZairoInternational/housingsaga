@@ -138,7 +138,7 @@ export default function HouseFormClient({
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { formData, submitForm, setFormData } = useHouseFormStore();
+  const { formData, submitForm, setFormData, resetForm, clearPersistedForm } = useHouseFormStore();
 
   const methods = useForm<HouseFormData>({
     mode: "onChange",
@@ -185,7 +185,17 @@ export default function HouseFormClient({
     await new Promise((r) => setTimeout(r, 1200));
     try {
       setSubmitError(null);
-      await submitForm({ propertyId, isEditMode });
+      const result = (await submitForm({ propertyId, isEditMode })) as unknown;
+      const isSuccess =
+        typeof result === "object" &&
+        result !== null &&
+        "success" in result &&
+        (result as { success?: unknown }).success === true;
+
+      if (isSuccess) {
+        resetForm();
+        clearPersistedForm();
+      }
       setSubmitted(true);
     } catch (error) {
       let message = "Something went wrong while submitting your listing.";

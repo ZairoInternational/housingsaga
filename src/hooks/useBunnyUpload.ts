@@ -6,8 +6,65 @@ interface UploadResult {
   error: string | null;
 }
 
+interface UploadSingleResult {
+  url: string | null;
+  error: string | null;
+}
+
+type UploadProgressHandler = (progressPercent: number) => void;
+
 export const useBunnyUpload = () => {
   const [loading, setLoading] = useState(false);
+
+  const uploadFileWithProgress = async ({
+    file,
+    folderName,
+    allowedMimeTypes,
+    onProgress,
+  }: {
+    file: File;
+    folderName: string;
+    allowedMimeTypes: readonly string[];
+    onProgress?: UploadProgressHandler;
+  }): Promise<UploadSingleResult> => {
+    if (!allowedMimeTypes.includes(file.type)) {
+      return { url: null, error: "Unsupported file type." };
+    }
+
+    const storageZoneName = process.env.NEXT_PUBLIC_BUNNY_STORAGE_ZONE!;
+    const accessKey = process.env.NEXT_PUBLIC_BUNNY_ACCESS_KEY!;
+    const storageUrl = process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL!;
+
+    const fileName = `${generateRandomString(7)}${file.name}`;
+
+    try {
+      await axios.put(
+        `${storageUrl}/${storageZoneName}/${folderName}/${fileName}`,
+        file,
+        {
+          headers: {
+            AccessKey: accessKey,
+            "Content-Type": file.type,
+          },
+          onUploadProgress: (evt) => {
+            if (!onProgress) return;
+            const total = evt.total ?? 0;
+            if (!total) return;
+            const pct = Math.min(100, Math.max(0, Math.round((evt.loaded / total) * 100)));
+            onProgress(pct);
+          },
+        }
+      );
+
+      return {
+        url: `https://vacationsaga.b-cdn.net/${folderName}/${fileName}`,
+        error: null,
+      };
+    } catch (err) {
+      console.error("Error uploading file:", err);
+      return { url: null, error: "Upload failed. Please try again." };
+    }
+  };
 
   const uploadFiles = async (
     files: File | File[],
@@ -81,7 +138,7 @@ export const useBunnyUpload = () => {
     }
   };
 
-  return { uploadFiles, loading };
+  return { uploadFiles, uploadFileWithProgress, loading };
 };
 
 const generateRandomString = (length: number): string => {

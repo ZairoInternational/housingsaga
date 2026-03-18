@@ -8,15 +8,16 @@ import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import PhoneInput from "react-phone-input-2";
 import { ArrowLeft, Eye, EyeClosed, LucideLoader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 import { useAuthStore } from "@/store/AuthStore";
 import { userSchema } from "@/schemas/housingUser.schema";
+import { PhoneNumberInput } from "@/components/ui/PhoneNumberInput";
 
 interface User {
   name: string;
-  phone: number;
+  phone: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -51,7 +52,7 @@ const SignUp = () => {
 
   const [user, setUser] = useState<User>({
     name: "",
-    phone: 0,
+    phone: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -94,9 +95,25 @@ const SignUp = () => {
 
     try {
       setIsLoading(true);
-      await axios.post("/users/create-user", user);
-      toast.success("User created successfully. Please sign in.");
-      router.replace("/sign-in");
+      const payload = {
+        ...user,
+        phone: user.phone.trim() ? user.phone : null,
+      };
+      await axios.post("/users/create-user", payload);
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: user.email,
+        password: user.password,
+      });
+
+      if (result?.error) {
+        toast.success("Account created. Please sign in.");
+        router.replace("/sign-in");
+        return;
+      }
+
+      toast.success("Account created. Complete onboarding.");
+      router.replace("/onboarding");
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         toast.error(err.response?.data?.error ?? err.message);
@@ -215,60 +232,16 @@ const SignUp = () => {
 
               {/* -------- PHONE -------- */}
               <div>
-                <label className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  Phone
-                </label>
-
-                <div className="mt-2 relative">
-                  <PhoneInput
-                    country="in"
-                    value={user.phone ? user.phone.toString() : ""}
-                    onChange={(value) =>
-                      setUser({ ...user, phone: parseInt(value || "0") })
-                    }
-                    containerClass="!w-full"
-                    inputClass={`
-      !w-full
-      !h-[48px]
-      !pl-[52px]
-      !pr-4
-      !rounded-xl
-      !border
-      !border-gray-200
-      dark:!border-white/10
-      !bg-white
-      dark:!bg-white/5
-      !text-sm
-      !text-gray-900
-      dark:!text-white
-      !placeholder:text-gray-400
-      dark:!placeholder:text-gray-500
-      focus:!outline-none
-      focus:!ring-2
-      focus:!ring-lime-500/30
-    `}
-                    buttonClass={`
-      !absolute
-      !left-0
-      !top-0
-      !h-[48px]
-      !w-[48px]
-      !bg-transparent
-      !border-0
-      hover:!bg-gray-100/70
-      dark:hover:!bg-white/10
-    `}
-                    dropdownClass="!rounded-xl !shadow-lg !border !border-gray-200 dark:!border-white/10 dark:!bg-[#13161f]"
-                    searchClass="!rounded-lg !border !border-gray-200 dark:!border-white/10 dark:!bg-white/5"
-                  />
-
-                  {/* Error */}
-                  {error.phone && (
-                    <p className="mt-1 text-xs font-medium text-red-600">
-                      {error.phone}
-                    </p>
-                  )}
-                </div>
+                <PhoneNumberInput
+                  label="Phone"
+                  required
+                  value={user.phone}
+                  onChange={(digitsOnly) =>
+                    setUser({ ...user, phone: digitsOnly })
+                  }
+                  error={error.phone}
+                  defaultCountry="auto"
+                />
               </div>
 
               {/* -------- EMAIL -------- */}

@@ -35,6 +35,7 @@ export default function TeamGrid() {
      role: "Chief Marketing Officer",
      image: "/team-4.jpeg",
    },
+   
    {
      id: 5,
      name: "Laura Bennett",

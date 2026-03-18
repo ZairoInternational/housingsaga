@@ -1,19 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { RoleSelector } from "./RoleSelector";
-import { PhoneNumberInput } from "./PhoneNumberInput";
+import "react-phone-input-2/lib/style.css";
+import { PhoneNumberInput } from "@/components/ui/PhoneNumberInput";
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
 
 export function OnboardingForm() {
   const router = useRouter();
+  const { data: session, update } = useSession();
   const [role, setRole] = useState<"buyer" | "owner" | null>(null);
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (phone) return;
+    const sessionPhone = (session?.user as Record<string, unknown> | undefined)
+      ?.phone;
+    if (typeof sessionPhone === "string" && sessionPhone.trim()) {
+      setPhone(sessionPhone);
+    }
+  }, [phone, session]);
 
   const isValid = role && phone && phone.replace(/\D/g, "").length >= 10;
 
@@ -52,7 +63,7 @@ export function OnboardingForm() {
 
       // After successful onboarding, trigger session refresh to generate accessToken
       // This will cause the jwt callback to run again with the updated onboarded=true
-      await signIn("google", { redirect: false });
+      await update();
 
       // Show success state briefly, then redirect
       setTimeout(() => {
@@ -86,9 +97,12 @@ export function OnboardingForm() {
 
         {/* Phone Number Input */}
         <PhoneNumberInput
+          label="Phone Number"
+          required
           value={phone}
           onChange={setPhone}
           error={error && !role ? error : ""}
+          defaultCountry="auto"
         />
 
         {/* Error Message */}

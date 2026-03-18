@@ -8,10 +8,18 @@ import { Field, Input } from "./FormFields";
 
 export default function StepMedia() {
   const { formData, updateField } = useHouseFormStore();
-  const { uploadFiles } = useBunnyUpload();
+  const { uploadFiles, uploadFileWithProgress } = useBunnyUpload();
   const imageRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
+  const floorPlanRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [floorUploading, setFloorUploading] = useState(false);
+  const [floorProgress, setFloorProgress] = useState(0);
+  const [floorError, setFloorError] = useState<string | null>(null);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -34,6 +42,57 @@ export default function StepMedia() {
 
   const removeImage = (url: string) => {
     updateField("images", (formData.images ?? []).filter((u: string) => u !== url));
+  };
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setVideoUploading(true);
+    setVideoProgress(0);
+    setVideoError(null);
+
+    const { url, error } = await uploadFileWithProgress({
+      file,
+      folderName: "PropertyVideos",
+      allowedMimeTypes: ["video/mp4", "video/webm", "video/quicktime"],
+      onProgress: setVideoProgress,
+    });
+
+    setVideoUploading(false);
+    if (error || !url) {
+      setVideoError(error ?? "Upload failed. Please try again.");
+      return;
+    }
+
+    // Store in videoUrl to keep schema/back-end unchanged.
+    updateField("videoUrl", url);
+    e.target.value = "";
+  };
+
+  const handleFloorPlanUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFloorUploading(true);
+    setFloorProgress(0);
+    setFloorError(null);
+
+    const { url, error } = await uploadFileWithProgress({
+      file,
+      folderName: "FloorPlans",
+      allowedMimeTypes: ["image/jpeg", "image/png", "image/webp"],
+      onProgress: setFloorProgress,
+    });
+
+    setFloorUploading(false);
+    if (error || !url) {
+      setFloorError(error ?? "Upload failed. Please try again.");
+      return;
+    }
+
+    updateField("floorMapImage", url);
+    e.target.value = "";
   };
 
   return (
@@ -123,6 +182,89 @@ export default function StepMedia() {
         </div>
       )}
 
+      {/* Video upload */}
+      <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 block">
+          Video Upload (Optional)
+        </label>
+
+        <input
+          ref={videoRef}
+          type="file"
+          accept="video/*"
+          onChange={handleVideoUpload}
+          className="sr-only"
+        />
+
+        <button
+          type="button"
+          onClick={() => videoRef.current?.click()}
+          disabled={videoUploading}
+          className={`
+            w-full border-2 border-dashed rounded-2xl py-6 px-5 flex items-center justify-between gap-4 transition-all
+            ${videoUploading
+              ? "border-lime-400 bg-lime-50/50 dark:bg-lime-950/10 cursor-wait"
+              : "border-gray-200 dark:border-gray-700 hover:border-lime-400 dark:hover:border-lime-600 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
+            }
+          `}
+        >
+          <div className="flex items-center gap-3">
+            {videoUploading ? (
+              <Loader2 size={18} className="text-lime-500 animate-spin" />
+            ) : (
+              <Video size={18} className="text-gray-400" />
+            )}
+            <div className="text-left">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {videoUploading ? "Uploading video…" : "Click to upload a video file"}
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">MP4 / WebM / MOV</p>
+            </div>
+          </div>
+
+          {videoUploading && (
+            <div className="w-28">
+              <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                <div
+                  className="h-full bg-lime-500 transition-all"
+                  style={{ width: `${videoProgress}%` }}
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-gray-400 text-right">{videoProgress}%</p>
+            </div>
+          )}
+        </button>
+
+        {videoError && (
+          <p className="mt-2 text-xs text-red-500 flex items-center gap-1">
+            <span>⚠</span> {videoError}
+          </p>
+        )}
+
+        {formData.videoUrl && (
+          <div className="mt-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-white/5 p-3 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Uploaded video</p>
+              <a
+                href={formData.videoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs text-lime-600 dark:text-lime-400 truncate block"
+              >
+                {formData.videoUrl}
+              </a>
+            </div>
+            <button
+              type="button"
+              onClick={() => updateField("videoUrl", "")}
+              className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/8 transition"
+            >
+              Remove
+            </button>
+          </div>
+        )}
+      </div>
+
       {/* Video URL */}
       <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
         <Field
@@ -143,6 +285,99 @@ export default function StepMedia() {
             />
           </div>
         </Field>
+      </div>
+
+      {/* Floor plan upload */}
+      <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+        <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 block">
+          Floor Plan Upload (Optional)
+        </label>
+
+        <input
+          ref={floorPlanRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFloorPlanUpload}
+          className="sr-only"
+        />
+
+        <button
+          type="button"
+          onClick={() => floorPlanRef.current?.click()}
+          disabled={floorUploading}
+          className={`
+            w-full border-2 border-dashed rounded-2xl py-6 px-5 flex items-center justify-between gap-4 transition-all
+            ${floorUploading
+              ? "border-lime-400 bg-lime-50/50 dark:bg-lime-950/10 cursor-wait"
+              : "border-gray-200 dark:border-gray-700 hover:border-lime-400 dark:hover:border-lime-600 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
+            }
+          `}
+        >
+          <div className="flex items-center gap-3">
+            {floorUploading ? (
+              <Loader2 size={18} className="text-lime-500 animate-spin" />
+            ) : (
+              <MapIcon size={18} className="text-gray-400" />
+            )}
+            <div className="text-left">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {floorUploading ? "Uploading floor plan…" : "Click to upload a floor plan image"}
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">JPG / PNG / WEBP</p>
+            </div>
+          </div>
+
+          {floorUploading && (
+            <div className="w-28">
+              <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                <div
+                  className="h-full bg-lime-500 transition-all"
+                  style={{ width: `${floorProgress}%` }}
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-gray-400 text-right">{floorProgress}%</p>
+            </div>
+          )}
+        </button>
+
+        {floorError && (
+          <p className="mt-2 text-xs text-red-500 flex items-center gap-1">
+            <span>⚠</span> {floorError}
+          </p>
+        )}
+
+        {formData.floorMapImage && (
+          <div className="mt-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-white/5 p-3 flex items-center gap-3">
+            <div className="h-14 w-14 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+              <img
+                src={formData.floorMapImage}
+                alt="Floor plan preview"
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/placeholder.png";
+                }}
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">Uploaded floor plan</p>
+              <a
+                href={formData.floorMapImage}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs text-lime-600 dark:text-lime-400 truncate block"
+              >
+                {formData.floorMapImage}
+              </a>
+            </div>
+            <button
+              type="button"
+              onClick={() => updateField("floorMapImage", "")}
+              className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/8 transition"
+            >
+              Remove
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Floor map image URL */}

@@ -18,6 +18,19 @@
 }
 
 
+.mask-shape {
+  -webkit-mask-image: radial-gradient(rect at 100% 0, transparent 40px, black 41px),
+    radial-gradient(circle at 0 100%, transparent 100px, black 61px),
+    radial-gradient(circle at 100% 100%, transparent 40px, black 41px),
+    radial-gradient(circle at 0 0, transparent 40px, black 41px);
+
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
+
+  background: black;
+}
+
+
 
 
 @custom-variant dark (&:is(.dark *));
