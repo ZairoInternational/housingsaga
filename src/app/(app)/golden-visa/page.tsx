@@ -26,7 +26,7 @@ export default function Page() {
         <Services />
         <TrustIndicators />
         <DocumentsAccordion />
-        <FAQ />
+        {/* <FAQ /> */}
       </main>
 
       <FinalCTA />

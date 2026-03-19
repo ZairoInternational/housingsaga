@@ -34,7 +34,7 @@ export default function StickyCTA() {
               <button className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white border border-white/15 rounded-xl font-medium transition-all duration-300 hover:scale-105 backdrop-blur-sm">
                 Download Guide
               </button>
-              <button className="group px-6 py-3 bg-gradient-to-r from-lime-500 to-lime-600 text-black rounded-xl font-semibold shadow-lg shadow-lime-500/20 hover:shadow-2xl hover:shadow-lime-500/25 transition-all duration-300 hover:scale-105">
+              <button className="group px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black rounded-xl font-semibold shadow-lg shadow-yellow-500/25 hover:shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 hover:scale-105">
                 <span className="flex items-center gap-2">
                   Schedule Meeting
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

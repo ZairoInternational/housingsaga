@@ -42,13 +42,16 @@ const columns: FooterColumn[] = [
     ],
   },
   {
-    title: "Collaborate",
+    title: "Addresses",
     links: [
-      { label: "Partners", href: "/partners" },
-      { label: "Partners Program", href: "/partners-program" },
-      { label: "Affiliate Program", href: "/affiliate-program" },
-      { label: "Community", href: "/community" },
-      { label: "HR Partner Program", href: "/hr-partner-program" },
+      {
+        label: "Greece: 2 Charokopou str, Kallithea 17671 Athens, Greece",
+        href: "/contact",
+      },
+      {
+        label: "India: 117/N/70 3rd Floor Kakadeo Kanpur",
+        href: "/contact",
+      },
     ],
   },
 ];
@@ -102,7 +105,7 @@ export default function Footer() {
       {/* Scroll to Top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-lime-400 flex items-center justify-center text-black shadow-lg hover:scale-105 transition"
+        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-amber-400 flex items-center justify-center text-black shadow-lg hover:scale-105 transition"
       >
         <ArrowUp size={20} />
       </button>

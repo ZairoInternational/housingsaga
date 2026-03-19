@@ -55,7 +55,7 @@ export default function Services() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 space-y-4">
-          <div className="inline-block px-4 py-2 bg-lime-500/10 text-lime-700 dark:text-lime-300 rounded-full text-sm font-semibold mb-4 border border-lime-400/20">
+          <div className="inline-block px-4 py-2 bg-yellow-500/15 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-semibold mb-4 border border-yellow-400/30">
             Our Services
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
@@ -75,11 +75,11 @@ export default function Services() {
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div className="relative h-full bg-white dark:bg-[#0b101b] rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-white/10 hover:-translate-y-0.5 overflow-hidden">
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-lime-500/4 pointer-events-none" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-yellow-500/10 pointer-events-none" />
 
                 <div className="relative z-10 space-y-4">
                   <div className="relative">
-                    <div className="w-14 h-14 rounded-xl bg-lime-500/10 border border-lime-400/20 text-lime-600 dark:text-lime-300 flex items-center justify-center shadow-sm">
+                    <div className="w-14 h-14 rounded-xl bg-yellow-500/15 border border-yellow-400/30 text-yellow-700 dark:text-yellow-200 flex items-center justify-center shadow-sm">
                       <service.Icon size={22} />
                     </div>
                   </div>
@@ -87,9 +87,7 @@ export default function Services() {
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">{service.title}</h3>
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{service.desc}</p>
 
-                  <div
-                    className="flex items-center gap-2 font-semibold text-lime-600 dark:text-lime-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  >
+                  <div className="flex items-center gap-2 font-semibold text-yellow-700 dark:text-yellow-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <span className="text-sm">Learn more</span>
                     <FiArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   </div>
@@ -110,17 +108,8 @@ export default function Services() {
         </div>
 
         <div className="mt-16 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-lime-50 to-white border border-lime-200 rounded-full dark:from-white/5 dark:to-white/0 dark:border-white/10">
-            <svg className="w-5 h-5 text-lime-600 dark:text-lime-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-lime-700 dark:text-lime-200 font-semibold text-sm">
-              All services included in our comprehensive package
-            </span>
-          </div>
-
           <div>
-            <button className="px-10 py-4 bg-gradient-to-r from-lime-500 to-lime-600 text-black font-semibold rounded-2xl hover:shadow-2xl hover:shadow-lime-500/25 transition-all duration-300 hover:scale-105">
+            <button className="px-10 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-semibold rounded-2xl hover:shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 hover:scale-105">
               <span className="flex items-center gap-2">
                 View Full Service Details
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

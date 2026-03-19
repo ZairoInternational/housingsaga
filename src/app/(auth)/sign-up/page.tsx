@@ -9,7 +9,7 @@ import "react-phone-input-2/lib/style.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Eye, EyeClosed, LucideLoader2 } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 
 import { useAuthStore } from "@/store/AuthStore";
 import { userSchema } from "@/schemas/housingUser.schema";
@@ -107,7 +107,17 @@ const SignUp = () => {
       });
 
       if (result?.error) {
-        toast.success("Account created. Please sign in.");
+        // A defensive session check helps avoid false negatives from transient callback errors.
+        const session = await getSession();
+        const hasSession = Boolean(
+          (session?.user as Record<string, unknown> | undefined)?.email,
+        );
+        if (hasSession) {
+          toast.success("Account created. Complete onboarding.");
+          router.replace("/onboarding");
+          return;
+        }
+        toast.error("Account created, but auto sign-in failed. Please sign in.");
         router.replace("/sign-in");
         return;
       }

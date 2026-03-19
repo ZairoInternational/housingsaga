@@ -8,7 +8,7 @@ export default function FinalCTA() {
       <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-[#0b101b] to-gray-950" />
 
       {/* Single subtle accent glow (no rainbow blobs) */}
-      <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[760px] h-[760px] bg-lime-500/10 rounded-full blur-3xl" />
+      <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[760px] h-[760px] bg-yellow-500/18 rounded-full blur-3xl" />
 
       <div className="absolute inset-0 opacity-10">
         <div
@@ -23,13 +23,13 @@ export default function FinalCTA() {
 
       <div className="relative z-10 max-w-5xl mx-auto text-center space-y-12 px-6">
         <div className="space-y-6">
-          <div className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-lime-300 rounded-full text-sm font-semibold mb-4">
+          <div className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 text-yellow-300 rounded-full text-sm font-semibold mb-4">
             Start Your Journey Today
           </div>
 
           <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight">
             Ready to Secure Your{" "}
-            <span className="bg-gradient-to-r from-lime-300 to-lime-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-yellow-300 to-yellow-400 bg-clip-text text-transparent">
               European Future?
             </span>
           </h2>
@@ -42,7 +42,7 @@ export default function FinalCTA() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-          <button className="group px-10 py-5 bg-lime-500 hover:bg-lime-400 text-black text-lg font-bold rounded-2xl shadow-2xl shadow-lime-500/20 transition-all duration-200 hover:scale-110">
+          <button className="group px-10 py-5 bg-yellow-500 hover:bg-yellow-400 text-black text-lg font-bold rounded-2xl shadow-2xl shadow-yellow-500/25 transition-all duration-200 hover:scale-110">
             <span className="flex items-center gap-3">
               Schedule Free Consultation
               <FiArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
@@ -57,7 +57,7 @@ export default function FinalCTA() {
         <div className="pt-12 border-t border-white/10">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="flex flex-col items-center space-y-2">
-              <div className="w-16 h-16 rounded-full bg-white/8 border border-white/10 flex items-center justify-center shadow-xl text-lime-300">
+              <div className="w-16 h-16 rounded-full bg-white/8 border border-white/10 flex items-center justify-center shadow-xl text-yellow-300">
                 <FiPercent size={26} />
               </div>
               <h3 className="text-white font-bold">98% Success Rate</h3>
@@ -65,7 +65,7 @@ export default function FinalCTA() {
             </div>
 
             <div className="flex flex-col items-center space-y-2">
-              <div className="w-16 h-16 rounded-full bg-white/8 border border-white/10 flex items-center justify-center shadow-xl text-lime-300">
+              <div className="w-16 h-16 rounded-full bg-white/8 border border-white/10 flex items-center justify-center shadow-xl text-yellow-300">
                 <FiAward size={26} />
               </div>
               <h3 className="text-white font-bold">15+ Years Experience</h3>
@@ -73,7 +73,7 @@ export default function FinalCTA() {
             </div>
 
             <div className="flex flex-col items-center space-y-2">
-              <div className="w-16 h-16 rounded-full bg-white/8 border border-white/10 flex items-center justify-center shadow-xl text-lime-300">
+              <div className="w-16 h-16 rounded-full bg-white/8 border border-white/10 flex items-center justify-center shadow-xl text-yellow-300">
                 <FiGlobe size={26} />
               </div>
               <h3 className="text-white font-bold">500+ Clients Served</h3>

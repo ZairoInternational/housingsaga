@@ -69,16 +69,16 @@ export default function WhyChoose() {
       </div>
 
       {/* Single subtle accent glow */}
-      <div className="absolute -top-24 -left-24 w-[520px] h-[520px] bg-lime-500/6 rounded-full blur-3xl" />
+      <div className="absolute -top-24 -left-24 w-[520px] h-[520px] bg-yellow-500/10 rounded-full blur-3xl" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 space-y-4">
-          <div className="inline-block px-4 py-2 bg-lime-500/10 text-lime-700 dark:text-lime-300 rounded-full text-sm font-semibold mb-4 border border-lime-400/20">
+          <div className="inline-block px-4 py-2 bg-yellow-500/15 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-semibold mb-4 border border-yellow-400/30">
             Why Choose Us
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
             Why Choose Our{" "}
-            <span className="bg-gradient-to-r from-lime-600 to-lime-700 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
               Greece Golden Visa
             </span>{" "}
             Service?
@@ -99,10 +99,10 @@ export default function WhyChoose() {
             >
               <div className="relative h-full bg-white dark:bg-[#0b101b] p-8 rounded-2xl border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 overflow-hidden">
                 {/* subtle hover wash */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-lime-500/5 pointer-events-none" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-yellow-500/10 pointer-events-none" />
 
                 <div className="relative z-10 space-y-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/70 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-lime-600 dark:text-lime-400">
+                  <div className="w-12 h-12 rounded-xl bg-white/70 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-yellow-500 dark:text-yellow-300">
                     <item.Icon size={20} />
                   </div>
 
@@ -111,7 +111,7 @@ export default function WhyChoose() {
                     <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                   </div>
 
-                  <div className="h-px w-10 bg-lime-500/40" />
+                  <div className="h-px w-10 bg-yellow-500/50" />
                 </div>
               </div>
             </div>

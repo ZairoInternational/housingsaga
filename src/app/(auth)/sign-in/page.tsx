@@ -6,10 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, EyeClosed, LucideLoader2 } from "lucide-react";
 
-import axios from "@/lib/axios";
-import { isAxiosError, type AxiosError } from "axios";
 import { useAuthStore } from "@/store/AuthStore";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 
 // Google Identity Services types (top-level so it's allowed by TS)
 declare global {
@@ -33,8 +31,6 @@ const SignIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const setAccessToken = useAuthStore((s) => s.setAccessToken);
-  const setRole = useAuthStore((s) => s.setRole);
   const REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -91,16 +87,26 @@ const SignIn = () => {
 
     try {
       setIsLoading(true);
-      const res = await axios.post("/users/user-login", user);
-      setAccessToken(res.data.accessToken);
-      setRole(res.data.role);
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: user.email,
+        password: user.password,
+      });
+
+      if (result?.error) {
+        toast.error("Invalid email or password");
+        return;
+      }
+
+      const session = await getSession();
+      const onboarded = Boolean(
+        (session?.user as Record<string, unknown> | undefined)?.onboarded,
+      );
+
       toast.success("Login successful");
-      router.replace("/");
+      router.replace(onboarded ? "/" : "/onboarding");
     } catch (err: unknown) {
-      if (isAxiosError(err)) {
-        const axiosErr = err as AxiosError<{ error?: string }>;
-        toast.error(axiosErr.response?.data?.error ?? axiosErr.message);
-      } else if (err instanceof Error) {
+      if (err instanceof Error) {
         toast.error(err.message);
       } else {
         toast.error("An unexpected error occurred");

@@ -58,7 +58,7 @@ export default function ProcessSteps() {
   const [pathLength, setPathLength] = useState(0);
 
   /* ─────────────────────────────
-     Intersection animation
+     Intersection Animation
   ───────────────────────────── */
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -81,7 +81,7 @@ export default function ProcessSteps() {
   const visiblePct = visibleSteps.length / steps.length;
 
   /* ─────────────────────────────
-     Dynamic Path Generator
+     Path Generator
   ───────────────────────────── */
   useEffect(() => {
     const updatePath = () => {
@@ -118,13 +118,18 @@ export default function ProcessSteps() {
     };
 
     updatePath();
-    window.addEventListener("resize", updatePath);
 
-    return () => window.removeEventListener("resize", updatePath);
+    window.addEventListener("resize", updatePath);
+    window.addEventListener("scroll", updatePath);
+
+    return () => {
+      window.removeEventListener("resize", updatePath);
+      window.removeEventListener("scroll", updatePath);
+    };
   }, []);
 
   /* ─────────────────────────────
-     Path length for animation
+     Path Length
   ───────────────────────────── */
   useEffect(() => {
     if (pathRef.current) {
@@ -136,43 +141,55 @@ export default function ProcessSteps() {
   return (
     <section
       ref={sectionRef}
-      className="py-24 bg-white dark:bg-[#050712] relative"
+      className="py-24 bg-white dark:bg-[#050712] relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 relative">
         {/* Header */}
         <div className="text-center mb-20">
-          <p className="text-sm text-lime-600 font-medium mb-2">Our Process</p>
+          <p className="text-sm text-yellow-600 font-medium mb-2">
+            Our Process
+          </p>
           <h2 className="text-4xl font-semibold text-gray-900 dark:text-white">
-            Your Path to <span className="text-lime-600">EU Residency</span>
+            Your Path to <span className="text-yellow-500">EU Residency</span>
           </h2>
           <p className="text-gray-500 mt-3 max-w-xl mx-auto">
             A streamlined 6-step journey designed for clarity and efficiency
           </p>
         </div>
 
-        {/* SVG Path */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          {/* Background */}
+        {/* SVG Path Layer */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
+          <defs>
+            <linearGradient id="goldPath" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#fbbf24" />
+              <stop offset="100%" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
+
+          {/* Background Path */}
           <path
             d={pathD}
             fill="none"
-            stroke="rgba(132,204,22,0.15)"
+            stroke="rgba(251,191,36,0.12)"
             strokeWidth="2"
-            strokeDasharray="6 6"
+            strokeDasharray="4 8"
           />
 
-          {/* Active */}
+          {/* Active Path */}
           <path
             ref={pathRef}
             d={pathD}
             fill="none"
-            stroke="rgb(132,204,22)"
-            strokeWidth="3"
+            stroke="url(#goldPath)"
+            strokeWidth="2.5"
             strokeLinecap="round"
             style={{
               strokeDasharray: pathLength,
               strokeDashoffset: pathLength * (1 - visiblePct),
-              transition: "stroke-dashoffset 1.2s ease-out",
+              transition:
+                "stroke-dashoffset 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
+              willChange: "stroke-dashoffset",
+              filter: "drop-shadow(0 0 6px rgba(251,191,36,0.4))",
             }}
           />
 
@@ -191,31 +208,31 @@ export default function ProcessSteps() {
                 key={i}
                 cx={x}
                 cy={y}
-                r={visibleSteps.includes(i) ? 6 : 4}
-                fill="rgb(132,204,22)"
+                r={visibleSteps.includes(i) ? 5 : 3}
+                fill="#fbbf24"
                 opacity={visibleSteps.includes(i) ? 1 : 0.3}
-                className="transition-all duration-500"
+                className="transition-all duration-700 ease-out"
               />
             );
           })}
         </svg>
 
         {/* Cards */}
-        <div className="grid grid-cols-3 gap-16 relative">
+        <div className="grid grid-cols-3 gap-16 relative z-20">
           {steps.map((step, index) => (
             <div
               key={step.number}
               ref={(el) => {
                 cardRefs.current[index] = el;
               }}
-              className={`transition-all duration-500 ${
+              className={`transition-all duration-700 ${
                 visibleSteps.includes(index)
                   ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
+                  : "opacity-0 translate-y-10"
               } ${index % 2 !== 0 ? "mt-28" : ""}`}
             >
-              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 border border-gray-100 dark:border-white/10 hover:shadow-md transition-all">
-                <step.Icon className="text-lime-600 mb-4" size={22} />
+              <div className="bg-white/70 dark:bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <step.Icon className="text-yellow-500 mb-4" size={22} />
 
                 <span className="text-xs text-gray-400">
                   STEP {step.number}

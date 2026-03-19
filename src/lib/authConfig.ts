@@ -19,6 +19,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        await connectDb();
         const email = credentials?.email?.toLowerCase().trim();
         const password = credentials?.password ?? "";
 
@@ -52,6 +53,7 @@ export const authOptions: NextAuthOptions = {
       console.log("[NextAuth] signIn called for:", email);
       if (!email) return false;
       try {
+        await connectDb();
         let dbUser = await HousingUsers.findOne({ email });
         console.log("[NextAuth] signIn found dbUser:", !!dbUser, "email:", email);
         if (!dbUser) {
@@ -79,7 +81,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
 
-    async jwt(params: { token: JWT; user?: { email?: string | null } }) {
+    async jwt(params: { token: JWT; user?: { email?: string | null; id?: string | null } }) {
       const { token, user } = params;
 
       const tokenRecord = token as Record<string, unknown>;
@@ -99,19 +101,31 @@ export const authOptions: NextAuthOptions = {
         }
       };
 
-      // On initial sign-in, we have user.email.
-      if (user?.email) {
-        const dbUser = await HousingUsers.findOne({ email: user.email });
-        console.log("[NextAuth][jwt] dbUser found:", !!dbUser, "email:", user.email);
-        if (dbUser) applyDbUser(dbUser);
-        return token;
+      // Keep ID on token even if DB read fails.
+      if (user?.id) {
+        tokenRecord.userId = user.id;
       }
 
-      // On subsequent session refreshes (e.g. after onboarding), re-hydrate from token.userId.
-      const userId = tokenRecord.userId;
-      if (typeof userId === "string" && userId) {
-        const dbUser = await HousingUsers.findById(userId);
-        if (dbUser) applyDbUser(dbUser);
+      try {
+        await connectDb();
+
+        // On initial sign-in, we usually have user.email.
+        if (user?.email) {
+          const dbUser = await HousingUsers.findOne({ email: user.email });
+          console.log("[NextAuth][jwt] dbUser found:", !!dbUser, "email:", user.email);
+          if (dbUser) applyDbUser(dbUser);
+          return token;
+        }
+
+        // On subsequent session refreshes (e.g. after onboarding), re-hydrate from token.userId.
+        const userId = tokenRecord.userId;
+        if (typeof userId === "string" && userId) {
+          const dbUser = await HousingUsers.findById(userId);
+          if (dbUser) applyDbUser(dbUser);
+        }
+      } catch (err) {
+        // Avoid hard failing session on transient DB/network errors.
+        console.error("[NextAuth][jwt] DB read failed, keeping existing token:", err);
       }
 
       return token;

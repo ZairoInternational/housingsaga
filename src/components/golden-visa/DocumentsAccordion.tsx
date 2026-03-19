@@ -42,14 +42,14 @@ export default function DocumentsAccordion() {
   return (
     <section className="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-[#070a12] dark:to-[#050712] relative overflow-hidden">
       <div className="absolute inset-0 opacity-30 dark:opacity-15">
-        <div className="absolute -top-12 -left-12 w-96 h-96 bg-lime-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-16 -right-16 w-96 h-96 bg-lime-500/8 rounded-full blur-3xl" />
+        <div className="absolute -top-12 -left-12 w-96 h-96 bg-yellow-500/18 rounded-full blur-3xl" />
+        <div className="absolute -bottom-16 -right-16 w-96 h-96 bg-yellow-500/16 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6">
         <div className="mb-16 space-y-6">
-          <div className="space-y-4">
-            <div className="inline-block px-4 py-2 bg-lime-500/10 text-lime-700 dark:text-lime-300 rounded-full text-sm font-semibold border border-lime-400/20">
+            <div className="space-y-4">
+            <div className="inline-block px-4 py-2 bg-yellow-500/15 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-semibold border border-yellow-400/30">
               Documentation
             </div>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
@@ -63,7 +63,7 @@ export default function DocumentsAccordion() {
           </div>
 
           <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-start gap-4">
-            <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-lime-500/10 border border-lime-400/20 flex items-center justify-center text-lime-600 dark:text-lime-300">
+            <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-yellow-500/18 border border-yellow-400/30 flex items-center justify-center text-yellow-700 dark:text-yellow-200">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -85,9 +85,9 @@ export default function DocumentsAccordion() {
             return (
               <div key={doc.title} className="group relative">
                 <div
-                  className={`relative bg-white dark:bg-[#0b101b] rounded-2xl border-2 transition-all duration-500 overflow-hidden ${
+                    className={`relative bg-white dark:bg-[#0b101b] rounded-2xl border-2 transition-all duration-500 overflow-hidden ${
                     isOpen
-                      ? "border-lime-300/60 dark:border-lime-400/20 shadow-2xl shadow-lime-500/10"
+                      ? "border-yellow-300/70 dark:border-yellow-400/25 shadow-2xl shadow-yellow-500/15"
                       : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 shadow-lg hover:shadow-xl"
                   }`}
                 >
@@ -97,12 +97,12 @@ export default function DocumentsAccordion() {
                     type="button"
                   >
                     <div className="flex items-center gap-4 flex-1">
-                      <div
-                        className={`flex-shrink-0 w-14 h-14 rounded-xl bg-lime-500/10 border border-lime-400/20 flex items-center justify-center shadow-sm transition-all duration-300 ${
-                          isOpen ? "scale-110 rotate-6" : "group-hover:scale-105"
-                        }`}
-                      >
-                        <doc.Icon size={20} className="text-lime-600 dark:text-lime-300" />
+                    <div
+                      className={`flex-shrink-0 w-14 h-14 rounded-xl bg-yellow-500/18 border border-yellow-400/30 flex items-center justify-center shadow-sm transition-all duration-300 ${
+                        isOpen ? "scale-110 rotate-6" : "group-hover:scale-105"
+                      }`}
+                    >
+                      <doc.Icon size={20} className="text-yellow-700 dark:text-yellow-200" />
                       </div>
 
                       <div>
@@ -114,11 +114,11 @@ export default function DocumentsAccordion() {
                     </div>
 
                     <div
-                      className={`flex-shrink-0 w-10 h-10 rounded-full bg-lime-500/10 border border-lime-400/20 flex items-center justify-center transition-all duration-500 ${
+                      className={`flex-shrink-0 w-10 h-10 rounded-full bg-yellow-500/18 border border-yellow-400/30 flex items-center justify-center transition-all duration-500 ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     >
-                      <svg className="w-6 h-6 text-lime-700 dark:text-lime-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-6 h-6 text-yellow-800 dark:text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                       </svg>
                     </div>
@@ -130,11 +130,11 @@ export default function DocumentsAccordion() {
                     } overflow-hidden`}
                   >
                     <div className="px-8 pb-8">
-                      <div className="h-px bg-lime-500/25 mb-6" />
+                      <div className="h-px bg-yellow-500/40 mb-6" />
 
                       <div className="flex items-start gap-4">
                         <div
-                          className="flex-shrink-0 w-6 h-6 rounded-full bg-lime-500/12 border border-lime-400/25 text-lime-600 dark:text-lime-300 flex items-center justify-center mt-1"
+                          className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-500/20 border border-yellow-400/30 text-yellow-700 dark:text-yellow-200 flex items-center justify-center mt-1"
                         >
                           <FiFileText size={12} />
                         </div>
@@ -143,7 +143,7 @@ export default function DocumentsAccordion() {
                         </p>
                       </div>
 
-                      <div className="mt-4 p-4 rounded-xl bg-lime-500/5 border border-lime-400/15">
+                      <div className="mt-4 p-4 rounded-xl bg-yellow-500/20 border border-yellow-400/30">
                         <p className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -157,7 +157,7 @@ export default function DocumentsAccordion() {
                   <div
                     className={`absolute inset-0 opacity-0 ${
                       isOpen ? "opacity-5" : "group-hover:opacity-5"
-                    } transition-opacity duration-300 pointer-events-none bg-lime-500/6`}
+                    } transition-opacity duration-300 pointer-events-none bg-yellow-500/15`}
                   />
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function DocumentsAccordion() {
           <p className="text-gray-700 dark:text-gray-300">
             Our document specialists will guide you through every step of the preparation process
           </p>
-          <button className="px-8 py-3 bg-lime-500 hover:bg-lime-400 text-black font-semibold rounded-xl shadow-lg shadow-lime-500/15 transition-all duration-200 hover:scale-105">
+          <button className="px-8 py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-xl shadow-lg shadow-yellow-500/20 transition-all duration-200 hover:scale-105">
             Get Document Checklist
           </button>
         </div>
