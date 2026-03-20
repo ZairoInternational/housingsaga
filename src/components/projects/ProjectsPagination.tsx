@@ -5,11 +5,13 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 interface ProjectsPaginationProps {
   page: number;
   totalPages: number;
+  onPageChange?: (page: number) => void;
 }
 
 export default function ProjectsPagination({
   page,
   totalPages,
+  onPageChange,
 }: ProjectsPaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -19,6 +21,11 @@ export default function ProjectsPagination({
   const canNext = page < totalPages;
 
   const goToPage = (target: number) => {
+    if (onPageChange) {
+      onPageChange(target);
+      return;
+    }
+
     const params = new URLSearchParams(searchParams?.toString() ?? "");
     if (target <= 1) {
       params.delete("page");

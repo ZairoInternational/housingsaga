@@ -4,61 +4,88 @@ type PricingTier = {
   price: string;
   features: string[];
   highlighted: boolean;
+  buttonLabel: string;
+  priceVariant?: "value" | "badge";
 };
 
-const pricingTiers: PricingTier[] = [
+const ownerPricingTiers: PricingTier[] = [
   {
-    name: "Basic",
-    description: "Perfect for first-time owners listing a single property.",
-    price: "Free",
-    features: ["1 active property", "Standard listing visibility", "Email support"],
+    name: "Property Listing Fee",
+    description:
+      "To ensure every listing on our platform meets high standards and attracts qualified buyers, we provide a structured onboarding process.",
+    price: "€200 per property (one-time listing fee)",
+    features: [
+      "Property onboarding and verification",
+      "Professional positioning for international investors",
+      "Exposure to a network of serious Golden Visa and global buyers",
+    ],
     highlighted: false,
+    buttonLabel: "List Your Property",
   },
   {
-    name: "Professional",
-    description: "For growing portfolios and serious investors.",
-    price: "₹1,999/mo",
+    name: "Success-Based Commission",
+    description:
+      "Housing Saga operates on a performance-driven model, where our success is aligned with yours.",
+    price: "4% commission on the final sale value",
     features: [
-      "Up to 10 active properties",
-      "Priority listing placement",
-      "Advanced analytics overview",
-      "Priority support",
+      "Buyer sourcing and targeted outreach",
+      "Negotiation support and deal structuring",
+      "End-to-end coordination until closure",
     ],
     highlighted: true,
+    buttonLabel: "Start Your Selling Journey",
   },
   {
-    name: "Enterprise",
-    description: "Tailored solutions for agencies and large portfolios.",
-    price: "Talk to us",
+    name: "The Value You Receive",
+    description:
+      "By partnering with Housing Saga, property owners gain access to serious investors, targeted visibility, and streamlined transaction management.",
+    price: "Transparency at Every Step",
+    priceVariant: "badge",
     features: [
-      "Unlimited active properties",
-      "Dedicated account manager",
-      "Custom integrations",
-      "Onboarding & training",
+      "A global network of verified Indian and international investors",
+      "Targeted visibility among Greece Golden Visa buyers",
+      "Professional handling of inquiries and negotiations",
+      "Streamlined transaction management",
+      "Cross-border expertise from India to Greece",
+      "No hidden costs",
+      "No unexpected charges",
+      "Complete clarity before every stage of engagement",
     ],
     highlighted: false,
+    buttonLabel: "Connect with Housing Saga",
   },
 ];
 
-export default function PricingTiers() {
+type PricingTiersProps = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  tiers?: PricingTier[];
+};
+
+export default function PricingTiers({
+  eyebrow = "Owner Pricing Plan",
+  title = "Transparent Pricing, Built on Trust and Results",
+  description = "At Housing Saga, our pricing reflects transparency, value, and performance-driven results, aligned with your success from listing to closure.",
+  tiers = ownerPricingTiers,
+}: PricingTiersProps) {
   return (
     <section className="bg-[#0f1115] text-white py-20 sm:py-24 lg:py-28">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12 text-center">
           <p className="text-xs sm:text-sm text-lime-400 mb-3 uppercase tracking-[0.22em]">
-            Plans For Every Journey
+            {eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight mb-3">
-            Choose The Right Plan
+            {title}
           </h2>
           <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto">
-            Start free and upgrade when you&apos;re ready. Our pricing is designed to support
-            you from your first listing to a full portfolio.
+            {description}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-          {pricingTiers.map((tier) => (
+          {tiers.map((tier) => (
             <div
               key={tier.name}
               className={`rounded-2xl border ${
@@ -68,7 +95,15 @@ export default function PricingTiers() {
               <div>
                 <h3 className="text-lg sm:text-xl font-semibold mb-2">{tier.name}</h3>
                 <p className="text-sm text-gray-400 mb-5">{tier.description}</p>
-                <p className="text-3xl sm:text-4xl font-semibold mb-5">{tier.price}</p>
+                {tier.priceVariant === "badge" ? (
+                  <p className="inline-flex items-center justify-center rounded-full bg-lime-400/15 border border-lime-400/30 text-lime-400 px-4 py-2 text-sm sm:text-base font-semibold mb-5">
+                    {tier.price}
+                  </p>
+                ) : (
+                  <p className="text-3xl sm:text-4xl font-semibold mb-5">
+                    {tier.price}
+                  </p>
+                )}
                 <ul className="space-y-2 text-sm text-gray-300">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
@@ -85,7 +120,7 @@ export default function PricingTiers() {
                     : "bg-white/10 hover:bg-white/20 text-white"
                 }`}
               >
-                {tier.price === "Talk to us" ? "Contact sales" : "Get started"}
+                {tier.buttonLabel}
               </button>
             </div>
           ))}

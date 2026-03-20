@@ -1,8 +1,6 @@
 import ProjectsHero from "@/components/projects/ProjectsHero";
-import ProjectsPagination from "@/components/projects/ProjectsPagination";
-import PropertyCard, {
-  type PropertyCardData,
-} from "@/components/ui/propertyCard";
+import type { PropertyCardData } from "@/components/ui/propertyCard";
+import ProjectsSearchableResults from "@/components/projects/ProjectsSearchableResults";
 
 interface ProjectsPageProps {
   searchParams?: Promise<{
@@ -98,51 +96,12 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
     <main className="flex flex-col bg-gray-50 dark:bg-[#050816] min-h-screen">
       <ProjectsHero />
 
-      <section className="py-10 sm:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {hasError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              We&apos;re having trouble loading projects right now. Please try
-              again in a moment.
-            </div>
-          )}
-
-          {isEmpty && !hasError && (
-            <div className="rounded-xl border border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-600 dark:bg-[#0f172a] dark:border-gray-800 dark:text-gray-300">
-              No projects found yet. New listings will appear here as soon as
-              they are available.
-            </div>
-          )}
-
-          {!hasError && !isEmpty && (
-            <>
-              <div className="mb-6 flex items-center justify-between gap-3">
-                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                  Available Projects
-                </h2>
-                {pagination && (
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                    {pagination.total} results
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cards.map((card) => (
-                  <PropertyCard key={card.id} card={card} size="compact" />
-                ))}
-              </div>
-
-              {pagination && (
-                <ProjectsPagination
-                  page={pagination.page}
-                  totalPages={pagination.totalPages}
-                />
-              )}
-            </>
-          )}
-        </div>
-      </section>
+      <ProjectsSearchableResults
+        initialCards={cards}
+        initialPagination={pagination}
+        initialHasError={hasError}
+        limit={limit}
+      />
     </main>
   );
 }

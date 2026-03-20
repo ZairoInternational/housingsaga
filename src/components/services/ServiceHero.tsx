@@ -1,8 +1,19 @@
 "use client";
 
 import Image from "next/image";
+import type { FC } from "react";
 
-export default function ServiceHero() {
+type ServiceHeroProps = {
+  heroTitle?: string;
+  breadcrumbFirstLabel?: string;
+  breadcrumbLastLabel?: string;
+};
+
+const ServiceHero: FC<ServiceHeroProps> = ({
+  heroTitle = "Services Page",
+  breadcrumbFirstLabel = "Home",
+  breadcrumbLastLabel = "Services Page",
+}) => {
   return (
     <section className="relative w-full h-[670px] flex items-center justify-center text-white">
       <Image
@@ -16,14 +27,16 @@ export default function ServiceHero() {
       <div className="absolute inset-0 bg-black/40" />
 
       <div className="relative text-center ">
-        <h1 className="text-[96px] font-semibold mb-6">Services Page</h1>
+        <h1 className="text-[96px] font-semibold mb-6">{heroTitle}</h1>
 
         <div className="flex items-center justify-center gap-3 text-lg mt-20">
-          <span>Home</span>
+          <span>{breadcrumbFirstLabel}</span>
           <span className="w-2 h-2 bg-lime-400 rounded-full"></span>
-          <span>Services Page</span>
+          <span>{breadcrumbLastLabel}</span>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default ServiceHero;

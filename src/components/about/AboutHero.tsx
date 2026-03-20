@@ -3,7 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function AboutHero() {
+type AboutHeroProps = {
+  breadcrumbFirstLabel?: string;
+  breadcrumbLastLabel?: string;
+};
+
+export default function AboutHero({
+  breadcrumbFirstLabel = "Home",
+  breadcrumbLastLabel = "About Us",
+}: AboutHeroProps) {
   return (
     <section className="relative w-full h-[600px] flex items-end justify-start text-white overflow-hidden">
       <Image
@@ -26,10 +34,10 @@ export default function AboutHero() {
             href="/"
             className="hover:text-lime-400 transition-colors duration-200"
           >
-            Home
+            {breadcrumbFirstLabel}
           </Link>
           <span className="w-1.5 h-1.5 bg-lime-400 rounded-full" />
-          <span className="text-white/90">About Us</span>
+          <span className="text-white/90">{breadcrumbLastLabel}</span>
         </div>
 
         {/* Heading */}

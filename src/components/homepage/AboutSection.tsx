@@ -27,7 +27,6 @@ const AboutSection: React.FC = () => {
       icon: "premium.png",
     },
   ];
-
   return (
     <section className="bg-[#f3f4f6] text-gray-900 py-16 sm:py-20 lg:py-28 overflow-hidden">
       <div className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">

@@ -5,7 +5,10 @@ import AboutFounder from "@/components/about/AboutFounder";
 export default function AboutUsPage() {
   return (
     <main className="w-full">
-      <AboutHero />
+      <AboutHero
+        breadcrumbFirstLabel="Housing Saga"
+        breadcrumbLastLabel="About Housing Saga"
+      />
       <AboutSecond />
       <AboutFounder />
     </main>
