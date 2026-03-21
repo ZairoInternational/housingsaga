@@ -1,6 +1,7 @@
 import ProjectsHero from "@/components/projects/ProjectsHero";
 import type { PropertyCardData } from "@/components/ui/propertyCard";
 import ProjectsSearchableResults from "@/components/projects/ProjectsSearchableResults";
+import { getProjectsPageData } from "@/lib/get-projects-page-data";
 
 interface ProjectsPageProps {
   searchParams?: Promise<{
@@ -27,38 +28,11 @@ interface ProjectsPagination {
   totalPages: number;
 }
 
-function getBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BASE_URL;
-  }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return "http://localhost:3000";
-}
-
-async function fetchProjects(page: number, limit: number) {
-  const baseUrl = getBaseUrl();
-  const url = new URL(
-    `/api/projects/getProjects?page=${page}&limit=${limit}`,
-    baseUrl,
-  );
-
-  const res = await fetch(url.toString(), {
-    next: { revalidate: 60 },
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch projects");
-  }
-
-  const data = (await res.json()) as {
-    data: ProjectsApiHouse[];
-    pagination: ProjectsPagination;
-  };
-
-  const cards: PropertyCardData[] = data.data.map((project) => ({
-    id: project._id,
+function mapProjectsToCards(
+  projects: ProjectsApiHouse[],
+): PropertyCardData[] {
+  return projects.map((project) => ({
+    id: String(project._id),
     img: project.images?.[0] ?? "/property.jpeg",
     title: project.name,
     tag: `${project.city}, ${project.state}`,
@@ -67,8 +41,15 @@ async function fetchProjects(page: number, limit: number) {
     baths: project.bathrooms,
     cars: project.balconies ?? 0,
   }));
+}
 
-  return { cards, pagination: data.pagination };
+async function loadProjectsPage(page: number, limit: number) {
+  const { data, pagination } = await getProjectsPageData(page, limit);
+  const projects = data as unknown as ProjectsApiHouse[];
+  return {
+    cards: mapProjectsToCards(projects),
+    pagination,
+  };
 }
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
@@ -82,15 +63,13 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   let hasError = false;
 
   try {
-    const result = await fetchProjects(page, limit);
+    const result = await loadProjectsPage(page, limit);
     cards = result.cards;
     pagination = result.pagination;
   } catch (error) {
     console.error("Error fetching projects:", error);
     hasError = true;
   }
-
-  const isEmpty = !hasError && cards.length === 0;
 
   return (
     <main className="flex flex-col bg-gray-50 dark:bg-[#050816] min-h-screen">
