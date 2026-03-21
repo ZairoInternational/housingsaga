@@ -23,7 +23,7 @@ export default function PricingDetails() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="price" className="block text-sm font-medium  mb-2">
-            Price (₹) *
+            Price (€) *
           </label>
           <input
             type="number"
@@ -31,7 +31,7 @@ export default function PricingDetails() {
             name="price"
             value={formData.price}
             onChange={handleInputChange}
-            placeholder="Enter price in rupees"
+            placeholder="Enter price in euros"
             className="w-full px-4 py-3  border border-gray-600 rounded-lg  placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
             required
           />
@@ -41,7 +41,7 @@ export default function PricingDetails() {
             htmlFor="depositAmount"
             className="block text-sm font-medium  mb-2"
           >
-            Deposit Amount (₹)
+            Deposit Amount (€)
           </label>
           <input
             type="number"

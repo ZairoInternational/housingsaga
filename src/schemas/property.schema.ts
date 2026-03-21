@@ -35,36 +35,45 @@ export const houseValidationSchema = z.object({
   balconies: z.number().optional(),
   carpetArea: z.number(),
   builtUpArea: z.number().optional(),
-  floors: z.number(),
+  floors: z.number().nullable().optional(),
   propertyOnFloor: z.number().optional(),
-  facing: z.enum([
-    "east",
-    "west",
-    "north",
-    "south",
-    "northeast",
-    "northwest",
-    "southeast",
-    "southwest",
-  ]),
-  ownership: z.enum(["freehold", "leasehold", "co-operative", "power-of-attorney"]),
+  facing: z
+    .enum([
+      "east",
+      "west",
+      "north",
+      "south",
+      "northeast",
+      "northwest",
+      "southeast",
+      "southwest",
+    ])
+    .nullable()
+    .optional(),
+  ownership: z
+    .enum(["freehold", "leasehold", "co-operative", "power-of-attorney"])
+    .nullable()
+    .optional(),
   furnishing: z.enum(["fully-furnished", "semi-furnished", "unfurnished"]),
-  flooring: z.enum([
-    "marble",
-    "concrete",
-    "polished-concrete",
-    "granite",
-    "ceramic",
-    "mosaic",
-    "cement",
-    "stone",
-    "vinyl",
-    "wood",
-    "vitrified",
-    "spartex",
-    "ipsfinish",
-    "other",
-  ]),
+  flooring: z
+    .enum([
+      "marble",
+      "concrete",
+      "polished-concrete",
+      "granite",
+      "ceramic",
+      "mosaic",
+      "cement",
+      "stone",
+      "vinyl",
+      "wood",
+      "vitrified",
+      "spartex",
+      "ipsfinish",
+      "other",
+    ])
+    .nullable()
+    .optional(),
   constructionYear: z.number(),
 
   amenities: z.array(z.string()),

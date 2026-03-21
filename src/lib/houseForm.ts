@@ -26,12 +26,12 @@ export interface HouseForForm {
   balconies?: number;
   carpetArea: number;
   builtUpArea?: number;
-  floors: number;
+  floors?: number | null;
   propertyOnFloor?: number;
-  facing: string;
-  ownership: string;
+  facing?: string | null;
+  ownership?: string | null;
   furnishing: string;
-  flooring: string;
+  flooring?: string | null;
   constructionYear: number;
   amenities: string[];
   utilities: string[];
@@ -67,12 +67,22 @@ function toFormNumber(value: number | undefined): string {
   return value === undefined ? "" : String(value);
 }
 
+function optionalNonEmptyString(value: unknown): string | undefined {
+  if (value === null || value === undefined) return undefined;
+  const s = String(value).trim();
+  return s === "" ? undefined : s;
+}
+
 export function buildHousePayload(
   raw: HouseFormData,
   ownerId: string
 ): HouseValidationSchema {
   const latitude = toNumber(raw.latitude);
   const longitude = toNumber(raw.longitude);
+  const floorsNum = toNumber(raw.floors);
+  const facingVal = optionalNonEmptyString(raw.facing);
+  const ownershipVal = optionalNonEmptyString(raw.ownership);
+  const flooringVal = optionalNonEmptyString(raw.flooring);
 
   return houseValidationSchema.parse({
     name: raw.name,
@@ -96,12 +106,12 @@ export function buildHousePayload(
     balconies: toNumber(raw.balconies),
     carpetArea: toNumber(raw.carpetArea) ?? 0,
     builtUpArea: toNumber(raw.builtUpArea),
-    floors: toNumber(raw.floors) ?? 0,
+    floors: floorsNum ?? null,
     propertyOnFloor: toNumber(raw.propertyOnFloor),
-    facing: raw.facing,
-    ownership: raw.ownership,
+    facing: facingVal ?? null,
+    ownership: ownershipVal ?? null,
     furnishing: raw.furnishing,
-    flooring: raw.flooring,
+    flooring: flooringVal ?? null,
     constructionYear: toNumber(raw.constructionYear) ?? 0,
     amenities: raw.amenities,
     utilities: raw.utilities,
@@ -151,12 +161,16 @@ export function toHouseFormData(house: HouseForForm): HouseFormData {
     balconies: toFormNumber(house.balconies),
     carpetArea: toFormNumber(house.carpetArea),
     builtUpArea: toFormNumber(house.builtUpArea),
-    floors: toFormNumber(house.floors),
+    floors: toFormNumber(
+      house.floors === null || house.floors === undefined
+        ? undefined
+        : house.floors,
+    ),
     propertyOnFloor: toFormNumber(house.propertyOnFloor),
-    facing: house.facing,
-    ownership: house.ownership,
+    facing: house.facing ?? "",
+    ownership: house.ownership ?? "",
     furnishing: house.furnishing,
-    flooring: house.flooring,
+    flooring: house.flooring ?? "",
     constructionYear: toFormNumber(house.constructionYear),
     amenities: house.amenities ?? [],
     utilities: house.utilities ?? [],

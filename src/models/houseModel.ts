@@ -83,7 +83,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
     },
     floors: {
       type: Number,
-      required: true,
+      required: false,
     },
     propertyOnFloor: {
       type: Number,
@@ -104,7 +104,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
     },
     ownership: {
       type: String,
-      required: true,
+      required: false,
       enum: ["freehold", "leasehold", "co-operative", "power-of-attorney"],
     },
     furnishing: {
@@ -114,7 +114,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
     },
     flooring: {
       type: String,
-      required: true,
+      required: false,
       enum: [
         "marble",
         "concrete",

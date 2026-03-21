@@ -4,7 +4,8 @@ import { useFormContext } from "react-hook-form";
 import type { FieldError } from "react-hook-form";
 import { useHouseFormStore } from "@/store/HouseStore";
 import { Field, Input, Toggle, SectionTitle } from "./FormFields";
-import { IndianRupee } from "lucide-react";
+import { Euro } from "lucide-react";
+import { formatEurApproxFromInputString } from "@/lib/format-currency";
 
 const PRICING_TOGGLES = [
   { name: "negotiable",         label: "Price is Negotiable",         hint: "Buyers can discuss the listed price" },
@@ -24,50 +25,42 @@ export default function StepPricing() {
 
   const price = watch("price", formData.price);
 
-  const formatINR = (v: string) => {
-    const n = parseFloat(v);
-    if (!n || isNaN(n)) return null;
-    if (n >= 1e7) return `₹${(n / 1e7).toFixed(2)} Cr`;
-    if (n >= 1e5) return `₹${(n / 1e5).toFixed(2)} L`;
-    return `₹${n.toLocaleString("en-IN")}`;
-  };
-
   return (
     <div className="space-y-6">
       <SectionTitle>Price & Deposit</SectionTitle>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Asking Price (₹)" error={errors.price as FieldError | undefined} required>
+        <Field label="Asking Price (€)" error={errors.price as FieldError | undefined} required>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <IndianRupee size={14} />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden>
+              <Euro size={14} />
             </span>
             <Input
               type="number"
               {...reg("price")}
               defaultValue={formData.price}
-              placeholder="e.g., 5000000"
+              placeholder="e.g., 250000"
               error={!!errors.price}
               className="pl-8"
             />
           </div>
-          {price && formatINR(price) && (
+          {price && formatEurApproxFromInputString(String(price)) && (
             <span className="text-xs text-lime-600 dark:text-lime-400 font-medium mt-1">
-              ≈ {formatINR(String(price))}
+              ≈ {formatEurApproxFromInputString(String(price))}
             </span>
           )}
         </Field>
 
-        <Field label="Security Deposit (₹)">
+        <Field label="Security Deposit (€)">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <IndianRupee size={14} />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" aria-hidden>
+              <Euro size={14} />
             </span>
             <Input
               type="number"
               {...reg("depositAmount")}
               defaultValue={formData.depositAmount}
-              placeholder="e.g., 100000"
+              placeholder="e.g., 10000"
               className="pl-8"
             />
           </div>

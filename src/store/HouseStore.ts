@@ -88,7 +88,7 @@ export const initialHouseFormData: HouseFormData = {
   balconies: 0,
   carpetArea: 0,
   builtUpArea: 0,
-  floors: 0,
+  floors: "",
   propertyOnFloor: 0,
   facing: "",
   ownership: "",

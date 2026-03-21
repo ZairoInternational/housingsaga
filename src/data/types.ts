@@ -25,20 +25,20 @@ export interface HouseInterface {
   balconies?: number;
   carpetArea: number;
   builtUpArea?: number;
-  floors: number;
+  floors?: number;
   propertyOnFloor?: number;
-  facing:
+  facing?:
     | "east"
     | "west"
     | "north"
     | "south"
-    | "north-east"
-    | "north-west"
-    | "south-east"
-    | "south-west";
-  ownership: "freehold" | "leasehold" | "co-operative" | "power-of-attorney";
+    | "northeast"
+    | "northwest"
+    | "southeast"
+    | "southwest";
+  ownership?: "freehold" | "leasehold" | "co-operative" | "power-of-attorney";
   furnishing: "fully-furnished" | "semi-furnished" | "unfurnished";
-  flooring:
+  flooring?:
     | "marble"
     | "concrete"
     | "polished-concrete"
@@ -111,16 +111,16 @@ export interface HouseCardType {
   bathrooms: number;
   balconies?: number;
   carpetArea: number;
-  floors: number;
-  facing:
+  floors?: number;
+  facing?:
     | "east"
     | "west"
     | "north"
     | "south"
-    | "north-east"
-    | "north-west"
-    | "south-east"
-    | "south-west";
+    | "northeast"
+    | "northwest"
+    | "southeast"
+    | "southwest";
   furnishing: "fully-furnished" | "semi-furnished" | "unfurnished";
   constructionYear: number;
 

@@ -46,7 +46,7 @@ export default function StepSpecs() {
       <div className="pt-2 border-t border-gray-100 dark:border-gray-800">
         <SectionTitle>Building Info</SectionTitle>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <Field label="Total Floors" error={errors.floors as FieldError | undefined} required>
+          <Field label="Total Floors" error={errors.floors as FieldError | undefined}>
             <Input type="number" min={0} {...reg("floors")} defaultValue={formData.floors} placeholder="5" error={!!errors.floors} />
           </Field>
           <Field label="Property on Floor">
@@ -61,7 +61,7 @@ export default function StepSpecs() {
       <div className="pt-2 border-t border-gray-100 dark:border-gray-800">
         <SectionTitle>Property Character</SectionTitle>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Facing Direction" error={errors.facing as FieldError | undefined} required>
+          <Field label="Facing Direction" error={errors.facing as FieldError | undefined}>
             <Select
               {...reg("facing")}
               defaultValue={formData.facing}
@@ -70,7 +70,7 @@ export default function StepSpecs() {
               error={!!errors.facing}
             />
           </Field>
-          <Field label="Ownership Type" error={errors.ownership as FieldError | undefined} required>
+          <Field label="Ownership Type" error={errors.ownership as FieldError | undefined}>
             <Select
               {...reg("ownership")}
               defaultValue={formData.ownership}
@@ -88,7 +88,7 @@ export default function StepSpecs() {
               error={!!errors.furnishing}
             />
           </Field>
-          <Field label="Flooring Type" error={errors.flooring as FieldError | undefined} required>
+          <Field label="Flooring Type" error={errors.flooring as FieldError | undefined}>
             <Select
               {...reg("flooring")}
               defaultValue={formData.flooring}

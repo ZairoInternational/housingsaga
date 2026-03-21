@@ -12,6 +12,8 @@ import {
   RiEditLine,
 } from "react-icons/ri";
 
+import { formatEurAmount } from "@/lib/format-currency";
+
 interface OwnerListingPreviewItem {
   id: string;
   name: string;
@@ -35,14 +37,6 @@ function formatPropertyType(value: string) {
   return value
     .replace(/-/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(value);
 }
 
 export default function OwnerListingsPreview({
@@ -173,7 +167,7 @@ export default function OwnerListingsPreview({
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
-                      {formatCurrency(listing.price)}
+                      {formatEurAmount(listing.price)}
                     </p>
                   </div>
                 </div>

@@ -142,7 +142,7 @@ export default function PropertySpecifications() {
         </div>
         <div>
           <label htmlFor="floors" className="block text-sm font-medium mb-2">
-            Total Floors *
+            Total Floors
           </label>
           <input
             type="number"
@@ -153,7 +153,6 @@ export default function PropertySpecifications() {
             onChange={handleInputChange}
             placeholder="Total floors"
             className="w-full px-4 py-3  border border-gray-600 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
-            required
           />
         </div>
         <div>
@@ -198,7 +197,7 @@ export default function PropertySpecifications() {
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div>
           <label htmlFor="facing" className="block text-sm font-medium mb-2">
-            Facing Direction *
+            Facing Direction
           </label>
           <select
             id="facing"
@@ -206,7 +205,6 @@ export default function PropertySpecifications() {
             value={formData.facing}
             onChange={handleInputChange}
             className="w-full px-4 py-3 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
-            required
           >
             <option value="" className=" bg-secondary">
               Select facing direction
@@ -224,7 +222,7 @@ export default function PropertySpecifications() {
         </div>
         <div>
           <label htmlFor="ownership" className="block text-sm font-medium mb-2">
-            Ownership Type *
+            Ownership Type
           </label>
           <select
             id="ownership"
@@ -232,7 +230,6 @@ export default function PropertySpecifications() {
             value={formData.ownership}
             onChange={handleInputChange}
             className="w-full px-4 py-3  border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
-            required
           >
             <option value="" className=" bg-secondary">
               Select ownership type
@@ -281,7 +278,7 @@ export default function PropertySpecifications() {
         </div>
         <div>
           <label htmlFor="flooring" className="block text-sm font-medium mb-2">
-            Flooring Type *
+            Flooring Type
           </label>
           <select
             id="flooring"
@@ -289,7 +286,6 @@ export default function PropertySpecifications() {
             value={formData.flooring}
             onChange={handleInputChange}
             className="w-full px-4 py-3  border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700 focus:border-transparent"
-            required
           >
             <option value="" className=" bg-secondary">
               Select flooring type

@@ -8,6 +8,7 @@ import ProjectMapSection from "@/components/projects/ProjectMapSection";
 import { connectDb } from "@/lib/db";
 import { House } from "@/models/houseModel";
 import type { HouseValidationSchema } from "@/schemas/property.schema";
+import { formatEurAmount } from "@/lib/format-currency";
 
 interface ProjectDetailPageProps {
   params: Promise<{ id: string }>;
@@ -75,7 +76,7 @@ export default async function ProjectDetailPage({
 
   const project = toProjectDetail(doc);
   const mainImage = project.images[0] ?? "/property.jpeg";
-  const priceRangeLabel = `$${project.price.toLocaleString()}`;
+  const priceRangeLabel = formatEurAmount(project.price);
 
   const aboutBullets: string[] = [
     "Compact Design: Fits perfectly into any room or workspace.",

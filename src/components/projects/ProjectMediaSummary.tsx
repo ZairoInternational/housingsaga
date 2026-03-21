@@ -1,6 +1,6 @@
 import Image from "next/image";
-// import { Home, Maximize2, Calendar, Tag } from "lucide-react";
-import { RiAspectRatioLine, RiBuildingLine, RiCalendarEventLine, RiMoneyDollarBoxLine,  } from "react-icons/ri";
+import { Euro } from "lucide-react";
+import { RiAspectRatioLine, RiBuildingLine, RiCalendarEventLine } from "react-icons/ri";
 
 export interface ProjectMediaSummaryProps {
   mainImage: string;
@@ -32,7 +32,7 @@ const statItems = [
   {
     key: "priceRangeLabel",
     label: "Price Range",
-    Icon: RiMoneyDollarBoxLine,
+    Icon: Euro,
   },
 ] as const;
 

@@ -2,12 +2,30 @@
 import { useEffect, useRef, useState } from "react";
 import {
   FiCheckCircle,
-  FiDollarSign,
   FiFileText,
   FiHome,
   FiMessageCircle,
   FiShield,
 } from "react-icons/fi";
+
+/** Euro currency marker for the Investment step (replaces dollar icon). */
+function EuroCurrencyIcon({
+  className,
+  size = 22,
+}: {
+  className?: string;
+  size?: number;
+}) {
+  return (
+    <span
+      className={className}
+      style={{ fontSize: size, lineHeight: 1, fontWeight: 600 }}
+      aria-hidden
+    >
+      €
+    </span>
+  );
+}
 
 const steps = [
   {
@@ -32,7 +50,7 @@ const steps = [
     number: "04",
     title: "Investment",
     desc: "Secure property acquisition with legal safeguards",
-    Icon: FiDollarSign,
+    Icon: EuroCurrencyIcon,
   },
   {
     number: "05",
