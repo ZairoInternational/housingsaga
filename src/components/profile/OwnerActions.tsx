@@ -5,7 +5,13 @@ import {
   RiLightbulbLine,
 } from "react-icons/ri";
 
-export default function OwnerActions() {
+type OwnerActionsProps = {
+  canListProperties: boolean;
+};
+
+export default function OwnerActions({
+  canListProperties,
+}: OwnerActionsProps) {
   return (
     <section className="py-10">
       <div className="mb-8">
@@ -37,12 +43,21 @@ export default function OwnerActions() {
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link href="/add-property">
-              <button className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 active:scale-95 transition-all">
-                <RiAddCircleLine className="h-4 w-4" />
-                Add new property
-              </button>
-            </Link>
+            {canListProperties ? (
+              <Link href="/add-property">
+                <button className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 active:scale-95 transition-all">
+                  <RiAddCircleLine className="h-4 w-4" />
+                  Add new property
+                </button>
+              </Link>
+            ) : (
+              <Link href="/pricing">
+                <button className="inline-flex items-center gap-2 rounded-full bg-lime-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-lime-700 active:scale-95 transition-all">
+                  <RiAddCircleLine className="h-4 w-4" />
+                  Buy Listing Plan
+                </button>
+              </Link>
+            )}
             <button className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-lime-600 dark:hover:text-lime-400 transition-colors">
               View listing tips
               <RiArrowRightLine className="h-4 w-4" />

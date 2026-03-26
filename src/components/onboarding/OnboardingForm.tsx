@@ -68,7 +68,7 @@ export function OnboardingForm() {
       // Show success state briefly, then redirect
       setTimeout(() => {
         // Redirect based on role
-        const redirectPath = role === "buyer" ? "/properties" : "/dashboard";
+        const redirectPath = role === "buyer" ? "/properties" : "/profile";
         console.log("[Onboarding] Redirecting to:", redirectPath);
         router.push(redirectPath);
       }, 1500);
@@ -79,7 +79,7 @@ export function OnboardingForm() {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8">
+    <div className="w-full max-w-md space-y-6 mt-10">
       {/* Header */}
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2">

@@ -11,6 +11,10 @@ export const userSchema = z.object({
   verifyToken: z.string().optional(),
   verifyTokenExpiry: z.date().optional(),
   role: z.enum(["owner", "buyer" , "admin"]).nullable().optional(),
+  subscriptionPlan: z.string().nullable().optional(),
+  subscriptionValidTill: z.date().nullable().optional(),
+  paymentStatus: z.enum(["active", "inactive"]).nullable().optional(),
+  paidListingAddresses: z.array(z.string()).default([]).optional(),
 });
 
 export type UserValidationSchema = z.infer<typeof userSchema>;

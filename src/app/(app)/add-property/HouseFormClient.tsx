@@ -21,9 +21,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 import type { AxiosError } from "axios";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import type { HouseFormData } from "@/store/HouseStore";
 import { useHouseFormStore } from "@/store/HouseStore";
+import { computeAddressKey } from "@/lib/address-key";
 import StepBasic from "./StepBasic";
 import StepLocation from "./StepLocation";
 import StepSpecs from "./StepSpecs";
@@ -32,6 +34,7 @@ import StepLegal from "./StepLegal";
 import StepPricing from "./StepPricing";
 import StepMedia from "./StepMedia";
 import StepStatus from "./StepStatus";
+import PricingCheckoutButton from "@/components/pricing/PricingCheckoutButton";
 
 const STEPS = [
   { id: "basic", label: "Basics", icon: Home, desc: "Name & description" },
@@ -127,6 +130,8 @@ interface HouseFormClientProps {
   isEditMode?: boolean;
 }
 
+type EntitlementState = "unknown" | "checking" | "paid" | "unpaid";
+
 export default function HouseFormClient({
   initialFormData,
   propertyId,
@@ -137,8 +142,12 @@ export default function HouseFormClient({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [entitlementState, setEntitlementState] =
+    useState<EntitlementState>("unknown");
 
   const { formData, submitForm, setFormData, resetForm, clearPersistedForm } = useHouseFormStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const methods = useForm<HouseFormData>({
     mode: "onChange",
@@ -153,6 +162,46 @@ export default function HouseFormClient({
     formState: { errors },
   } = methods;
   const hasErrors = Object.keys(errors).length > 0;
+  const [address, city, state, country, postalCode, houseNumber] = methods.watch([
+    "address",
+    "city",
+    "state",
+    "country",
+    "postalCode",
+    "houseNumber",
+  ]);
+
+  const getAddressKeyFromCurrentForm = useCallback((): string | null => {
+    const values = methods.getValues();
+    if (
+      !String(values.address ?? "").trim() ||
+      !String(values.city ?? "").trim() ||
+      !String(values.state ?? "").trim() ||
+      !String(values.country ?? "").trim() ||
+      !String(values.postalCode ?? "").trim()
+    ) {
+      return null;
+    }
+    return computeAddressKey(values);
+  }, [methods]);
+
+  const currentAddressKey = getAddressKeyFromCurrentForm();
+  const paymentQuery = searchParams.get("payment");
+  const addressKeyFromQuery = searchParams.get("addressKey");
+
+  const checkEntitlement = useCallback(
+    async (addressKey: string): Promise<boolean> => {
+      setEntitlementState("checking");
+      const res = await fetch(
+        `/api/payments/status?addressKey=${encodeURIComponent(addressKey)}`,
+      );
+      const data = (await res.json()) as { paid?: boolean };
+      const paid = Boolean(data.paid);
+      setEntitlementState(paid ? "paid" : "unpaid");
+      return paid;
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!initialFormData || !isEditMode) return;
@@ -164,6 +213,45 @@ export default function HouseFormClient({
     setSubmitError(null);
     setSubmitted(false);
   }, [initialFormData, isEditMode, methods, setFormData]);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setEntitlementState("paid");
+      return;
+    }
+    const addressKey = getAddressKeyFromCurrentForm();
+    if (!addressKey) {
+      setEntitlementState("unknown");
+      return;
+    }
+    void checkEntitlement(addressKey);
+  }, [
+    address,
+    city,
+    state,
+    country,
+    postalCode,
+    houseNumber,
+    isEditMode,
+    getAddressKeyFromCurrentForm,
+    checkEntitlement,
+  ]);
+
+  useEffect(() => {
+    if (isEditMode) return;
+    if (paymentQuery !== "success") return;
+
+    const keyToCheck = addressKeyFromQuery ?? currentAddressKey;
+    if (!keyToCheck) return;
+
+    void checkEntitlement(keyToCheck);
+  }, [
+    paymentQuery,
+    addressKeyFromQuery,
+    currentAddressKey,
+    isEditMode,
+    checkEntitlement,
+  ]);
 
   const goNext = useCallback(async () => {
     const stepId = STEPS[currentStep].id;
@@ -185,6 +273,32 @@ export default function HouseFormClient({
     await new Promise((r) => setTimeout(r, 1200));
     try {
       setSubmitError(null);
+
+      if (!isEditMode) {
+        const addressKey = getAddressKeyFromCurrentForm();
+        if (!addressKey) {
+          setSubmitError(
+            "Please complete address details before saving your property.",
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        const paid = await checkEntitlement(addressKey);
+        if (!paid) {
+          router.push(
+            `/pricing?addressKey=${encodeURIComponent(
+              addressKey,
+            )}&redirect=${encodeURIComponent(`/add-property?addressKey=${addressKey}`)}`,
+          );
+          setSubmitError(
+            "Payment is required for this address. Redirecting to pricing.",
+          );
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const result = (await submitForm({ propertyId, isEditMode })) as unknown;
       const isSuccess =
         typeof result === "object" &&
@@ -223,6 +337,23 @@ export default function HouseFormClient({
         } else if (typeof backendMessage === "string" && backendMessage.trim().length > 0) {
           message = backendMessage;
         }
+
+        if (
+          axiosError.response?.status === 403 &&
+          typeof backendMessage === "string" &&
+          backendMessage.toLowerCase().includes("payment required")
+        ) {
+          const addressKey = computeAddressKey(formData);
+          router.push(
+            `/pricing?addressKey=${encodeURIComponent(
+              addressKey,
+            )}&redirect=/add-property`,
+          );
+          setSubmitError(
+            "Payment required for this address. Redirecting you to checkout.",
+          );
+          return;
+        }
       }
 
       setSubmitError(message);
@@ -249,6 +380,11 @@ export default function HouseFormClient({
 
   const isLastStep = currentStep === STEPS.length - 1;
   const progress = (completedSteps.size / STEPS.length) * 100;
+  const shouldShowPaymentCTA =
+    !isEditMode &&
+    isLastStep &&
+    Boolean(currentAddressKey) &&
+    (entitlementState === "unpaid" || entitlementState === "unknown");
 
   return (
     <FormProvider {...methods}>
@@ -434,11 +570,32 @@ export default function HouseFormClient({
                   </button>
 
                   <div className="flex items-center gap-3">
+                    {isLastStep &&
+                      !isEditMode &&
+                      shouldShowPaymentCTA && (
+                        <PricingCheckoutButton
+                          planSlug="property-listing"
+                          label="Pay Now (EUR 200)"
+                          highlighted={true}
+                          addressKey={currentAddressKey ?? undefined}
+                          redirectTo={`/add-property?addressKey=${encodeURIComponent(
+                            currentAddressKey ?? "",
+                          )}&payment=success`}
+                        />
+                      )}
                     {isLastStep ? (
+                      shouldShowPaymentCTA ? null : (
                       <button
                         type="button"
                         onClick={onFinalSubmit}
-                        disabled={isSubmitting}
+                        disabled={
+                          isSubmitting ||
+                          (!isEditMode &&
+                            (entitlementState === "checking" ||
+                              (((entitlementState === "unpaid" ||
+                                entitlementState === "unknown") &&
+                                Boolean(currentAddressKey)))))
+                        }
                         className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white shadow-md shadow-lime-500/30 disabled:opacity-60 transition-all"
                       >
                         {isSubmitting ? (
@@ -446,12 +603,30 @@ export default function HouseFormClient({
                             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
                             {isEditMode ? "Saving…" : "Submitting…"}
                           </>
+                        ) : !isEditMode && entitlementState === "checking" ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
+                            Checking payment…
+                          </>
+                        ) : !isEditMode &&
+                          (entitlementState === "unknown" ||
+                            entitlementState === "unpaid") ? (
+                          currentAddressKey ? (
+                            <>
+                              <AlertCircle size={16} /> Pay on Pricing First
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle size={16} /> Complete address details
+                            </>
+                          )
                         ) : (
                           <>
                             <Check size={16} /> {isEditMode ? "Save Changes" : "Submit Listing"}
                           </>
                         )}
                       </button>
+                      )
                     ) : (
                       <button
                         type="button"

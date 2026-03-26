@@ -4,9 +4,12 @@ import { NextResponse } from "next/server";
 import { connectDb } from "@/lib/db";
 import { buildHousePayload } from "@/lib/houseForm";
 import { authOptions } from "@/lib/authConfig";
+import { computeAddressKey } from "@/lib/address-key";
+import { isAddressPaid } from "@/lib/services/entitlement-service";
 
 import type { HouseFormData } from "@/store/HouseStore";
 import { House } from "../../../models/houseModel";
+import { HousingUsers } from "@/models/housingUser";
 
 type SessionUser = {
   id?: string;
@@ -28,6 +31,25 @@ export async function POST(request: Request) {
 
     const raw = (await request.json()) as HouseFormData;
 
+    const addressKey = computeAddressKey(raw);
+
+    const dbUser = await HousingUsers.findById(session.user.id).lean<{
+      role?: string | null;
+    } | null>();
+
+    const isOwner = dbUser?.role === "owner";
+    const hasPaidThisAddress = await isAddressPaid(session.user.id, addressKey);
+
+    if (!isOwner || !hasPaidThisAddress) {
+      return NextResponse.json(
+        {
+          error: "Payment required for this address",
+          addressKey,
+        },
+        { status: 403 },
+      );
+    }
+
     const parsed = buildHousePayload(raw, session.user.id);
 
     const created = await House.create(parsed);
@@ -44,10 +66,30 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    if (error instanceof Error && "issues" in (error as never)) {
+    const maybeZod = error as { issues?: unknown };
+    if (maybeZod && Array.isArray(maybeZod.issues)) {
       return NextResponse.json(
-        { error: "Validation failed", details: (error as unknown as { issues?: unknown }).issues },
-        { status: 400 }
+        { error: "Validation failed", details: maybeZod.issues },
+        { status: 400 },
+      );
+    }
+
+    // Mongoose ValidationError:
+    // - name === "ValidationError"
+    // - errors is a map: { [field]: { message: string, ... } }
+    const maybeMongoose = error as {
+      name?: string;
+      errors?: Record<string, { message?: string }>;
+    };
+
+    if (maybeMongoose?.name === "ValidationError" && maybeMongoose.errors) {
+      const details = Object.values(maybeMongoose.errors).map((e) => ({
+        message: e.message ?? "Validation failed",
+      }));
+
+      return NextResponse.json(
+        { error: "Validation failed", details },
+        { status: 400 },
       );
     }
 

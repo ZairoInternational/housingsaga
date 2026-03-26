@@ -26,6 +26,8 @@ interface ProfileUser {
   role: UserRole;
   profilePic?: string | null;
   createdAt?: Date | string;
+  subscriptionPlan?: string | null;
+  paymentStatus?: "active" | "inactive" | null;
 }
 
 interface ProfileHouse {
@@ -73,6 +75,8 @@ export default async function ProfilePage() {
   const effectiveRole: UserRole = dbUser.role ?? role ?? null;
   const isOwner = effectiveRole === "owner";
   const isBuyer = effectiveRole === "buyer";
+  // Listing access is controlled per-address at submit-time.
+  const canListProperties = isOwner;
 
   const ownerListings = isOwner
     ? await House.find({ owner: userId })
@@ -219,7 +223,7 @@ export default async function ProfilePage() {
                 />
               </ProfileSectionReveal>
               <ProfileSectionReveal delay={0.15}>
-                <OwnerActions />
+                <OwnerActions canListProperties={canListProperties} />
               </ProfileSectionReveal>
             </>
           )}

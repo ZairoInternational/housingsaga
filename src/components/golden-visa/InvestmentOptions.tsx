@@ -75,12 +75,7 @@ export default function InvestmentOptions() {
                 {/* Glow effect */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-br from-yellow-400/10 via-transparent to-transparent" />
 
-                {/* Popular Badge */}
-                {option.popular && (
-                  <div className="absolute top-4 right-4 px-3 py-1 text-xs font-semibold bg-yellow-500 text-black rounded-full shadow-md">
-                    Most Popular
-                  </div>
-                )}
+
 
                 <div className="px-8 pt-10 pb-8 space-y-8 relative z-10">
                   {/* Price */}

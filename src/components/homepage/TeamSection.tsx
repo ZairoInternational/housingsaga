@@ -8,7 +8,7 @@ const teamMembers: TeamMember[] = [
   {
     id: 1,
     name: "Maria saridou",
-    role: "CEO & Founder",
+    role: "Founder of Greece Branch",
     image: "/team-1.png",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   

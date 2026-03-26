@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 
-const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blog", "Contact"];
+const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blogs", "Contact"];
 
 const Navbar = () => {
   const router = useRouter();
@@ -275,7 +275,7 @@ const Navbar = () => {
                   </button>
                 )}
               </div>
-            )}
+            )} 
 
             {/* Hamburger — visible on mobile/tablet */}
             <button
@@ -285,7 +285,7 @@ const Navbar = () => {
             >
               <Menu size={18} />
             </button>
-          </div>
+          </div>                  
         </div>
       </header>
 

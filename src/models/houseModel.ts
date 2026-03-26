@@ -90,7 +90,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
     },
     facing: {
       type: String,
-      required: true,
+      required: false,
       enum: [
         "east",
         "west",

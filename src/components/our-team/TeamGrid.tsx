@@ -14,7 +14,7 @@ export default function TeamGrid() {
    {
      id: 1,
      name: "Maria saridou",
-     role: "CEO & Founder",
+     role: "Founder of Greece Branch",
      image: "/team-1.png",
    },
    {

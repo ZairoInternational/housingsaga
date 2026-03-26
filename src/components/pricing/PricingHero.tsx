@@ -29,7 +29,7 @@ export default function PricingHero({
   return (
     <section className="relative w-full h-[520px] sm:h-[600px] flex items-center justify-center text-white">
       <Image
-        src="/pricing-hero.webp"
+        src="/faq-hero.webp"
         alt={imageAlt}
         fill
         priority

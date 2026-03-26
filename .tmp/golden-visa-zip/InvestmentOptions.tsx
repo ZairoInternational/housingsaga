@@ -77,14 +77,7 @@ export default function InvestmentOptions() {
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              {/* Popular badge */}
-              {option.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
-                  <div className="px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-bold rounded-full shadow-xl animate-pulse">
-                    Most Popular
-                  </div>
-                </div>
-              )}
+
 
               {/* Card */}
               <div className={`relative h-full bg-white rounded-3xl border-2 transition-all duration-500 overflow-hidden ${
