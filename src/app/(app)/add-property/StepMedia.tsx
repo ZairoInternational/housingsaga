@@ -44,6 +44,14 @@ export default function StepMedia() {
     updateField("images", (formData.images ?? []).filter((u: string) => u !== url));
   };
 
+  const setCoverImage = (url: string) => {
+    const current = (formData.images ?? []) as string[];
+    if (current.length === 0) return;
+    if (current[0] === url) return;
+    const next = [url, ...current.filter((u) => u !== url)];
+    updateField("images", next);
+  };
+
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -157,7 +165,14 @@ export default function StepMedia() {
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
             {(formData.images as string[]).map((url, i) => (
-              <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <button
+                key={i}
+                type="button"
+                onClick={() => setCoverImage(url)}
+                className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-left"
+                aria-label={i === 0 ? "Cover image" : "Set as cover image"}
+                title={i === 0 ? "Cover image" : "Click to set as cover"}
+              >
                 <img
                   src={url}
                   alt={`Property ${i + 1}`}
@@ -176,7 +191,7 @@ export default function StepMedia() {
                     Cover
                   </span>
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </div>

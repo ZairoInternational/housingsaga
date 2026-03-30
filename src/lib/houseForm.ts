@@ -112,7 +112,7 @@ export function buildHousePayload(
     ownership: ownershipVal,
     furnishing: raw.furnishing,
     flooring: flooringVal,
-    constructionYear: toNumber(raw.constructionYear) ?? 0,
+    constructionYear: toNumber(raw.constructionYear),
     amenities: raw.amenities,
     utilities: raw.utilities,
     images: raw.images,

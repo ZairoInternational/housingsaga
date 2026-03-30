@@ -100,14 +100,16 @@ const Hero: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 text-white">
               {/* ADDRESS */}
               <div className="space-y-2 text-sm sm:text-base md:text-lg font-light">
-                <p>We are here: 39 Division St, New York</p>
-                <p>Email us: support@example.com</p>
+                <p>
+                  We are here: 2 Charokopou str, Kallithea 17671 Athens, Greece
+                </p>
+                <p>Email us: support@housingsaga.com</p>
               </div>
 
               {/* STATS */}
               <div className="flex flex-col items-start md:items-end">
                 <div className="text-4xl sm:text-5xl lg:text-7xl font-medium leading-none">
-                  <CountUp end={875} duration={1.5} suffix="+" />
+                  <CountUp end={30} duration={1.5} suffix="+" />
                 </div>
 
                 <p className="text-lg sm:text-xl text-white/80 mt-2">

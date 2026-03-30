@@ -1,28 +1,28 @@
 // hooks/useDarkMode.js
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useCallback, useEffect } from "react";
+
+const noopDispatch: Dispatch<SetStateAction<boolean>> = () => {
+  // no-op: dark mode is disabled for the entire app
+};
 
 export default function useDarkMode(): [boolean, Dispatch<SetStateAction<boolean>>] {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.theme === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
-    }
-    return false;
-  });
+  // Intentionally keep the app in light mode by default.
+  // Some UI components expect a "toggle" setter, but dark mode is disabled.
+  const isDarkMode = false;
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
+    root.classList.remove("dark");
+    // Best-effort: keep localStorage consistent with light mode.
+    try {
       localStorage.setItem("theme", "light");
+    } catch {
+      // Ignore storage errors (private mode, blocked storage, etc.)
     }
-  }, [isDarkMode]);
+  }, []);
+
+  const setIsDarkMode = useCallback(noopDispatch, []);
 
   return [isDarkMode, setIsDarkMode];
 }

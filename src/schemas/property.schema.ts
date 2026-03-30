@@ -74,7 +74,7 @@ export const houseValidationSchema = z.object({
     ])
     .nullable()
     .optional(),
-  constructionYear: z.number(),
+  constructionYear: z.number().optional(),
 
   amenities: z.array(z.string()),
   utilities: z.array(z.string()),

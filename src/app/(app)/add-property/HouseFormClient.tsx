@@ -35,6 +35,7 @@ import StepPricing from "./StepPricing";
 import StepMedia from "./StepMedia";
 import StepStatus from "./StepStatus";
 import PricingCheckoutButton from "@/components/pricing/PricingCheckoutButton";
+import type { ExistingAddressOption } from "./address-reuse-types";
 
 const STEPS = [
   { id: "basic", label: "Basics", icon: Home, desc: "Name & description" },
@@ -98,7 +99,11 @@ const specsSchema = z.object({
   bathrooms: z.string().min(1, "Bathrooms required"),
   carpetArea: z.string().min(1, "Carpet area required"),
   floors: z.string().optional(),
-  constructionYear: z.string().min(4, "Valid year required").max(4),
+  constructionYear: z
+    .string()
+    .trim()
+    .optional()
+    .refine((v) => !v || /^\d{4}$/.test(v), "Valid year required"),
   facing: z.string().optional(),
   ownership: z.string().optional(),
   furnishing: z.string().min(1, "Furnishing status required"),
@@ -128,6 +133,7 @@ interface HouseFormClientProps {
   initialFormData?: HouseFormData;
   propertyId?: string;
   isEditMode?: boolean;
+  existingAddressOptions?: ExistingAddressOption[];
 }
 
 type EntitlementState = "unknown" | "checking" | "paid" | "unpaid";
@@ -136,6 +142,7 @@ export default function HouseFormClient({
   initialFormData,
   propertyId,
   isEditMode = false,
+  existingAddressOptions,
 }: HouseFormClientProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
@@ -554,7 +561,15 @@ export default function HouseFormClient({
                         </p>
                       </div>
                     )}
-                    <StepComponent />
+                    {STEPS[currentStep].id === "location" ? (
+                      <StepLocation
+                        existingAddressOptions={
+                          isEditMode ? undefined : existingAddressOptions
+                        }
+                      />
+                    ) : (
+                      <StepComponent />
+                    )}
                   </motion.div>
                 </AnimatePresence>
 

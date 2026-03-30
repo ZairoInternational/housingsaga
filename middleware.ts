@@ -7,7 +7,7 @@ const unprotectedRoutes = [
   "/sign-in",
   "/sign-up",
   "/onboarding",
-];
+];  
 
 // API routes are handled separately
 const apiRoutes = /^\/api\//;
@@ -35,8 +35,8 @@ export default withAuth(function middleware(request: NextRequestWithAuth) {
   return NextResponse.next();
 }, {
   callbacks: {
-    authorized: ({ token }) => {
-      // Allow access to these routes without a token
+    authorized: () => {
+      // Route-level checks use request.nextauth.token in the middleware function above.
       return true;
     },
   },

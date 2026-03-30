@@ -4,6 +4,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { createFirstAddressQuotaToken } from "@/lib/entitlement-quota";
 
 type CheckoutProps = {
   planSlug: string;
@@ -113,7 +114,13 @@ export default function PricingCheckoutButton({
   const redirectTo =
     redirectToProp ??
     searchParams.get("redirect") ??
-    (addressKey ? `/add-property?addressKey=${encodeURIComponent(addressKey)}` : "/add-property");
+    (addressKey
+      ? `/add-property?addressKey=${encodeURIComponent(addressKey)}`
+      : "/add-property?payment=success");
+
+  // Only generate a one-time quota token when the user is paying directly from
+  // the pricing CTA (no explicit `addressKey` or `redirectTo` passed in props).
+  const canGenerateQuotaToken = addressKeyProp == null && redirectToProp == null;
 
   const buttonClassName = useMemo(() => {
     return `mt-8 inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition ${
@@ -221,10 +228,15 @@ export default function PricingCheckoutButton({
       return;
     }
 
-    if (!addressKey) {
-      setFeedback("Please fill your property address first, then pay for that address.");
+    if (!addressKey && !canGenerateQuotaToken) {
+      setFeedback(
+        "Please fill your property address first, then pay for that address.",
+      );
       return;
     }
+
+    const effectiveAddressKey =
+      addressKey ?? createFirstAddressQuotaToken(session.user.id);
 
     setIsSubmitting(true);
     setFeedback(null);
@@ -233,7 +245,7 @@ export default function PricingCheckoutButton({
       const res = await fetch("/api/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planSlug, addressKey }),
+        body: JSON.stringify({ planSlug, addressKey: effectiveAddressKey }),
       });
 
       const json = (await res.json()) as
@@ -255,7 +267,7 @@ export default function PricingCheckoutButton({
       setFeedback(message);
       setIsSubmitting(false);
     }
-  }, [openCheckout, planSlug, router, session?.user?.id, addressKey]);
+  }, [openCheckout, planSlug, router, session?.user?.id, addressKey, canGenerateQuotaToken]);
 
   return (
     <>

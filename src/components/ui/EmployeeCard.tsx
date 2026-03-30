@@ -29,13 +29,13 @@ type Props = {
 
 export default function EmployeeCard({ member }: Props) {
   return (
-    <div className="relative h-[380px] rounded-[20px] overflow-hidden group">
+    <div className="relative h-[420px] rounded-[20px] overflow-hidden group">
       {/* Image */}
       <Image
         src={member.image}
         alt={member.name}
         fill
-        className="object-cover"
+        className="object-cover object-top "
         sizes="(max-width:768px) 100vw, 25vw"
       />
 

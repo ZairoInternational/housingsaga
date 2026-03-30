@@ -87,7 +87,7 @@ const RealEstateExcellenceSection: React.FC = () => {
               className="font-semibold
               text-4xl sm:text-5xl lg:text-6xl"
             >
-              <CountUp end={985} duration={1.5} suffix="+" />
+              <CountUp end={34} duration={1.5} suffix="+" />
             </div>
           </div>
 
@@ -104,7 +104,7 @@ const RealEstateExcellenceSection: React.FC = () => {
               className="font-semibold
               text-4xl sm:text-5xl lg:text-6xl"
             >
-              <CountUp end={90} duration={1.5} suffix="+" />
+              <CountUp end={10} duration={1.5} suffix="+" />
             </div>
           </div>
 
@@ -116,13 +116,13 @@ const RealEstateExcellenceSection: React.FC = () => {
               className="font-semibold
               text-4xl sm:text-5xl lg:text-6xl"
             >
-              <CountUp end={65000} duration={1.5} suffix="+" />
+              <CountUp end={30} duration={1.5} suffix="+" />
             </div>
           </div>
         </div>
 
         {/* Image Container */}
-        <div
+        {/* <div
           ref={containerRef}
           className="
             relative
@@ -146,7 +146,7 @@ const RealEstateExcellenceSection: React.FC = () => {
               will-change-transform
             "
           />
-        </div>
+        </div> */}
       </div>
     </section>
   );

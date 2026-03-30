@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const AboutSection: React.FC = () => {
   const aboutItems = [
@@ -27,6 +28,7 @@ const AboutSection: React.FC = () => {
       icon: "premium.png",
     },
   ];
+  const router = useRouter();
   return (
     <section className="bg-[#f3f4f6] text-gray-900 py-16 sm:py-20 lg:py-28 overflow-hidden">
       <div className="max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,7 +48,8 @@ const AboutSection: React.FC = () => {
           </div>
 
           <div className="shrink-0">
-            <button className="inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-500 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300">
+            <button className="inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-500 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300"
+            onClick={() => router.push("/about-us")}>
               More About Us
               <ArrowUpRight size={16} />
             </button>

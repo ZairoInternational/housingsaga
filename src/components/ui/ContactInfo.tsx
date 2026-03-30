@@ -11,13 +11,13 @@ export default function ContactInfo() {
 
       <div className="grid grid-cols-2 gap-y-10 gap-x-12 text-[15px]">
         <div>
-          <p className="text-white/60 text-sm mb-2">24/7 Support</p>
+          <p className="text-white/60 text-sm mb-2">Phone Support</p>
           <p className="text-lg font-medium">+1890 123 456</p>
         </div>
 
         <div>
           <p className="text-white/60 text-sm mb-2">Email Us</p>
-          <p className="text-lg font-medium">support@example.com</p>
+          <p className="text-lg font-medium">support@housingsaga.com</p>
         </div>
 
         <div>
@@ -42,7 +42,7 @@ export default function ContactInfo() {
 
         <div className="flex items-center gap-4 mt-2">
           <Image
-            src="/team-1.jpg"
+            src="/team-1.png"
             alt="agent"
             width={42}
             height={42}
@@ -50,8 +50,8 @@ export default function ContactInfo() {
           />
 
           <div>
-            <p className="font-medium">Morgane Polanski</p>
-            <p className="text-sm text-white/60">Certificate Agent</p>
+            <p className="font-medium">Maria Saridou</p>
+            <p className="text-sm text-white/60">Founder of Greece Branch</p>
           </div>
         </div>
       </div>

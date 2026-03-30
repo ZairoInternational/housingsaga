@@ -52,7 +52,7 @@ export default function StepSpecs() {
           <Field label="Property on Floor">
             <Input type="number" min={0} {...reg("propertyOnFloor")} defaultValue={formData.propertyOnFloor} placeholder="2" />
           </Field>
-          <Field label="Construction Year" error={errors.constructionYear as FieldError | undefined} required>
+          <Field label="Construction Year" error={errors.constructionYear as FieldError | undefined}>
             <Input type="number" {...reg("constructionYear")} defaultValue={formData.constructionYear} placeholder="2018" error={!!errors.constructionYear} />
           </Field>
         </div>

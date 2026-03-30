@@ -2,7 +2,7 @@
 
 import React from "react";
 import Slider from "@/components/ui/slider";
-import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
+// import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
 // import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
 import {  StarIcon } from "lucide-react";
@@ -32,7 +32,7 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-const logos = ["LUXORYN", "homexa", "Domlux", "LIVORANE", "estalia"];
+// const logos = ["LUXORYN", "homexa", "Domlux", "LIVORANE", "estalia"];
 
 export default function TestimonialSection() {
   return (
@@ -70,7 +70,7 @@ export default function TestimonialSection() {
       </div>
 
       {/* MARQUEE */}
-      <div className="mt-12 sm:mt-16 lg:mt-20 border-t border-white/10 pt-8 sm:pt-10">
+      {/* <div className="mt-12 sm:mt-16 lg:mt-20 border-t border-white/10 pt-8 sm:pt-10">
         <InfiniteMarquee
           speed={20}
           gap={20}
@@ -83,7 +83,7 @@ export default function TestimonialSection() {
             ),
           }))}
         />
-      </div>
+      </div> */}
     </section>
   );
 }

@@ -5,7 +5,7 @@ import { connectDb } from "@/lib/db";
 import { buildHousePayload } from "@/lib/houseForm";
 import { authOptions } from "@/lib/authConfig";
 import { computeAddressKey } from "@/lib/address-key";
-import { isAddressPaid } from "@/lib/services/entitlement-service";
+import { consumeAddressQuotaIfNeeded } from "@/lib/services/entitlement-service";
 
 import type { HouseFormData } from "@/store/HouseStore";
 import { House } from "../../../models/houseModel";
@@ -38,9 +38,7 @@ export async function POST(request: Request) {
     } | null>();
 
     const isOwner = dbUser?.role === "owner";
-    const hasPaidThisAddress = await isAddressPaid(session.user.id, addressKey);
-
-    if (!isOwner || !hasPaidThisAddress) {
+    if (!isOwner) {
       return NextResponse.json(
         {
           error: "Payment required for this address",
@@ -51,6 +49,21 @@ export async function POST(request: Request) {
     }
 
     const parsed = buildHousePayload(raw, session.user.id);
+
+    const hasPaidThisAddress = await consumeAddressQuotaIfNeeded({
+      userId: session.user.id,
+      addressKey,
+    });
+
+    if (!hasPaidThisAddress) {
+      return NextResponse.json(
+        {
+          error: "Payment required for this address",
+          addressKey,
+        },
+        { status: 403 },
+      );
+    }
 
     const created = await House.create(parsed);
 

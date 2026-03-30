@@ -19,7 +19,7 @@ function matchCountryFlag(label: string): CountryFlagMatch | null {
 
   if (trimmed.startsWith("Greece:")) {
     return {
-      src: "/greeceflag.png",
+      src: "/greece.png",
       alt: "Greece flag",
       remainder: trimmed.slice("Greece:".length).trimStart(),
     };
@@ -27,7 +27,7 @@ function matchCountryFlag(label: string): CountryFlagMatch | null {
 
   if (trimmed.startsWith("India:")) {
     return {
-      src: "/indiaflag.png",
+      src: "/india.png",
       alt: "India flag",
       remainder: trimmed.slice("India:".length).trimStart(),
     };

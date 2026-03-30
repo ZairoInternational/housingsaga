@@ -1,15 +1,22 @@
 "use client";
 
 import type React from "react";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import type { FieldError } from "react-hook-form";
 import { useHouseFormStore } from "@/store/HouseStore";
 import { Field, Input, SectionTitle } from "./FormFields";
 import { MapPin } from "lucide-react";
 import LocationPicker from "@/components/LocationPicker";
+import type { ExistingAddressOption } from "./address-reuse-types";
 
+type StepLocationProps = {
+  existingAddressOptions?: ExistingAddressOption[];
+};
 
-export default function StepLocation() {
+export default function StepLocation({
+  existingAddressOptions,
+}: StepLocationProps) {
   const {
     register,
     setValue,
@@ -17,6 +24,14 @@ export default function StepLocation() {
     formState: { errors },
   } = useFormContext();
   const { formData, updateField } = useHouseFormStore();
+
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("new");
+
+  useEffect(() => {
+    // Reset to default "new address" whenever options change (e.g. navigating
+    // to a different add-property flow).
+    setSelectedAddressId("new");
+  }, [existingAddressOptions]);
 
   const reg = (name: keyof typeof formData) =>
     register(name, {
@@ -28,9 +43,165 @@ export default function StepLocation() {
   const latitude = watch("latitude") as string | undefined;
   const longitude = watch("longitude") as string | undefined;
 
+  const clearAddressFields = () => {
+    updateField("address", "");
+    updateField("city", "");
+    updateField("state", "");
+    updateField("country", "");
+    updateField("postalCode", "");
+    updateField("houseNumber", "");
+    updateField("latitude", "");
+    updateField("longitude", "");
+
+    setValue("address", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("city", "", { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+    setValue("state", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("country", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("postalCode", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("houseNumber", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("latitude", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("longitude", "", {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+
+  const applyExistingAddress = (option: ExistingAddressOption) => {
+    updateField("address", option.address);
+    updateField("city", option.city);
+    updateField("state", option.state);
+    updateField("country", option.country);
+    updateField("postalCode", option.postalCode);
+    updateField("houseNumber", option.houseNumber);
+    updateField("latitude", option.latitude);
+    updateField("longitude", option.longitude);
+
+    setValue("address", option.address, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("city", option.city, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("state", option.state, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("country", option.country, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("postalCode", option.postalCode, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("houseNumber", option.houseNumber, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("latitude", option.latitude, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue("longitude", option.longitude, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+  };
+
   return (
     <div className="space-y-6">
       <SectionTitle>Property Address</SectionTitle>
+
+      {existingAddressOptions && existingAddressOptions.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0d0f17] p-4">
+          <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider mb-3">
+            Address reuse
+          </div>
+
+          <div className="space-y-3">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="radio"
+                name="addressReuse"
+                value="new"
+                checked={selectedAddressId === "new"}
+                onChange={() => {
+                  setSelectedAddressId("new");
+                  clearAddressFields();
+                }}
+                className="mt-1"
+              />
+              <div>
+                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  Use new address
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  Enter a different address for this listing.
+                </div>
+              </div>
+            </label>
+
+            {existingAddressOptions.map((option) => (
+              <label key={option.id} className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="radio"
+                  name="addressReuse"
+                  value={option.id}
+                  checked={selectedAddressId === option.id}
+                  onChange={() => {
+                    setSelectedAddressId(option.id);
+                    applyExistingAddress(option);
+                  }}
+                  className="mt-1"
+                />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                    {option.address}, {option.city}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    {option.state} • {option.country}
+                  </div>
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Field label="Full Address" error={errors.address as FieldError | undefined} required>
         <div className="relative">
