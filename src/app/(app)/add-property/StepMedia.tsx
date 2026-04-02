@@ -5,6 +5,7 @@ import { CloudUpload, X, Video, ImageIcon, Loader2, Map as MapIcon } from "lucid
 import { useHouseFormStore } from "@/store/HouseStore";
 import { useBunnyUpload } from "@/hooks/useBunnyUpload";
 import { Field, Input } from "./FormFields";
+import toast from "react-hot-toast";
 
 export default function StepMedia() {
   const { formData, updateField } = useHouseFormStore();
@@ -31,10 +32,14 @@ export default function StepMedia() {
     setUploading(false);
     if (error) {
       setUploadError("Upload failed. Please try again.");
+      toast.error(error);
       return;
     }
     if (imageUrls.length > 0) {
       updateField("images", [...(formData.images ?? []), ...imageUrls]);
+      toast.success(
+        `Uploaded ${imageUrls.length} photo${imageUrls.length === 1 ? "" : "s"}.`,
+      );
     }
     // Reset input so same file can be re-selected
     e.target.value = "";
@@ -70,11 +75,13 @@ export default function StepMedia() {
     setVideoUploading(false);
     if (error || !url) {
       setVideoError(error ?? "Upload failed. Please try again.");
+      toast.error(error ?? "Video upload failed.");
       return;
     }
 
     // Store in videoUrl to keep schema/back-end unchanged.
     updateField("videoUrl", url);
+    toast.success("Video uploaded.");
     e.target.value = "";
   };
 
@@ -96,10 +103,12 @@ export default function StepMedia() {
     setFloorUploading(false);
     if (error || !url) {
       setFloorError(error ?? "Upload failed. Please try again.");
+      toast.error(error ?? "Floor plan upload failed.");
       return;
     }
 
     updateField("floorMapImage", url);
+    toast.success("Floor plan uploaded.");
     e.target.value = "";
   };
 

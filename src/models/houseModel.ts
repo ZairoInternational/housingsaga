@@ -7,7 +7,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
     name: {
       type: String,
       required: true,
-    },
+    },               
     description: {
       type: String,
       required: true,
@@ -19,7 +19,7 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
 
     owner: {  
       type: Schema.Types.ObjectId,
-      ref: "HousingUsers",
+      ref: "HousingUsers",  
       required: true,
     },
 

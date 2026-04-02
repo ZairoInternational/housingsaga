@@ -6,6 +6,7 @@ import { getRazorpayWebhookSecret } from "@/lib/razorpay";
 import { Plan } from "@/models/plan";
 import { grantAddressEntitlement } from "@/lib/services/entitlement-service";
 import { markPaymentCaptured, markPaymentFailed } from "@/lib/services/payment-service";
+import { incrementCouponUsedCount } from "@/lib/services/coupon-service";
 
 type RazorpayWebhookPayload = {
   event?: string;
@@ -66,6 +67,12 @@ export async function POST(request: NextRequest) {
 
       const plan = await Plan.findById(captureResult.payment.planId);
       const planSlug = plan?.slug ?? null;
+
+      if (captureResult.payment.couponCode) {
+        void incrementCouponUsedCount({
+          couponCode: captureResult.payment.couponCode,
+        });
+      }
 
       if (planSlug) {
         await grantAddressEntitlement({

@@ -5,7 +5,10 @@ import { connectDb } from "@/lib/db";
 import { buildHousePayload } from "@/lib/houseForm";
 import { authOptions } from "@/lib/authConfig";
 import { computeAddressKey } from "@/lib/address-key";
-import { consumeAddressQuotaIfNeeded } from "@/lib/services/entitlement-service";
+import {
+  consumeAddressQuotaIfNeeded,
+  isAddressPaid,
+} from "@/lib/services/entitlement-service";
 
 import type { HouseFormData } from "@/store/HouseStore";
 import { House } from "../../../models/houseModel";
@@ -50,10 +53,9 @@ export async function POST(request: Request) {
 
     const parsed = buildHousePayload(raw, session.user.id);
 
-    const hasPaidThisAddress = await consumeAddressQuotaIfNeeded({
-      userId: session.user.id,
-      addressKey,
-    });
+    // Check entitlement without mutating first. We only convert/consume
+    // the quota token after House.create succeeds.
+    const hasPaidThisAddress = await isAddressPaid(session.user.id, addressKey);
 
     if (!hasPaidThisAddress) {
       return NextResponse.json(
@@ -66,6 +68,13 @@ export async function POST(request: Request) {
     }
 
     const created = await House.create(parsed);
+
+    // Convert the "first address quota" token into the real addressKey
+    // only after the listing was successfully created.
+    await consumeAddressQuotaIfNeeded({
+      userId: session.user.id,
+      addressKey,
+    });
 
     return NextResponse.json(
       {

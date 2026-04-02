@@ -1,6 +1,36 @@
 import axios from "axios";
 import { useState } from "react";
 
+/** Official Bunny Storage API host (upload PUT target). */
+const DEFAULT_BUNNY_STORAGE_API = "https://storage.bunnycdn.com";
+
+function getBunnyConfig():
+  | {
+      storageUrl: string;
+      storageZoneName: string;
+      accessKey: string;
+      cdnBaseUrl: string;
+    }
+  | { error: string } {
+  const storageZoneName = process.env.NEXT_PUBLIC_BUNNY_STORAGE_ZONE?.trim() ?? "";
+  const accessKey = process.env.NEXT_PUBLIC_BUNNY_ACCESS_KEY?.trim() ?? "";
+  const storageUrl =
+    process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL?.trim() || DEFAULT_BUNNY_STORAGE_API;
+
+  if (!storageZoneName || !accessKey) {
+    return {
+      error:
+        "Upload is not configured. Set NEXT_PUBLIC_BUNNY_STORAGE_ZONE and NEXT_PUBLIC_BUNNY_ACCESS_KEY in .env",
+    };
+  }
+
+  const cdnBaseUrl =
+    process.env.NEXT_PUBLIC_BUNNY_CDN_URL?.trim() ||
+    `https://${storageZoneName}.b-cdn.net`;
+
+  return { storageUrl, storageZoneName, accessKey, cdnBaseUrl };
+}
+
 interface UploadResult {
   imageUrls: string[];
   error: string | null;
@@ -31,9 +61,11 @@ export const useBunnyUpload = () => {
       return { url: null, error: "Unsupported file type." };
     }
 
-    const storageZoneName = process.env.NEXT_PUBLIC_BUNNY_STORAGE_ZONE!;
-    const accessKey = process.env.NEXT_PUBLIC_BUNNY_ACCESS_KEY!;
-    const storageUrl = process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL!;
+    const cfg = getBunnyConfig();
+    if ("error" in cfg) {
+      return { url: null, error: cfg.error };
+    }
+    const { storageUrl, storageZoneName, accessKey, cdnBaseUrl } = cfg;
 
     const fileName = `${generateRandomString(7)}${file.name}`;
 
@@ -57,7 +89,7 @@ export const useBunnyUpload = () => {
       );
 
       return {
-        url: `https://vacationsaga.b-cdn.net/${folderName}/${fileName}`,
+        url: `${cdnBaseUrl.replace(/\/$/, "")}/${folderName}/${fileName}`,
         error: null,
       };
     } catch (err) {
@@ -91,9 +123,11 @@ export const useBunnyUpload = () => {
       }
     }
 
-    const storageZoneName = process.env.NEXT_PUBLIC_BUNNY_STORAGE_ZONE!;
-    const accessKey = process.env.NEXT_PUBLIC_BUNNY_ACCESS_KEY!;
-    const storageUrl = process.env.NEXT_PUBLIC_BUNNY_STORAGE_URL!;
+    const cfg = getBunnyConfig();
+    if ("error" in cfg) {
+      return { imageUrls: [], error: cfg.error };
+    }
+    const { storageUrl, storageZoneName, accessKey, cdnBaseUrl } = cfg;
 
     setLoading(true);
 
@@ -118,7 +152,7 @@ export const useBunnyUpload = () => {
               }
             );
             imageUrls.push(
-              `https://vacationsaga.b-cdn.net/${folderName}/${fileName}`
+              `${cdnBaseUrl.replace(/\/$/, "")}/${folderName}/${fileName}`
             );
           } catch (uploadError) {
             console.error("Error uploading file:", uploadError);

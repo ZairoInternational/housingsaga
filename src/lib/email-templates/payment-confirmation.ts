@@ -3,7 +3,7 @@ import { formatEurAmount } from "@/lib/format-currency";
 export type PaymentConfirmationEmailParams = {
   name: string;
   planName: string;
-  amountEurocent: number;
+  amountEuro: number;
   razorpayPaymentId: string;
   razorpayOrderId: string;
   paidAt: Date;
@@ -24,8 +24,7 @@ export function renderPaymentConfirmationEmail(
   const safeName = escapeHtml(params.name);
   const safePlanName = escapeHtml(params.planName);
 
-  const amountEur = params.amountEurocent / 100;
-  const amountLabel = formatEurAmount(amountEur);
+  const amountLabel = formatEurAmount(params.amountEuro);
 
   const subject = "HousingSaga Payment Confirmed";
 

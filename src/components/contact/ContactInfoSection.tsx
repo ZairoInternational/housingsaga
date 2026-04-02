@@ -1,8 +1,11 @@
 "use client";
 
-import { Phone, Mail, Clock, MapPin } from "lucide-react";
+import { Phone, Clock, MapPin } from "lucide-react";
+import { SITE_OFFICES } from "@/lib/site-contact";
 
 export default function ContactInfoSection() {
+  const [greece, india] = SITE_OFFICES;
+
   return (
     <section className="bg-[#f5f5f5] py-28">
       <div className="max-w-[1200px] mx-auto px-6 text-center">
@@ -12,29 +15,29 @@ export default function ContactInfoSection() {
           Get In Touch With Us
         </h2>
 
-        <div className="grid md:grid-cols-4 gap-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           <ContactItem
-            icon={<Phone />}
-            title="Contact Us"
-            text="Phone 01: +1890 123 456"
-          />
-
-          <ContactItem
-            icon={<Mail />}
-            title="Email Address"
-            text="support01@example.com"
-          />
-
-          <ContactItem
-            icon={<Clock />}
-            title="Opening Hours"
-            text="Mon - Sat: 7.00 am - 8.00 pm"
+            icon={<MapPin />}
+            title={`${greece.label} office`}
+            text={greece.address}
           />
 
           <ContactItem
             icon={<MapPin />}
-            title="Our Office"
-            text="Spokane Valley, WA 99212"
+            title={`${india.label} office`}
+            text={india.address}
+          />
+
+          <ContactItem
+            icon={<Phone />}
+            title="Contact us"
+            text="Send us a message using the contact form on this page. We reply by email."
+          />
+
+          <ContactItem
+            icon={<Clock />}
+            title="Response time"
+            text="We typically reply within 1–2 business days."
           />
         </div>
       </div>
@@ -53,13 +56,13 @@ function ContactItem({
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="w-14 h-14 rounded-full bg-lime-400 flex items-center justify-center">
+      <div className="w-14 h-14 rounded-full bg-lime-400 flex items-center justify-center text-black">
         {icon}
       </div>
 
       <h3 className="font-semibold">{title}</h3>
 
-      <p className="text-gray-500 text-sm">{text}</p>
+      <p className="text-gray-500 text-sm max-w-[260px]">{text}</p>
     </div>
   );
 }

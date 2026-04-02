@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { createFirstAddressQuotaToken } from "@/lib/entitlement-quota";
+import toast from "react-hot-toast";
 
 type CheckoutProps = {
   planSlug: string;
@@ -28,6 +29,18 @@ type RazorpayHandlerResponse = {
   razorpay_order_id: string;
   razorpay_signature: string;
 };
+
+type CouponEvaluationResponse =
+  | {
+      ok: true;
+      planSlug: string;
+      currency: string;
+      baseAmountEuro: number;
+      discountEuro: number;
+      payableAmountEuro: number;
+      couponCode: string;
+    }
+  | { error?: string; message?: string };
 
 type RazorpayOptions = {
   key: string;
@@ -90,7 +103,6 @@ async function loadRazorpayScript(): Promise<void> {
 export default function PricingCheckoutButton({
   planSlug,
   label,
-  highlighted,
   addressKey: addressKeyProp,
   redirectTo: redirectToProp,
 }: CheckoutProps) {
@@ -108,7 +120,15 @@ export default function PricingCheckoutButton({
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    couponCode: string;
+    currency: string;
+    baseAmountEuro: number;
+    discountEuro: number;
+    payableAmountEuro: number;
+  } | null>(null);
 
   const addressKey = addressKeyProp ?? searchParams.get("addressKey");
   const redirectTo =
@@ -122,13 +142,65 @@ export default function PricingCheckoutButton({
   // the pricing CTA (no explicit `addressKey` or `redirectTo` passed in props).
   const canGenerateQuotaToken = addressKeyProp == null && redirectToProp == null;
 
-  const buttonClassName = useMemo(() => {
-    return `mt-8 inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium transition ${
-      highlighted
-        ? "bg-lime-400 text-black hover:bg-lime-300"
-        : "bg-white/10 hover:bg-white/20 text-white"
-    }`;
-  }, [highlighted]);
+
+
+  const formatEuro = useCallback((amountEuro: number) => {
+    const value = Math.max(0, Math.round(amountEuro * 100) / 100);
+    return `€${value.toFixed(2)}`;
+  }, []);
+
+  const handleApplyCoupon = useCallback(async () => {
+    if (!session?.user?.id) {
+      toast.error("Please sign in to apply a coupon.");
+      router.push("/sign-in");
+      return;
+    }
+
+    const raw = couponCode.trim();
+    if (!raw) {
+      setAppliedCoupon(null);
+      toast.error("Enter a coupon code.");
+      return;
+    }
+
+    setIsApplyingCoupon(true);
+
+    try {
+      const res = await fetch("/api/coupons/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planSlug, couponCode: raw }),
+      });
+
+      const json = (await res.json()) as CouponEvaluationResponse;
+
+      if (!res.ok || !("ok" in json) || json.ok !== true) {
+        const msg =
+          "message" in json && typeof json.message === "string"
+            ? json.message
+            : "Invalid coupon";
+        throw new Error(msg);
+      }
+
+      setAppliedCoupon({
+        couponCode: json.couponCode,
+        currency: json.currency,
+        baseAmountEuro: json.baseAmountEuro,
+        discountEuro: json.discountEuro,
+        payableAmountEuro: json.payableAmountEuro,
+      });
+      toast.success(
+        json.discountEuro > 0 ? "Coupon applied." : "Coupon applied (no discount).",
+      );
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to apply coupon";
+      setAppliedCoupon(null);
+      toast.error(message);
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  }, [couponCode, planSlug, router, session?.user?.id]);
 
   const openCheckout = useCallback(
     (order: RazorpayOrderResponse) => {
@@ -152,14 +224,12 @@ export default function PricingCheckoutButton({
         modal: {
           ondismiss: () => {
             setIsSubmitting(false);
-            setFeedback("Payment was cancelled or timed out. Please try again.");
+            toast.error("Payment was cancelled or timed out. Please try again.");
           },
         },
         retry: { enabled: true },
         handler: (response) => {
           void (async () => {
-            setFeedback(null);
-
             try {
               const verifyRes = await fetch("/api/payments/verify", {
                 method: "POST",
@@ -181,11 +251,11 @@ export default function PricingCheckoutButton({
                 throw new Error(errMsg);
               }
 
-              setFeedback("Payment successful. You can now list your property.");
+              toast.success("Payment successful.");
               router.push(redirectTo);
             } catch (err) {
               const message = err instanceof Error ? err.message : "Payment verification failed";
-              setFeedback(message);
+              toast.error(message);
             } finally {
               setIsSubmitting(false);
             }
@@ -215,7 +285,7 @@ export default function PricingCheckoutButton({
           ? `Payment declined: ${description}${reason ? ` (${reason})` : ""}`
           : `Payment could not be completed.${reason ? ` Reason: ${reason}.` : ""} Please retry or use a different card/network.`;
 
-        setFeedback(message);
+        toast.error(message);
       });
       checkout.open();
     },
@@ -224,14 +294,13 @@ export default function PricingCheckoutButton({
 
   const handleClick = useCallback(async () => {
     if (!session?.user?.id) {
+      toast.error("Please sign in to continue.");
       router.push("/sign-in");
       return;
     }
 
     if (!addressKey && !canGenerateQuotaToken) {
-      setFeedback(
-        "Please fill your property address first, then pay for that address.",
-      );
+      toast.error("Please fill your property address first.");
       return;
     }
 
@@ -239,51 +308,135 @@ export default function PricingCheckoutButton({
       addressKey ?? createFirstAddressQuotaToken(session.user.id);
 
     setIsSubmitting(true);
-    setFeedback(null);
 
     try {
       const res = await fetch("/api/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planSlug, addressKey: effectiveAddressKey }),
+        body: JSON.stringify({
+          planSlug,
+          addressKey: effectiveAddressKey,
+          couponCode:
+            appliedCoupon?.couponCode ??
+            (couponCode.trim().length > 0 ? couponCode : undefined),
+        }),
       });
 
       const json = (await res.json()) as
         | RazorpayOrderResponse
+        | { skipRazorpay: true; payableAmountEuro?: number }
         | { error?: string; message?: string };
 
-      if (!res.ok || !("orderId" in json)) {
+      if (!res.ok) {
         const msg =
-          "error" in json && typeof json.error === "string"
-            ? json.error
+          "message" in json && typeof json.message === "string"
+            ? json.message
             : "Failed to create payment order";
         throw new Error(msg);
+      }
+
+      if ("skipRazorpay" in json && json.skipRazorpay === true) {
+        setIsSubmitting(false);
+        toast.success("Payment successful.");
+        router.push(redirectTo);
+        return;
+      }
+
+      if (!("orderId" in json)) {
+        throw new Error("Unexpected checkout response");
       }
 
       await loadRazorpayScript();
       openCheckout(json);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Checkout failed";
-      setFeedback(message);
       setIsSubmitting(false);
+      toast.error(message);
     }
-  }, [openCheckout, planSlug, router, session?.user?.id, addressKey, canGenerateQuotaToken]);
+  }, [
+    openCheckout,
+    planSlug,
+    router,
+    session?.user?.id,
+    addressKey,
+    canGenerateQuotaToken,
+    couponCode,
+    appliedCoupon?.couponCode,
+    redirectTo,
+  ]);
 
   return (
     <>
+      <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={couponCode}
+            onChange={(e) => {
+              setCouponCode(e.target.value);
+              setAppliedCoupon(null);
+            }}
+            placeholder="Enter coupon code"
+            className="flex-1 min-w-0 text-sm rounded-full border border-gray-300 bg-gray-50 px-4 py-2 outline-none transition focus:border-lime-500 focus:ring-2 focus:ring-lime-100"
+            disabled={isSubmitting || isApplyingCoupon}
+            aria-label="Coupon code"
+          />
+
+          <button
+            type="button"
+            onClick={handleApplyCoupon}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition 
+        ${
+          isSubmitting || isApplyingCoupon
+            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-lime-500 text-white hover:bg-lime-600 active:scale-[0.98]"
+        }`}
+            disabled={isSubmitting || isApplyingCoupon}
+          >
+            {isApplyingCoupon ? "Applying…" : "Apply"}
+          </button>
+        </div>
+
+        {appliedCoupon && (
+          <div className="mt-4 grid grid-cols-3 gap-3 text-xs sm:text-sm">
+            <div className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-center">
+              <p className="text-gray-500">Original</p>
+              <p className="font-semibold text-gray-800">
+                {formatEuro(appliedCoupon.baseAmountEuro)}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-lime-200 bg-lime-50 px-3 py-3 text-center">
+              <p className="text-gray-500">Discount</p>
+              <p className="text-lime-600 font-semibold">
+                -{formatEuro(appliedCoupon.discountEuro)}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-gray-300 bg-white px-3 py-3 text-center shadow-sm">
+              <p className="text-gray-500">To Pay</p>
+              <p className="font-bold text-gray-900">
+                {formatEuro(appliedCoupon.payableAmountEuro)}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
       <button
         type="button"
-        className={buttonClassName}
+        className={`mt-4 w-full rounded-xl py-3 text-sm font-semibold transition
+    ${
+      isSubmitting
+        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+        : "bg-black text-white hover:bg-gray-900 active:scale-[0.99]"
+    }`}
         onClick={handleClick}
         disabled={isSubmitting}
       >
         {isSubmitting ? "Processing..." : label}
       </button>
-      {feedback && (
-        <p className="mt-2 text-xs sm:text-sm text-gray-300" aria-live="polite">
-          {feedback}
-        </p>
-      )}
+
     </>
   );
 }

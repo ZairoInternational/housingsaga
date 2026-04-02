@@ -13,7 +13,7 @@ async function main() {
         slug: planSlug,
         name: "Property Listing Fee",
         description: "One-time fee to list a property on HousingSaga.",
-        amountEurocent: 20000,
+        amountEuro: 200,
         currency: "EUR",
         isActive: true,
         features: [

@@ -13,6 +13,7 @@ import { Plan } from "@/models/plan";
 import { Payment } from "@/models/payment";
 import { grantAddressEntitlement } from "@/lib/services/entitlement-service";
 import { markPaymentCaptured } from "@/lib/services/payment-service";
+import { incrementCouponUsedCount } from "@/lib/services/coupon-service";
 
 const verifySchema = z.object({
   razorpay_payment_id: z.string().min(1),
@@ -63,6 +64,13 @@ export async function POST(request: NextRequest) {
 
     const capturedAt = captureResult.payment.capturedAt ?? new Date();
 
+    // Best-effort: increment coupon usage only for first-time captures.
+    if (captureResult.payment.couponCode) {
+      void incrementCouponUsedCount({
+        couponCode: captureResult.payment.couponCode,
+      });
+    }
+
     const plan = await Plan.findById(captureResult.payment.planId);
     const planSlug = plan?.slug ?? null;
     const planName = plan?.name ?? "Property Listing Fee";
@@ -81,7 +89,7 @@ export async function POST(request: NextRequest) {
       const { subject, html, text } = renderPaymentConfirmationEmail({
         name: user?.name ?? "there",
         planName,
-        amountEurocent: captureResult.payment.amountEurocent,
+        amountEuro: captureResult.payment.amountEuro,
         razorpayPaymentId: paymentId,
         razorpayOrderId: orderId,
         paidAt: capturedAt,

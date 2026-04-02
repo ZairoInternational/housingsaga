@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowUp } from "lucide-react";
 import FooterColumn from "./ui/FooterColumn";
+import { SITE_OFFICES } from "@/lib/site-contact";
 
 type FooterColumn = {
   title: string;
@@ -43,17 +44,10 @@ const columns: FooterColumn[] = [
   },
   {
     title: "Addresses",
-    links: [
-      {
-        label: "Greece: 2 Charokopou str, Kallithea 17671 Athens, Greece",
-        href: "/contact",
-      },
-      {
-        label:
-          "India: 117/N/70 3rd Floor Kakadeo, Kanpur, Uttar Pradesh, India",
-        href: "/contact",
-      },
-    ],
+    links: SITE_OFFICES.map((office) => ({
+      label: `${office.label}: ${office.address}`,
+      href: "/contact",
+    })),
   },
 ];
 

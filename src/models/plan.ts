@@ -6,7 +6,7 @@ const PlanSchema = new Schema<PlanValidation>(
     slug: { type: String, required: true, unique: true, index: true },
     name: { type: String, required: true },
     description: { type: String, required: false },
-    amountEurocent: { type: Number, required: true },
+    amountEuro: { type: Number, required: true },
     currency: { type: String, required: true, default: "EUR" },
     isActive: { type: Boolean, required: true, default: true },
     features: { type: [String], required: true, default: [] },
@@ -14,6 +14,12 @@ const PlanSchema = new Schema<PlanValidation>(
   { timestamps: true },
 );
 
-export const Plan: mongoose.Model<PlanValidation> =
-  mongoose.models.Plan || mongoose.model<PlanValidation>("Plan", PlanSchema);
+// In dev (Next.js hot reload), mongoose model cache can hold a stale schema.
+// Delete before registering so schema changes (e.g. field renames) are applied.
+delete (mongoose.models as Record<string, unknown>).Plan;
+
+export const Plan: mongoose.Model<PlanValidation> = mongoose.model<PlanValidation>(
+  "Plan",
+  PlanSchema,
+);
 

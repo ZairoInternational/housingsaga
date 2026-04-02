@@ -199,7 +199,7 @@ export default function TermsAndConditionsPage() {
             </ul>
             </motion.section>
 
-            {/* 6. Client जिम्मेदारी (Responsibility) */}
+            {/* 6. Clients Responsibility */}
             <motion.section
             id="client-responsibility"
             initial={{ opacity: 0, y: 16 }}
@@ -209,7 +209,7 @@ export default function TermsAndConditionsPage() {
             className="rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0b101b] shadow-sm p-5 sm:p-6"
           >
             <h2 className="text-xl sm:text-2xl font-semibold mb-3">
-              6. Client जिम्मेदारी (Responsibility)
+              6. Clients Responsibility
             </h2>
             <p className="mb-2">Clients must:</p>
             <ul className="list-disc list-inside space-y-1">

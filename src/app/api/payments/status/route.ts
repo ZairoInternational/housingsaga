@@ -7,7 +7,7 @@ import { connectDb } from "@/lib/db";
 import { isAddressPaid } from "@/lib/services/entitlement-service";
 
 const statusQuerySchema = z.object({
-  addressKey: z.string().min(1).max(500),
+  addressKey: z.string().min(1).max(1000),
 });
 
 export async function GET(request: NextRequest) {
