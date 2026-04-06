@@ -3,7 +3,7 @@ import Image from "next/image";
 export interface ProjectKeyFeaturesProps {
   bedrooms?: number;
   bathrooms?: number;
-  parking?: number;
+  balconies?: number;
   areaSqft?: number;
 }
 
@@ -63,7 +63,7 @@ const BathIcon = () => (
   </svg>
 );
 
-const CarIcon = () => (
+const BalconyIcon = () => (
   <svg
     viewBox="0 0 20 20"
     fill="none"
@@ -71,11 +71,10 @@ const CarIcon = () => (
     strokeWidth="1.5"
     className="h-[18px] w-[18px]"
   >
-    <path d="M4 10l1.5-4h9L16 10" />
-    <rect x="2" y="10" width="16" height="5" rx="1.5" />
-    <circle cx="6" cy="15" r="1.5" />
-    <circle cx="14" cy="15" r="1.5" />
-    <path d="M2 12h16" />
+    <path d="M3 17h14V3H3v14Z" />
+    <path d="M3 10h14" />
+    <path d="M10 3v14" />
+    <path d="M10 10h7v7" />
   </svg>
 );
 
@@ -95,7 +94,7 @@ const RulerIcon = () => (
 export default function ProjectKeyFeatures({
   bedrooms,
   bathrooms,
-  parking,
+  balconies,
   areaSqft,
 }: ProjectKeyFeaturesProps) {
   const rows = [
@@ -109,10 +108,10 @@ export default function ProjectKeyFeatures({
       label: "Bath",
       value: bathrooms,
     },
-    parking !== undefined && {
-      icon: <CarIcon />,
-      label: "Parking",
-      value: parking,
+    balconies !== undefined && {
+      icon: <BalconyIcon />,
+      label: "Balconies",
+      value: balconies,
     },
     areaSqft !== undefined && {
       icon: <RulerIcon />,

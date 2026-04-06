@@ -1,5 +1,9 @@
+import type { PropertyCardData } from "@/components/ui/propertyCard";
+
 import { connectDb } from "@/lib/db";
 import { House } from "@/models/houseModel";
+
+const FALLBACK_PROPERTY_IMAGE = "/property.jpeg";
 
 export type ProjectsPaginationMeta = {
   total: number;
@@ -45,4 +49,43 @@ export async function getProjectsPageData(
       totalPages,
     },
   };
+}
+
+type HouseCardLean = {
+  _id: unknown;
+  name: string;
+  city: string;
+  state: string;
+  carpetArea: number;
+  bedrooms: number;
+  bathrooms: number;
+  balconies?: number;
+  images?: string[];
+};
+
+/**
+ * Up to `limit` houses for homepage / marketing sections (featured first, then newest).
+ */
+export async function getHighlightedProjectCards(
+  limit: number,
+): Promise<PropertyCardData[]> {
+  await connectDb();
+
+  const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 20);
+
+  const docs = await House.find({})
+    .sort({ isFeatured: -1, createdAt: -1 })
+    .limit(safeLimit)
+    .lean<HouseCardLean[]>();
+
+  return docs.map((doc) => ({
+    id: String(doc._id),
+    img: doc.images?.[0]?.trim() || FALLBACK_PROPERTY_IMAGE,
+    title: doc.name,
+    tag: [doc.city, doc.state].filter(Boolean).join(", "),
+    area: doc.carpetArea.toLocaleString("en-US"),
+    beds: doc.bedrooms,
+    baths: doc.bathrooms,
+    cars: doc.balconies ?? 0,
+  }));
 }
