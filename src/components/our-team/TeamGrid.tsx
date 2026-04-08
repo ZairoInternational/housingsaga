@@ -13,40 +13,40 @@ export default function TeamGrid() {
  const teamMembers: TeamMember[] = [
    {
      id: 1,
+     name: "Zaid Bin Hashmat",
+     role: "Founder",
+     image: "/team-7.jpeg",
+
+   },
+   {
+     id: 2,
      name: "Maria saridou",
      role: "Founder of Greece Branch",
      image: "/team-1.png",
    },
    {
-     id: 2,
+     id: 3,
      name: "Seda Celen",
      role: "Real Estate Consultant",
      image: "/team-2.png",
    },
    {
-     id: 3,
+     id: 4,
      name: "Maria Boutali",
-     role: "Real Estate Consultant",
+     role: "Lawyer",
      image: "/team-3.png",
    },
    {
-     id: 4,
+     id: 5,
      name: "Siddartha Jain",
      role: "Chief Marketing Officer",
      image: "/team-4.jpeg",
    },
-   
-   {
-     id: 5,
-     name: "Laura Bennett",
-     role: "Marketing Manager",
-     image: "/team-3.jpg",
-   },
    {
      id: 6,
-     name: "Katy Hator",
-     role: "Real Estate Consultant",
-     image: "/team-6.jpg",
+     name: "Ankita Nigam",
+     role: "Chief Operating Officer",
+     image: "/team-8.jpeg",
    },
  ];
   return (
