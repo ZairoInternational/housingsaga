@@ -12,7 +12,7 @@ export default function ContactInfo() {
       <div className="grid grid-cols-2 gap-y-10 gap-x-12 text-[15px]">
         <div>
           <p className="text-white/60 text-sm mb-2">Phone Support</p>
-          <p className="text-lg font-medium">+1890 123 456</p>
+          <p className="text-lg font-medium">+91 9076621166</p>
         </div>
 
         <div>

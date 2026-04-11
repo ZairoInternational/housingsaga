@@ -89,11 +89,8 @@ const Navbar = () => {
                 alt="HousingSaga logo"
                 width={100}
                 height={100}
-                className="w-8 h-10 sm:w-9 sm:h-11 lg:w-10 lg:h-12 object-contain"
+                className="w-8 h-10 sm:w-9 sm:h-11 lg:w-20 lg:h-18 object-contain"
               />
-              <span className="hidden sm:inline text-white font-semibold text-base lg:text-lg whitespace-nowrap tracking-tight">
-                HousingSaga
-              </span>
             </Link>
 
             {/* Nav links — hidden on mobile, shown on lg+ */}
@@ -102,7 +99,11 @@ const Navbar = () => {
                 <Link
                   key={item}
                   // href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  href = {item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={
+                    item === "Home"
+                      ? "/"
+                      : `/${item.toLowerCase().replace(/\s+/g, "-")}`
+                  }
                   className="relative block overflow-hidden h-5 text-gray-300 hover:text-white text-sm font-medium group"
                 >
                   <span className="block transition-transform duration-300 ease-out group-hover:translate-y-full">
@@ -119,9 +120,13 @@ const Navbar = () => {
             <nav className="hidden md:flex lg:hidden items-center gap-4">
               {["Home", "Services", "Projects", "Contact"].map((item) => (
                 <Link
-                  key={item}  
+                  key={item}
                   // href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  href = {item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={
+                    item === "Home"
+                      ? "/"
+                      : `/${item.toLowerCase().replace(/\s+/g, "-")}`
+                  }
                   className="relative block overflow-hidden h-5 text-gray-300 hover:text-white text-xs font-medium group"
                 >
                   <span className="block transition-transform duration-300 ease-out group-hover:translate-y-full">
@@ -143,7 +148,7 @@ const Navbar = () => {
                 <Phone size={14} className="text-black" />
               </div>
               <span className="text-white hover:text-lime-300 transition-colors text-xs xl:text-sm">
-                Call us: +1890 123 456
+                Call us: +91 9076621166
               </span>
             </div>
 
@@ -275,7 +280,7 @@ const Navbar = () => {
                   </button>
                 )}
               </div>
-            )} 
+            )}
 
             {/* Hamburger — visible on mobile/tablet */}
             <button
@@ -285,7 +290,7 @@ const Navbar = () => {
             >
               <Menu size={18} />
             </button>
-          </div>                  
+          </div>
         </div>
       </header>
 

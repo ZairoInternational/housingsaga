@@ -167,7 +167,7 @@ export default function ProjectKeyFeatures({
                   24/7 Support
                 </p>
                 <p className="text-[23px] font-medium text-white tracking-wide">
-                  +1890 123 456
+                  +91 9076621166
                 </p>
               </div>
               <div>
