@@ -108,7 +108,7 @@ export default function PricingCheckoutButton({
 }: CheckoutProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session } = useSession() as {
+  const { data: session, status } = useSession() as {
     data: {
       user?: {
         id?: string;
@@ -117,6 +117,7 @@ export default function PricingCheckoutButton({
         phone?: string | null;
       };
     } | null;
+    status: "loading" | "authenticated" | "unauthenticated";
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -145,6 +146,14 @@ export default function PricingCheckoutButton({
   // the pricing CTA (no explicit `addressKey` or `redirectTo` passed in props).
   const canGenerateQuotaToken = addressKeyProp == null && redirectToProp == null;
 
+  const buildSignInRedirectUrl = useCallback(() => {
+    const currentPath =
+      typeof window !== "undefined"
+        ? `${window.location.pathname}${window.location.search}`
+        : "/pricing";
+    return `/sign-in?redirect=${encodeURIComponent(currentPath)}`;
+  }, []);
+
 
 
   const formatEuro = useCallback((amountEuro: number) => {
@@ -157,7 +166,7 @@ export default function PricingCheckoutButton({
       if (!session?.user?.id) {
         if (!opts?.silent) {
           toast.error("Please sign in to apply a coupon.");
-          router.push("/sign-in");
+          router.push(buildSignInRedirectUrl());
         }
         return;
       }
@@ -213,7 +222,7 @@ export default function PricingCheckoutButton({
         setIsApplyingCoupon(false);
       }
     },
-    [planSlug, router, session?.user?.id],
+    [buildSignInRedirectUrl, planSlug, router, session?.user?.id],
   );
 
   const handleApplyCoupon = useCallback(() => {
@@ -221,16 +230,24 @@ export default function PricingCheckoutButton({
   }, [applyCoupon, couponCode]);
 
   useEffect(() => {
-    if (!hasOfferCouponCode || didAutoApplyOfferCoupon || !session?.user?.id) return;
+    if (!hasOfferCouponCode || didAutoApplyOfferCoupon) return;
+    if (status === "loading") return;
+    if (!session?.user?.id) {
+      router.push(buildSignInRedirectUrl());
+      return;
+    }
 
     setDidAutoApplyOfferCoupon(true);
     void applyCoupon(offerCouponCode, { silent: true });
   }, [
     applyCoupon,
+    buildSignInRedirectUrl,
     didAutoApplyOfferCoupon,
     hasOfferCouponCode,
     offerCouponCode,
+    router,
     session?.user?.id,
+    status,
   ]);
 
   const openCheckout = useCallback(
@@ -326,7 +343,7 @@ export default function PricingCheckoutButton({
   const handleClick = useCallback(async () => {
     if (!session?.user?.id) {
       toast.error("Please sign in to continue.");
-      router.push("/sign-in");
+      router.push(buildSignInRedirectUrl());
       return;
     }
 
@@ -386,6 +403,7 @@ export default function PricingCheckoutButton({
     }
   }, [
     openCheckout,
+    buildSignInRedirectUrl,
     planSlug,
     router,
     session?.user?.id,

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Eye, EyeClosed, LucideLoader2 } from "lucide-react";
 
 import { useAuthStore } from "@/store/AuthStore";
@@ -27,12 +27,15 @@ declare global {
   }
 }
 
-const SignIn = () => {
+const SignInContent = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  const redirectTo = searchParams.get("redirect")?.trim() ?? "";
+  const safeRedirect = redirectTo.startsWith("/") ? redirectTo : null;
 
   // Redirect to home if user is already logged in
   useEffect(() => {
@@ -104,7 +107,7 @@ const SignIn = () => {
       );
 
       toast.success("Login successful");
-      router.replace(onboarded ? "/" : "/onboarding");
+      router.replace(safeRedirect ?? (onboarded ? "/" : "/onboarding"));
     } catch (err: unknown) {
       if (err instanceof Error) {
         toast.error(err.message);
@@ -270,7 +273,7 @@ const SignIn = () => {
             {googleClientId ? (
               <button
                 type="button"
-                onClick={() => signIn("google", { callbackUrl: "/" })}
+                onClick={() => signIn("google", { callbackUrl: safeRedirect ?? "/" })}
                 className="w-full inline-flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold bg-white hover:bg-gray-50 text-gray-900 ring-1 ring-gray-200 dark:bg-white/5 dark:hover:bg-white/8 dark:text-white dark:ring-white/10 transition"
               >
                 Sign in with Google
@@ -299,4 +302,11 @@ const SignIn = () => {
     </section>
   );
 };
-export default SignIn;
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]" />}>
+      <SignInContent />
+    </Suspense>
+  );
+}
