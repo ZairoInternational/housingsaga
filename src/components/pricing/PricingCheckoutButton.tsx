@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -122,6 +122,7 @@ export default function PricingCheckoutButton({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [couponCode, setCouponCode] = useState<string>("");
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [didAutoApplyOfferCoupon, setDidAutoApplyOfferCoupon] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<{
     couponCode: string;
     currency: string;
@@ -131,6 +132,8 @@ export default function PricingCheckoutButton({
   } | null>(null);
 
   const addressKey = addressKeyProp ?? searchParams.get("addressKey");
+  const offerCouponCode = (searchParams.get("couponCode") ?? "").trim();
+  const hasOfferCouponCode = offerCouponCode.length > 0;
   const redirectTo =
     redirectToProp ??
     searchParams.get("redirect") ??
@@ -149,58 +152,86 @@ export default function PricingCheckoutButton({
     return `€${value.toFixed(2)}`;
   }, []);
 
-  const handleApplyCoupon = useCallback(async () => {
-    if (!session?.user?.id) {
-      toast.error("Please sign in to apply a coupon.");
-      router.push("/sign-in");
-      return;
-    }
-
-    const raw = couponCode.trim();
-    if (!raw) {
-      setAppliedCoupon(null);
-      toast.error("Enter a coupon code.");
-      return;
-    }
-
-    setIsApplyingCoupon(true);
-
-    try {
-      const res = await fetch("/api/coupons/evaluate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planSlug, couponCode: raw }),
-      });
-
-      const json = (await res.json()) as CouponEvaluationResponse;
-
-      if (!res.ok || !("ok" in json) || json.ok !== true) {
-        const msg =
-          "message" in json && typeof json.message === "string"
-            ? json.message
-            : "Invalid coupon";
-        throw new Error(msg);
+  const applyCoupon = useCallback(
+    async (rawCouponCode: string, opts?: { silent?: boolean }) => {
+      if (!session?.user?.id) {
+        if (!opts?.silent) {
+          toast.error("Please sign in to apply a coupon.");
+          router.push("/sign-in");
+        }
+        return;
       }
 
-      setAppliedCoupon({
-        couponCode: json.couponCode,
-        currency: json.currency,
-        baseAmountEuro: json.baseAmountEuro,
-        discountEuro: json.discountEuro,
-        payableAmountEuro: json.payableAmountEuro,
-      });
-      toast.success(
-        json.discountEuro > 0 ? "Coupon applied." : "Coupon applied (no discount).",
-      );
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to apply coupon";
-      setAppliedCoupon(null);
-      toast.error(message);
-    } finally {
-      setIsApplyingCoupon(false);
-    }
-  }, [couponCode, planSlug, router, session?.user?.id]);
+      const raw = rawCouponCode.trim();
+      if (!raw) {
+        setAppliedCoupon(null);
+        if (!opts?.silent) {
+          toast.error("Enter a coupon code.");
+        }
+        return;
+      }
+
+      setIsApplyingCoupon(true);
+
+      try {
+        const res = await fetch("/api/coupons/evaluate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ planSlug, couponCode: raw }),
+        });
+
+        const json = (await res.json()) as CouponEvaluationResponse;
+
+        if (!res.ok || !("ok" in json) || json.ok !== true) {
+          const msg =
+            "message" in json && typeof json.message === "string"
+              ? json.message
+              : "Invalid coupon";
+          throw new Error(msg);
+        }
+
+        setCouponCode(json.couponCode);
+        setAppliedCoupon({
+          couponCode: json.couponCode,
+          currency: json.currency,
+          baseAmountEuro: json.baseAmountEuro,
+          discountEuro: json.discountEuro,
+          payableAmountEuro: json.payableAmountEuro,
+        });
+        if (!opts?.silent) {
+          toast.success(
+            json.discountEuro > 0 ? "Coupon applied." : "Coupon applied (no discount).",
+          );
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to apply coupon";
+        setAppliedCoupon(null);
+        if (!opts?.silent) {
+          toast.error(message);
+        }
+      } finally {
+        setIsApplyingCoupon(false);
+      }
+    },
+    [planSlug, router, session?.user?.id],
+  );
+
+  const handleApplyCoupon = useCallback(() => {
+    void applyCoupon(couponCode, { silent: false });
+  }, [applyCoupon, couponCode]);
+
+  useEffect(() => {
+    if (!hasOfferCouponCode || didAutoApplyOfferCoupon || !session?.user?.id) return;
+
+    setDidAutoApplyOfferCoupon(true);
+    void applyCoupon(offerCouponCode, { silent: true });
+  }, [
+    applyCoupon,
+    didAutoApplyOfferCoupon,
+    hasOfferCouponCode,
+    offerCouponCode,
+    session?.user?.id,
+  ]);
 
   const openCheckout = useCallback(
     (order: RazorpayOrderResponse) => {
@@ -368,34 +399,40 @@ export default function PricingCheckoutButton({
   return (
     <>
       <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={couponCode}
-            onChange={(e) => {
-              setCouponCode(e.target.value);
-              setAppliedCoupon(null);
-            }}
-            placeholder="Enter coupon code"
-            className="flex-1 min-w-0 text-sm rounded-full border border-gray-300 bg-gray-50 px-4 py-2 outline-none transition focus:border-lime-500 focus:ring-2 focus:ring-lime-100"
-            disabled={isSubmitting || isApplyingCoupon}
-            aria-label="Coupon code"
-          />
+        {!hasOfferCouponCode ? (
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={couponCode}
+              onChange={(e) => {
+                setCouponCode(e.target.value);
+                setAppliedCoupon(null);
+              }}
+              placeholder="Enter coupon code"
+              className="flex-1 min-w-0 text-sm rounded-full border border-gray-300 bg-gray-50 px-4 py-2 outline-none transition focus:border-lime-500 focus:ring-2 focus:ring-lime-100"
+              disabled={isSubmitting || isApplyingCoupon}
+              aria-label="Coupon code"
+            />
 
-          <button
-            type="button"
-            onClick={handleApplyCoupon}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition 
+            <button
+              type="button"
+              onClick={handleApplyCoupon}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition 
         ${
           isSubmitting || isApplyingCoupon
             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
             : "bg-lime-500 text-white hover:bg-lime-600 active:scale-[0.98]"
         }`}
-            disabled={isSubmitting || isApplyingCoupon}
-          >
-            {isApplyingCoupon ? "Applying…" : "Apply"}
-          </button>
-        </div>
+              disabled={isSubmitting || isApplyingCoupon}
+            >
+              {isApplyingCoupon ? "Applying..." : "Apply"}
+            </button>
+          </div>
+        ) : (
+          <p className="text-xs sm:text-sm text-lime-700 font-medium">
+            Offer discount applied automatically.
+          </p>
+        )}
 
         {appliedCoupon && (
           <div className="mt-4 grid grid-cols-3 gap-3 text-xs sm:text-sm">
@@ -434,7 +471,11 @@ export default function PricingCheckoutButton({
         onClick={handleClick}
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Processing..." : label}
+        {isSubmitting
+          ? "Processing..."
+          : appliedCoupon
+            ? `${label} (${formatEuro(appliedCoupon.payableAmountEuro)})`
+            : label}
       </button>
 
     </>
