@@ -590,7 +590,7 @@ export default function HouseFormClient({
                       shouldShowPaymentCTA && (
                         <PricingCheckoutButton
                           planSlug="property-listing"
-                          label="Pay Now (EUR 200)"
+                          label="Pay Now"
                           highlighted={true}
                           addressKey={currentAddressKey ?? undefined}
                           redirectTo={`/add-property?addressKey=${encodeURIComponent(

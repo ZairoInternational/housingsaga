@@ -44,7 +44,10 @@ export default function PricingTiers({
                   serious global investors.
                 </p>
 
-                <p className="text-4xl font-semibold mb-6">€200</p>
+                <p className="text-4xl font-semibold mb-2">Starting at €200</p>
+                <p className="text-xs text-gray-500 mb-6">
+                  Offer coupons update your final amount at checkout automatically.
+                </p>
 
                 <ul className="space-y-3 text-sm text-gray-700 mb-8">
                   <li className="flex gap-2">

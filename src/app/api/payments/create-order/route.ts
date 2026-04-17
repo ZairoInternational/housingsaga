@@ -87,11 +87,8 @@ export async function POST(request: NextRequest) {
 
       payableAmountEuro = couponEval.payableEuro;
       discountEuro = couponEval.discountEuro;
-      propertiesAllowedSnapshot = Math.max(1, couponEval.coupon.propertiesAllowed ?? 1);
-      pricePerPropertySnapshot = Math.max(
-        0,
-        couponEval.coupon.pricePerProperty ?? baseAmountEuro,
-      );
+      propertiesAllowedSnapshot = couponEval.propertiesAllowed;
+      pricePerPropertySnapshot = couponEval.pricePerPropertyEuro;
       discountSnapshot = {
         type: couponEval.coupon.offerDiscountScope ?? "TOTAL",
         unit: couponEval.coupon.discountType === "percentage" ? "PERCENT" : "FIXED",
@@ -193,7 +190,9 @@ export async function POST(request: NextRequest) {
 
     return Response.json({
       orderId: payment.razorpayOrderId,
-      amount: payment.amountEuro,
+      amount: payableAmountEurocent,
+      payableAmountEuro: payment.amountEuro,
+      discountEuro,
       currency: payment.currency,
       keyId: getRazorpayKeyId(),
       planSlug,

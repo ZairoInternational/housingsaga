@@ -18,6 +18,8 @@ type CheckoutProps = {
 type RazorpayOrderResponse = {
   orderId: string;
   amount: number;
+  payableAmountEuro: number;
+  discountEuro: number;
   currency: string;
   keyId: string;
 };
@@ -39,6 +41,8 @@ type CouponEvaluationResponse =
       discountEuro: number;
       payableAmountEuro: number;
       couponCode: string;
+      propertiesAllowed?: number;
+      pricePerPropertyEuro?: number;
     }
   | { error?: string; message?: string };
 
@@ -130,6 +134,8 @@ export default function PricingCheckoutButton({
     baseAmountEuro: number;
     discountEuro: number;
     payableAmountEuro: number;
+    propertiesAllowed: number;
+    pricePerPropertyEuro: number;
   } | null>(null);
 
   const addressKey = addressKeyProp ?? searchParams.get("addressKey");
@@ -206,6 +212,11 @@ export default function PricingCheckoutButton({
           baseAmountEuro: json.baseAmountEuro,
           discountEuro: json.discountEuro,
           payableAmountEuro: json.payableAmountEuro,
+          propertiesAllowed: Math.max(1, Math.trunc(json.propertiesAllowed ?? 1)),
+          pricePerPropertyEuro: Math.max(
+            0,
+            Number.isFinite(json.pricePerPropertyEuro) ? (json.pricePerPropertyEuro ?? 0) : 0,
+          ),
         });
         if (!opts?.silent) {
           toast.success(
@@ -261,7 +272,9 @@ export default function PricingCheckoutButton({
         amount: order.amount,
         currency: order.currency,
         name: "HousingSaga",
-        description: "Property Listing Fee (€200)",
+        description: appliedCoupon
+          ? `Property Listing Offer (${formatEuro(appliedCoupon.payableAmountEuro)})`
+          : "Property Listing Fee",
         order_id: order.orderId,
         theme: { color: "#A3E635" },
         prefill: {
@@ -337,7 +350,7 @@ export default function PricingCheckoutButton({
       });
       checkout.open();
     },
-    [session, redirectTo, router],
+    [appliedCoupon, formatEuro, session, redirectTo, router],
   );
 
   const handleClick = useCallback(async () => {
@@ -475,6 +488,12 @@ export default function PricingCheckoutButton({
               </p>
             </div>
           </div>
+        )}
+        {appliedCoupon && appliedCoupon.propertiesAllowed > 1 && (
+          <p className="mt-3 text-xs text-gray-600">
+            This offer covers {appliedCoupon.propertiesAllowed} properties at{" "}
+            {formatEuro(appliedCoupon.pricePerPropertyEuro)} each.
+          </p>
         )}
       </div>
 

@@ -68,10 +68,12 @@ export async function POST(request: NextRequest) {
       ok: true,
       planSlug: plan.slug,
       currency: (plan.currency || "EUR").toString(),
-      baseAmountEuro: amountEuroRaw,
+      baseAmountEuro: couponEval.baseAmountEuro,
       discountEuro: couponEval.discountEuro,
       payableAmountEuro: couponEval.payableEuro,
       couponCode: couponEval.coupon.code,
+      propertiesAllowed: couponEval.propertiesAllowed,
+      pricePerPropertyEuro: couponEval.pricePerPropertyEuro,
     });
   } catch (error) {
     console.error("[CouponEvaluate] Error:", error);

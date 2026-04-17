@@ -11,8 +11,11 @@ export type EvaluateCouponResult =
   | {
       ok: true;
       coupon: ICouponDoc;
+      baseAmountEuro: number;
       discountEuro: number;
       payableEuro: number;
+      propertiesAllowed: number;
+      pricePerPropertyEuro: number;
     }
   | { ok: false; reason: string };
 
@@ -51,21 +54,67 @@ function roundToEuro(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-function computeDiscountEuro(params: {
+function deriveOfferAmounts(params: {
   coupon: ICouponDoc;
   purchaseAmountEuro: number;
-}): { discountEuro: number; payableEuro: number } {
+}): {
+  baseAmountEuro: number;
+  propertiesAllowed: number;
+  pricePerPropertyEuro: number;
+  discountScope: "PER_PROPERTY" | "TOTAL";
+} {
   const { coupon, purchaseAmountEuro } = params;
-  const amountEuro = Math.max(0, roundToEuro(purchaseAmountEuro));
+  const planAmountEuro = Math.max(0, roundToEuro(purchaseAmountEuro));
+  const propertiesAllowed = Math.max(1, Math.trunc(coupon.propertiesAllowed ?? 1));
+  const couponPricePerProperty = coupon.pricePerProperty;
+  const hasOfferPricePerProperty =
+    typeof couponPricePerProperty === "number" &&
+    Number.isFinite(couponPricePerProperty) &&
+    couponPricePerProperty > 0;
+  const pricePerPropertyEuro = hasOfferPricePerProperty
+    ? roundToEuro(couponPricePerProperty)
+    : planAmountEuro;
+  const hasOfferAmountFields =
+    hasOfferPricePerProperty ||
+    (typeof coupon.propertiesAllowed === "number" && Number.isFinite(coupon.propertiesAllowed));
+  const baseAmountEuro = hasOfferAmountFields
+    ? roundToEuro(pricePerPropertyEuro * propertiesAllowed)
+    : planAmountEuro;
+
+  return {
+    baseAmountEuro,
+    propertiesAllowed,
+    pricePerPropertyEuro,
+    discountScope: coupon.offerDiscountScope ?? "TOTAL",
+  };
+}
+
+function computeDiscountEuro(params: {
+  coupon: ICouponDoc;
+  baseAmountEuro: number;
+  propertiesAllowed: number;
+  pricePerPropertyEuro: number;
+  discountScope: "PER_PROPERTY" | "TOTAL";
+}): { discountEuro: number; payableEuro: number } {
+  const { coupon, baseAmountEuro, propertiesAllowed, pricePerPropertyEuro, discountScope } = params;
+  const amountEuro = Math.max(0, roundToEuro(baseAmountEuro));
 
   let discountEuro = 0;
 
   if (coupon.discountType === "percentage") {
     // discountValue is treated as percentage points (e.g. 15 means 15%).
-    discountEuro = (amountEuro * coupon.discountValue) / 100;
+    if (discountScope === "PER_PROPERTY") {
+      discountEuro = (pricePerPropertyEuro * coupon.discountValue * propertiesAllowed) / 100;
+    } else {
+      discountEuro = (amountEuro * coupon.discountValue) / 100;
+    }
   } else {
     // discountValue is treated as euros.
-    discountEuro = coupon.discountValue;
+    if (discountScope === "PER_PROPERTY") {
+      discountEuro = coupon.discountValue * propertiesAllowed;
+    } else {
+      discountEuro = coupon.discountValue;
+    }
   }
 
   // maxDiscountAmount caps partial promos (e.g. "20% off, max €50 off").
@@ -124,9 +173,19 @@ export async function evaluateCoupon({
     return { ok: false, reason: "Coupon is not applicable to this plan" };
   }
 
+  const {
+    baseAmountEuro,
+    propertiesAllowed,
+    pricePerPropertyEuro,
+    discountScope,
+  } = deriveOfferAmounts({
+    coupon,
+    purchaseAmountEuro,
+  });
+
   const minPurchase = coupon.minPurchaseAmount ?? 0;
   if (typeof minPurchase === "number" && minPurchase > 0) {
-    if (purchaseAmountEuro < minPurchase) {
+    if (baseAmountEuro < minPurchase) {
       return {
         ok: false,
         reason: `Minimum purchase amount of €${minPurchase} is required`,
@@ -136,14 +195,20 @@ export async function evaluateCoupon({
 
   const { discountEuro, payableEuro } = computeDiscountEuro({
     coupon,
-    purchaseAmountEuro,
+    baseAmountEuro,
+    propertiesAllowed,
+    pricePerPropertyEuro,
+    discountScope,
   });
 
   return {
     ok: true,
     coupon,
+    baseAmountEuro,
     discountEuro,
     payableEuro,
+    propertiesAllowed,
+    pricePerPropertyEuro,
   };
 }
 
