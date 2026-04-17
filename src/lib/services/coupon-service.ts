@@ -21,6 +21,9 @@ type ICouponDoc = {
   code: string;
   discountType: "percentage" | "fixed";
   discountValue: number;
+  propertiesAllowed?: number;
+  pricePerProperty?: number;
+  offerDiscountScope?: "PER_PROPERTY" | "TOTAL";
   minPurchaseAmount?: number;
   maxDiscountAmount?: number | null;
   usageLimit?: number | null;
@@ -28,6 +31,7 @@ type ICouponDoc = {
   applicablePlans?: string[];
   validFrom: Date;
   validUntil: Date;
+  expiresAt?: Date | null;
   isActive: boolean;
 };
 
@@ -107,7 +111,8 @@ export async function evaluateCoupon({
   if (!coupon) return { ok: false, reason: "Invalid coupon code" };
   if (!coupon.isActive) return { ok: false, reason: "Coupon is not active" };
   if (now < coupon.validFrom) return { ok: false, reason: "Coupon is not yet valid" };
-  if (now > coupon.validUntil) return { ok: false, reason: "Coupon has expired" };
+  const expiryDate = coupon.expiresAt ?? coupon.validUntil;
+  if (now > expiryDate) return { ok: false, reason: "Coupon has expired" };
 
   if (typeof coupon.usageLimit === "number" && coupon.usageLimit !== null) {
     if (coupon.usedCount >= coupon.usageLimit) {

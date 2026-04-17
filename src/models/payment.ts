@@ -17,6 +17,23 @@ const PaymentSchema = new Schema<PaymentValidation>(
     verifiedAt: { type: Date, required: false },
     capturedAt: { type: Date, required: false },
     source: { type: String, required: false, enum: ["verify", "webhook"] },
+    propertiesAllowedSnapshot: { type: Number, required: true, default: 1, min: 1 },
+    pricePerPropertySnapshot: { type: Number, required: true, default: 0, min: 0 },
+    discountSnapshot: {
+      type: {
+        type: String,
+        enum: ["PER_PROPERTY", "TOTAL"],
+      },
+      unit: {
+        type: String,
+        enum: ["FIXED", "PERCENT"],
+      },
+      value: {
+        type: Number,
+        min: 0,
+      },
+    },
+    entitlementGranted: { type: Boolean, required: true, default: false, index: true },
   },
   { timestamps: true },
 );

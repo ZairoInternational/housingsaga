@@ -1,11 +1,19 @@
 import { HousingUsers } from "@/models/housingUser";
-import { isFirstAddressQuotaToken } from "@/lib/entitlement-quota";
+import { Payment } from "@/models/payment";
+import {
+  createFirstAddressQuotaToken,
+  isFirstAddressQuotaToken,
+} from "@/lib/entitlement-quota";
+
+const MAX_TOKENS = 50;
 
 type GrantEntitlementInput = {
+  paymentId: string;
   userId: string;
   addressKey: string;
   planSlug: string | null;
   paidAt: Date;
+  propertiesAllowed?: number;
 };
 
 export async function isAddressPaid(
@@ -29,17 +37,35 @@ export async function isAddressPaid(
 }
 
 export async function grantAddressEntitlement({
+  paymentId,
   userId,
   addressKey,
   planSlug,
   paidAt,
+  propertiesAllowed,
 }: GrantEntitlementInput): Promise<void> {
   void paidAt;
+  const tokenCount = Math.min(
+    MAX_TOKENS,
+    Math.max(1, Math.trunc(Number(propertiesAllowed) || 1)),
+  );
+  const claim = await Payment.updateOne(
+    { _id: paymentId, entitlementGranted: { $ne: true } },
+    { $set: { entitlementGranted: true } },
+  );
+  if (claim.modifiedCount === 0) return;
+
+  const extraTokens = Array.from({ length: tokenCount - 1 }, () =>
+    createFirstAddressQuotaToken(userId),
+  );
+
   await HousingUsers.updateOne(
     { _id: userId },
     {
       $addToSet: {
-        paidListingAddresses: addressKey,
+        paidListingAddresses: {
+          $each: [addressKey, ...extraTokens],
+        },
       },
       $set: {
         subscriptionPlan: planSlug,
@@ -47,6 +73,11 @@ export async function grantAddressEntitlement({
       },
     },
   );
+  console.info("[HS Entitlement] granted", {
+    userId,
+    paymentId,
+    tokenCount,
+  });
 }
 
 type ConsumeAddressQuotaInput = {

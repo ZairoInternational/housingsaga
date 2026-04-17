@@ -76,10 +76,17 @@ export async function POST(request: NextRequest) {
     const planName = plan?.name ?? "Property Listing Fee";
 
     await grantAddressEntitlement({
+      paymentId: String(captureResult.payment._id),
       userId,
       addressKey: captureResult.payment.addressKey,
       planSlug,
       paidAt: capturedAt,
+      propertiesAllowed: captureResult.payment.propertiesAllowedSnapshot,
+    });
+    console.info("[HS Payment] entitlement.granted.verify", {
+      userId,
+      paymentId: String(captureResult.payment._id),
+      propertiesAllowed: captureResult.payment.propertiesAllowedSnapshot,
     });
 
     // Best-effort confirmation email. Do not fail the payment if SMTP is down.

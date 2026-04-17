@@ -74,14 +74,19 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      if (planSlug) {
-        await grantAddressEntitlement({
-          userId: captureResult.payment.userId,
-          addressKey: captureResult.payment.addressKey,
-          planSlug,
-          paidAt: captureResult.payment.capturedAt ?? new Date(),
-        });
-      }
+      await grantAddressEntitlement({
+        paymentId: String(captureResult.payment._id),
+        userId: captureResult.payment.userId,
+        addressKey: captureResult.payment.addressKey,
+        planSlug,
+        paidAt: captureResult.payment.capturedAt ?? new Date(),
+        propertiesAllowed: captureResult.payment.propertiesAllowedSnapshot,
+      });
+      console.info("[HS Payment] entitlement.granted.webhook", {
+        userId: captureResult.payment.userId,
+        paymentId: String(captureResult.payment._id),
+        propertiesAllowed: captureResult.payment.propertiesAllowedSnapshot,
+      });
     } else {
       await markPaymentFailed({
         orderId: razorpayOrderId,

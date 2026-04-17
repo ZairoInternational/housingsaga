@@ -17,6 +17,16 @@ export const paymentSchema = z.object({
   verifiedAt: z.date().optional(),
   capturedAt: z.date().optional(),
   source: z.enum(["verify", "webhook"]).optional(),
+  propertiesAllowedSnapshot: z.number().int().min(1).default(1),
+  pricePerPropertySnapshot: z.number().min(0).default(0),
+  discountSnapshot: z
+    .object({
+      type: z.enum(["PER_PROPERTY", "TOTAL"]),
+      unit: z.enum(["FIXED", "PERCENT"]),
+      value: z.number().min(0),
+    })
+    .optional(),
+  entitlementGranted: z.boolean().default(false),
 });
 
 export type PaymentValidation = z.infer<typeof paymentSchema>;

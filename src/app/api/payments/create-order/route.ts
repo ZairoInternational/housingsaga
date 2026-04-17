@@ -64,6 +64,11 @@ export async function POST(request: NextRequest) {
 
     let payableAmountEuro = baseAmountEuro;
     let discountEuro = 0;
+    let propertiesAllowedSnapshot = 1;
+    let pricePerPropertySnapshot = baseAmountEuro;
+    let discountSnapshot:
+      | { type: "PER_PROPERTY" | "TOTAL"; unit: "FIXED" | "PERCENT"; value: number }
+      | undefined;
 
     if (typeof couponCode === "string" && couponCode.trim().length > 0) {
       const couponEval = await evaluateCoupon({
@@ -82,6 +87,16 @@ export async function POST(request: NextRequest) {
 
       payableAmountEuro = couponEval.payableEuro;
       discountEuro = couponEval.discountEuro;
+      propertiesAllowedSnapshot = Math.max(1, couponEval.coupon.propertiesAllowed ?? 1);
+      pricePerPropertySnapshot = Math.max(
+        0,
+        couponEval.coupon.pricePerProperty ?? baseAmountEuro,
+      );
+      discountSnapshot = {
+        type: couponEval.coupon.offerDiscountScope ?? "TOTAL",
+        unit: couponEval.coupon.discountType === "percentage" ? "PERCENT" : "FIXED",
+        value: Math.max(0, couponEval.coupon.discountValue),
+      };
     }
 
     // Razorpay requires `receipt` length <= 40 characters.
@@ -111,6 +126,10 @@ export async function POST(request: NextRequest) {
         currency,
         couponCode: couponCode?.trim() || undefined,
         status: "created",
+        propertiesAllowedSnapshot,
+        pricePerPropertySnapshot,
+        discountSnapshot,
+        entitlementGranted: false,
       });
 
       // Mark as captured for consistency with other flows.
@@ -121,10 +140,17 @@ export async function POST(request: NextRequest) {
       });
 
       await grantAddressEntitlement({
+        paymentId: String(payment._id),
         userId,
         addressKey,
         planSlug,
         paidAt: new Date(),
+        propertiesAllowed: propertiesAllowedSnapshot,
+      });
+      console.info("[HS Payment] entitlement.granted.free", {
+        userId,
+        paymentId: String(payment._id),
+        propertiesAllowed: propertiesAllowedSnapshot,
       });
 
       return Response.json({
@@ -153,6 +179,16 @@ export async function POST(request: NextRequest) {
       currency,
       couponCode: couponCode?.trim() || undefined,
       status: "created",
+      propertiesAllowedSnapshot,
+      pricePerPropertySnapshot,
+      discountSnapshot,
+      entitlementGranted: false,
+    });
+    console.info("[HS Payment] order.created", {
+      userId,
+      paymentId: String(payment._id),
+      couponCode: couponCode?.trim() || null,
+      propertiesAllowedSnapshot,
     });
 
     return Response.json({
