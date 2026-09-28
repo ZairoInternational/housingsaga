@@ -1,149 +1,188 @@
-const AboutSecond = () => {
+"use client";
+
+import { motion } from "motion/react";
+import {
+  Building2,
+  Check,
+  Globe2,
+  MapPinned,
+  Shield,
+} from "lucide-react";
+
+const expertise = [
+  {
+    icon: Globe2,
+    title: "Greece Golden Visa Program",
+    body: "End-to-end assistance for one of the most popular residency-by-investment routes for Indian investors.",
+    bullets: [
+      "Property selection aligned with Golden Visa rules",
+      "Legal due diligence and compliance checks",
+      "Application coordination with partners",
+      "Support through Greek authority workflows",
+    ],
+  },
+  {
+    icon: Building2,
+    title: "Real Estate in Greece",
+    body: "Access verified, high-potential inventory selected for both lifestyle and investment strength.",
+    bullets: [
+      "Athens (Attica Region)",
+      "Thessaloniki",
+      "Mykonos & Santorini",
+      "Emerging high-return locations",
+    ],
+  },
+  {
+    icon: MapPinned,
+    title: "Local Presence in Greece",
+    body: "On-ground partners keep execution fast, compliant, and transparent from India to Greece.",
+    bullets: [
+      "Licensed Greek real estate professionals",
+      "Legal & immigration experts",
+      "Property management companies",
+      "Verified Golden Visa–eligible inventory",
+    ],
+  },
+];
+
+const whyPoints = [
+  "Experts in Greece Golden Visa for Indian investors",
+  "End-to-end support from India to Greece",
+  "Verified and legally compliant properties",
+  "Transparent pricing with no hidden charges",
+  "Faster processing through local partnerships",
+  "Dedicated advisory for investment and residency",
+];
+
+const stats = [
+  { value: "100%", label: "Legally compliant focus" },
+  { value: "4%", label: "Success-based commission" },
+  { value: "€200", label: "One-time listing fee" },
+  { value: "2", label: "Countries · India & Greece" },
+];
+
+export default function AboutSecond() {
   return (
-    <section className="py-20 bg-white dark:bg-[#0f0f0f]">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10">
-        {/* Section label */}
-        <p className="text-lime-500 font-semibold uppercase tracking-widest text-xs mb-4">
-          Why Choose Housing Saga
-        </p>
+    <section className="relative py-16 sm:py-20 lg:py-24 bg-white overflow-hidden">
+      <div className="pointer-events-none absolute top-20 right-0 h-80 w-80 rounded-full bg-lime-200/30 blur-3xl" />
 
-        {/* Headline */}
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-14 max-w-2xl leading-snug">
-          Greece Golden Visa Experts for
-          <br />
-          Indian Investors
-        </h2>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-lime-600 mb-4"
+        >
+          <span className="h-px w-6 bg-lime-500" />
+          Why Choose HousingSaga
+        </motion.p>
 
-        {/* Divider */}
-        <div className="w-full h-px bg-gray-100 dark:bg-white/10 mb-14" />
+        <motion.h2
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-3xl sm:text-4xl font-bold text-[#14532d] max-w-2xl leading-snug tracking-tight"
+        >
+          Greece Golden Visa Experts for Indian Investors
+        </motion.h2>
 
-        {/* Two-column text */}
-        <div className="grid md:grid-cols-2 gap-10 md:gap-20">
-          <p className="text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-            At Housing Saga, we specialize in helping Indian investors access
-            Greece Golden Visa opportunities through strategic real estate
-            investment. As a trusted international real estate advisory, we
-            provide a seamless pathway for obtaining European residency
-            through property investment in Greece.
+        <div className="mt-8 grid md:grid-cols-2 gap-6 md:gap-10">
+          <p className="text-[15px] text-gray-600 leading-[1.85]">
+            HousingSaga helps Indian investors access Greece Golden Visa
+            opportunities through strategic real estate — a clear pathway to
+            European residency with secure, managed support.
           </p>
-          <p className="text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-            With a strong focus on Greece Golden Visa services for Indians,
-            Housing Saga acts as a bridge between India and Greece, offering a
-            secure, transparent, and fully managed investment experience. We
-            combine local expertise in Greece with personalized client support
-            in India, simplifying international property investment for
-            Indian clients.
+          <p className="text-[15px] text-gray-600 leading-[1.85]">
+            We bridge India and Greece with local expertise on both sides:
+            transparent advice in India, verified inventory and execution in
+            Greece.
           </p>
         </div>
 
-        {/* Our expertise */}
-        <div className="mt-14">
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8">
-            Our Expertise
-          </h3>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                Greece Golden Visa Program
-              </h4>
-              <p className="text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-                We provide end-to-end assistance for the Greece Golden Visa
-                program, one of the most popular residency by investment
-                options for Indians.
-              </p>
-              <ul className="mt-4 space-y-2 list-disc pl-5 text-gray-500 dark:text-gray-400 leading-relaxed text-[15.5px]">
-                <li>Property selection aligned with Golden Visa requirements</li>
-                <li>Legal due diligence and compliance checks</li>
-                <li>Golden Visa application processing</li>
-                <li>Coordination with Greek authorities and legal partners</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                International Real Estate Investment in Greece
-              </h4>
-              <p className="text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-                Housing Saga offers access to verified, high-growth real estate
-                opportunities in Greece, including:
-              </p>
-              <ul className="mt-4 space-y-2 list-disc pl-5 text-gray-500 dark:text-gray-400 leading-relaxed text-[15.5px]">
-                <li>Athens (Attica Region)</li>
-                <li>Thessaloniki</li>
-                <li>Mykonos &amp; Santorini</li>
-                <li>Emerging high-return locations</li>
-              </ul>
-              <p className="mt-4 text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-                Each property is carefully selected to meet Golden Visa
-                eligibility and investment potential.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                Our Strength – Local Presence in Greece
-              </h4>
-              <p className="text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-                What sets Housing Saga apart is our strong on-ground network in
-                Greece. We collaborate with:
-              </p>
-              <ul className="mt-4 space-y-2 list-disc pl-5 text-gray-500 dark:text-gray-400 leading-relaxed text-[15.5px]">
-                <li>Licensed Greek real estate professionals</li>
-                <li>Legal and immigration experts</li>
-                <li>Property management companies</li>
-              </ul>
-              <p className="mt-4 text-gray-500 dark:text-gray-400 leading-[1.85] text-[15.5px]">
-                This ensures:
-              </p>
-              <ul className="mt-2 space-y-2 list-disc pl-5 text-gray-500 dark:text-gray-400 leading-relaxed text-[15.5px]">
-                <li>Verified Golden Visa eligible properties</li>
-                <li>100% legal compliance</li>
-                <li>Faster processing and execution</li>
-                <li>Smooth coordination with Greek authorities</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-14">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">
-              Why Choose Housing Saga
-            </h3>
-            <ul className="space-y-2 list-disc pl-5 text-gray-500 dark:text-gray-400 leading-relaxed text-[15.5px]">
-              <li>Experts in Greece Golden Visa for Indian investors</li>
-              <li>End-to-end support from India to Greece</li>
-              <li>Verified and legally compliant properties</li>
-              <li>Transparent pricing with no hidden charges</li>
-              <li>Faster processing through local partnerships</li>
-              <li>Dedicated advisory for investment and residency</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Stats row */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "100%", label: "Legally compliant properties" },
-            { value: "4%", label: "Success-based commission only" },
-            { value: "€200", label: "One-time listing fee" },
-            { value: "2", label: "Countries / India & Greece" },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="border border-gray-100 dark:border-white/10 rounded-xl p-6 hover:border-lime-400/50 transition-colors duration-300"
+        {/* Expertise cards */}
+        <div className="mt-14 grid md:grid-cols-3 gap-5 lg:gap-6">
+          {expertise.map(({ icon: Icon, title, body, bullets }, i) => (
+            <motion.article
+              key={title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.06 * i, duration: 0.45 }}
+              className="group rounded-2xl border border-gray-100 bg-[#fbfcfa] p-6 hover:border-lime-300 hover:bg-white hover:shadow-[0_16px_40px_rgba(20,83,45,0.08)] transition-all duration-300"
             >
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-lime-100 text-[#14532d] mb-4 group-hover:bg-lime-400 transition-colors">
+                <Icon className="h-5 w-5" />
+              </span>
+              <h3 className="text-lg font-bold text-[#14532d] leading-snug">
+                {title}
+              </h3>
+              <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+                {body}
+              </p>
+              <ul className="mt-5 space-y-2.5">
+                {bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2.5">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black">
+                      <Check className="h-3 w-3" strokeWidth={3} />
+                    </span>
+                    <span className="text-[13px] text-gray-700 leading-snug">
+                      {b}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </motion.article>
+          ))}
+        </div>
+
+        {/* Why choose */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-14 rounded-3xl border border-lime-100 bg-gradient-to-br from-[#eef6e6] to-white p-6 sm:p-8"
+        >
+          <div className="flex items-center gap-2 mb-5">
+            <Shield className="h-5 w-5 text-lime-600" />
+            <h3 className="text-xl sm:text-2xl font-bold text-[#14532d]">
+              Why Choose HousingSaga
+            </h3>
+          </div>
+          <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+            {whyPoints.map((point) => (
+              <li key={point} className="flex items-start gap-2.5">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black">
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                </span>
+                <span className="text-sm font-medium text-[#1a3a1a] leading-snug">
+                  {point}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
+        {/* Stats */}
+        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.05 * i }}
+              className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-6 hover:border-lime-300 hover:-translate-y-0.5 transition-all duration-300 shadow-sm"
+            >
+              <p className="text-2xl sm:text-3xl font-bold text-[#14532d]">
                 {stat.value}
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+              <p className="mt-1 text-[11px] uppercase tracking-wider text-gray-500">
                 {stat.label}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
     </section>
   );
-};
-
-export default AboutSecond;
+}
