@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { IoLocationOutline } from "react-icons/io5";
+import GoldenVisaRibbon from "@/components/ui/GoldenVisaRibbon";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -16,6 +17,7 @@ export type PropertyCardData = {
   beds: number;
   baths: number;
   cars: number;
+  price?: number;
 };
 
 type PropertyCardProps = {
@@ -132,9 +134,19 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         shadow-[0_4px_24px_rgba(0,0,0,0.35)]
         hover:shadow-[0_28px_60px_rgba(0,0,0,0.55)]
         transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.1,0.64,1)]
+        hover:-translate-y-1
         will-change-transform
       "
     >
+      {/* Full-card hit target */}
+      {!isNavigationBlocked && (
+        <Link
+          href={destination}
+          aria-label={`View ${card.title}`}
+          className="absolute inset-0 z-30"
+        />
+      )}
+
       {/* ── Image ─────────────────────────────────────────── */}
       <div
         className={`
@@ -146,6 +158,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           }
         `}
       >
+        <GoldenVisaRibbon
+          price={card.price}
+          size={isCompact ? "sm" : "md"}
+          className="z-40"
+        />
+
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={card.img}
           alt={card.title}
@@ -154,15 +173,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             absolute inset-0 w-full h-full object-cover object-center
             scale-[1.08]
             transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
-            group-hover:translate-x-5
+            group-hover:scale-[1.14]
           "
         />
 
         {/* Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent" />
 
         {/* ── Location pill ──────────────────────────────── */}
-        <div className="absolute top-0 left-0 m-3.5 z-10">
+        <div className="absolute top-0 left-0 m-3.5 z-10 pointer-events-none">
           <div
             className="
               relative flex items-center
@@ -173,13 +192,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               overflow-hidden
             "
           >
-            {/* Tag */}
             <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
               <IoLocationOutline size={16} color="rgb(52 211 153)" />
               <span className="font-medium">{card.tag}</span>
             </div>
 
-            {/* Stat drawer — width scales with size prop */}
             <div
               className={`
                 relative flex items-center overflow-hidden
@@ -197,10 +214,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                   transition-[opacity,transform] duration-400
                 "
               >
-                {/*
-                  Compact: show only beds + baths (most relevant, prevents overflow)
-                  Default: show all four stats
-                */}
                 {(isCompact ? stats.slice(1, 3) : stats).map(
                   ({ name, value }, i) => (
                     <div
@@ -228,43 +241,44 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           className={`
             absolute bottom-0 left-0 w-full
             flex items-end justify-between
-            z-10
+            z-10 pointer-events-none
             ${isCompact ? "px-4 pb-4" : "px-6 pb-5"}
           `}
         >
-          <h3
-            className={`
-              font-semibold leading-snug text-white tracking-tight
-              ${isCompact ? "text-[1.1rem]" : "text-[1.55rem]"}
-            `}
-          >
-            {card.title}
-          </h3>
+          <div className="min-w-0 pr-3">
+            <h3
+              className={`
+                font-semibold leading-snug text-white tracking-tight
+                ${isCompact ? "text-[1.1rem]" : "text-[1.55rem]"}
+              `}
+            >
+              {card.title}
+            </h3>
+            {typeof card.price === "number" && card.price > 0 && (
+              <p className="mt-1 text-lime-300 text-sm font-medium">
+                €{card.price.toLocaleString("en-US")}
+              </p>
+            )}
+          </div>
 
-          {/* CTA button — spring entrance (animation untouched) */}
           <div
             className="
               ml-4 shrink-0
               opacity-0 scale-0
-              pointer-events-none
               transition-all duration-300 ease-out
               group-hover:opacity-100
-              group-hover:scale-140
-              group-hover:pointer-events-auto
+              group-hover:scale-125
             "
           >
-            <Link
-              href={destination}
-              onClick={(e) => isNavigationBlocked && e.preventDefault()}
+            <span
               className={`
                 inline-flex items-center justify-center rounded-full
-                bg-lime-400 text-black hover:bg-lime-300
-                transition-colors duration-150
+                bg-lime-400 text-black
                 ${isCompact ? "w-8 h-8" : "w-10 h-10"}
               `}
             >
               <ArrowUpRight size={isCompact ? 14 : 17} />
-            </Link>
+            </span>
           </div>
         </div>
       </div>

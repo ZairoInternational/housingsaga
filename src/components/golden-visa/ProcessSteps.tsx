@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   FiCheckCircle,
   FiFileText,
@@ -8,7 +9,6 @@ import {
   FiShield,
 } from "react-icons/fi";
 
-/** Euro currency marker for the Investment step (replaces dollar icon). */
 function EuroCurrencyIcon({
   className,
   size = 22,
@@ -66,28 +66,33 @@ const steps = [
   },
 ];
 
+type Point = { x: number; y: number };
+
 export default function ProcessSteps() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
 
   const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
+  const [points, setPoints] = useState<Point[]>([]);
   const [pathD, setPathD] = useState("");
   const [pathLength, setPathLength] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
 
-  /* ─────────────────────────────
-     Intersection Animation
-  ───────────────────────────── */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          steps.forEach((_, i) => {
-            setTimeout(() => {
-              setVisibleSteps((prev) => [...prev, i]);
-            }, i * 120);
-          });
-        }
+        if (!entry.isIntersecting) return;
+        steps.forEach((_, i) => {
+          window.setTimeout(() => {
+            setVisibleSteps((prev) =>
+              prev.includes(i) ? prev : [...prev, i],
+            );
+            setActiveStep(i);
+          }, i * 280);
+        });
+        observer.disconnect();
       },
       { threshold: 0.2 },
     );
@@ -96,183 +101,277 @@ export default function ProcessSteps() {
     return () => observer.disconnect();
   }, []);
 
-  const visiblePct = visibleSteps.length / steps.length;
-
-  /* ─────────────────────────────
-     Path Generator
-  ───────────────────────────── */
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updatePath = () => {
-      if (!sectionRef.current) return;
-
-      const sectionRect = sectionRef.current.getBoundingClientRect();
-
-      const points = cardRefs.current
+      if (!trackRef.current) return;
+      const parent = trackRef.current.getBoundingClientRect();
+      const nextPoints = cardRefs.current
         .map((el) => {
           if (!el) return null;
           const rect = el.getBoundingClientRect();
-
           return {
-            x: rect.left + rect.width / 2 - sectionRect.left,
-            y: rect.top + rect.height / 2 - sectionRect.top,
+            x: rect.left + rect.width / 2 - parent.left,
+            y: rect.top + rect.height / 2 - parent.top,
           };
         })
-        .filter(Boolean) as { x: number; y: number }[];
+        .filter(Boolean) as Point[];
 
-      if (points.length < 2) return;
+      if (nextPoints.length < 2) return;
 
-      let d = `M ${points[0].x},${points[0].y}`;
-
-      for (let i = 1; i < points.length; i++) {
-        const prev = points[i - 1];
-        const curr = points[i];
-
+      let d = `M ${nextPoints[0].x},${nextPoints[0].y}`;
+      for (let i = 1; i < nextPoints.length; i++) {
+        const prev = nextPoints[i - 1];
+        const curr = nextPoints[i];
         const midX = (prev.x + curr.x) / 2;
-
         d += ` C ${midX},${prev.y} ${midX},${curr.y} ${curr.x},${curr.y}`;
       }
 
+      setPoints(nextPoints);
       setPathD(d);
     };
 
     updatePath();
-
+    const t = window.setTimeout(updatePath, 120);
     window.addEventListener("resize", updatePath);
-    window.addEventListener("scroll", updatePath);
-
     return () => {
+      window.clearTimeout(t);
       window.removeEventListener("resize", updatePath);
-      window.removeEventListener("scroll", updatePath);
     };
-  }, []);
+  }, [visibleSteps]);
 
-  /* ─────────────────────────────
-     Path Length
-  ───────────────────────────── */
-  useEffect(() => {
-    if (pathRef.current) {
-      const length = pathRef.current.getTotalLength();
-      setPathLength(length);
+  useLayoutEffect(() => {
+    if (!pathRef.current || !pathD) {
+      setPathLength(0);
+      return;
+    }
+    try {
+      setPathLength(pathRef.current.getTotalLength());
+    } catch {
+      setPathLength(0);
     }
   }, [pathD]);
+
+  const visiblePct =
+    visibleSteps.length === 0 ? 0 : visibleSteps.length / steps.length;
 
   return (
     <section
       ref={sectionRef}
-      className="py-24 bg-white dark:bg-[#050712] relative overflow-hidden"
+      className="py-14 sm:py-16 lg:py-20 bg-white relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 relative">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <p className="text-sm text-yellow-600 font-medium mb-2">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[70%] h-64 bg-lime-400/10 blur-3xl rounded-full" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
+        <div className="text-center mb-12 sm:mb-16">
+          <p className="text-sm text-lime-700 font-semibold mb-2 tracking-wide uppercase">
             Our Process
           </p>
-          <h2 className="text-4xl font-semibold text-gray-900 dark:text-white">
-            Your Path to <span className="text-yellow-500">EU Residency</span>
+          <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900">
+            Your Path to <span className="text-lime-600">EU Residency</span>
           </h2>
-          <p className="text-gray-500 mt-3 max-w-xl mx-auto">
+          <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm sm:text-base">
             A streamlined 6-step journey designed for clarity and efficiency
           </p>
         </div>
 
-        {/* SVG Path Layer */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-          <defs>
-            <linearGradient id="goldPath" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#fbbf24" />
-              <stop offset="100%" stopColor="#f59e0b" />
-            </linearGradient>
-          </defs>
-
-          {/* Background Path */}
-          <path
-            d={pathD}
-            fill="none"
-            stroke="rgba(251,191,36,0.12)"
-            strokeWidth="2"
-            strokeDasharray="4 8"
-          />
-
-          {/* Active Path */}
-          <path
-            ref={pathRef}
-            d={pathD}
-            fill="none"
-            stroke="url(#goldPath)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            style={{
-              strokeDasharray: pathLength,
-              strokeDashoffset: pathLength * (1 - visiblePct),
-              transition:
-                "stroke-dashoffset 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
-              willChange: "stroke-dashoffset",
-              filter: "drop-shadow(0 0 6px rgba(251,191,36,0.4))",
-            }}
-          />
-
-          {/* Nodes */}
-          {cardRefs.current.map((el, i) => {
-            if (!el || !sectionRef.current) return null;
-
-            const rect = el.getBoundingClientRect();
-            const parent = sectionRef.current.getBoundingClientRect();
-
-            const x = rect.left + rect.width / 2 - parent.left;
-            const y = rect.top + rect.height / 2 - parent.top;
-
-            return (
-              <circle
-                key={i}
-                cx={x}
-                cy={y}
-                r={visibleSteps.includes(i) ? 5 : 3}
-                fill="#fbbf24"
-                opacity={visibleSteps.includes(i) ? 1 : 0.3}
-                className="transition-all duration-700 ease-out"
-              />
-            );
-          })}
-        </svg>
-
-        {/* Cards */}
-        <div className="grid grid-cols-3 gap-16 relative z-20">
-          {steps.map((step, index) => (
-            <div
-              key={step.number}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              className={`transition-all duration-700 ${
-                visibleSteps.includes(index)
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
-              } ${index % 2 !== 0 ? "mt-28" : ""}`}
+        {/* Desktop / tablet journey */}
+        <div ref={trackRef} className="relative hidden md:block">
+          {pathD ? (
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible"
+              aria-hidden
             >
-              <div className="bg-white/70 dark:bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-gray-200 dark:border-white/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <step.Icon className="text-yellow-500 mb-4" size={22} />
+              <defs>
+                <linearGradient
+                  id="limeJourneyPath"
+                  x1="0"
+                  y1="0"
+                  x2="1"
+                  y2="0"
+                >
+                  <stop offset="0%" stopColor="#a3e635" />
+                  <stop offset="100%" stopColor="#65a30d" />
+                </linearGradient>
+                <filter
+                  id="limeGlow"
+                  x="-40%"
+                  y="-40%"
+                  width="180%"
+                  height="180%"
+                >
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
 
-                <span className="text-xs text-gray-400">
-                  STEP {step.number}
-                </span>
+              <path
+                d={pathD}
+                fill="none"
+                stroke="rgba(163,230,53,0.18)"
+                strokeWidth="3"
+                strokeDasharray="6 10"
+              />
 
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mt-1">
-                  {step.title}
-                </h3>
+              <path
+                ref={pathRef}
+                d={pathD}
+                fill="none"
+                stroke="url(#limeJourneyPath)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                filter="url(#limeGlow)"
+                style={{
+                  strokeDasharray: pathLength || 1,
+                  strokeDashoffset: pathLength
+                    ? pathLength * (1 - visiblePct)
+                    : 0,
+                  transition:
+                    "stroke-dashoffset 0.85s cubic-bezier(0.22, 1, 0.36, 1)",
+                }}
+              />
 
-                <p className="text-sm text-gray-500 mt-2">{step.desc}</p>
-              </div>
-            </div>
-          ))}
+              {points.map((p, i) => {
+                const on = visibleSteps.includes(i);
+                return (
+                  <g key={i}>
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r={on ? 10 : 6}
+                      fill={on ? "#a3e635" : "rgba(163,230,53,0.25)"}
+                    />
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r={3}
+                      fill="#111"
+                      opacity={on ? 1 : 0.35}
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+          ) : null}
+
+          <div className="grid grid-cols-3 gap-x-10 gap-y-16 relative z-10">
+            {steps.map((step, index) => {
+              const isLower = index % 2 === 1;
+              return (
+                <div
+                  key={step.number}
+                  ref={(el) => {
+                    cardRefs.current[index] = el;
+                  }}
+                  className={`transition-all duration-700 ${
+                    visibleSteps.includes(index)
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-10"
+                  } ${isLower ? "mt-10 lg:mt-14" : ""}`}
+                  style={{ transitionDelay: `${index * 60}ms` }}
+                >
+                  <StepCard
+                    step={step}
+                    active={
+                      activeStep === index || visibleSteps.includes(index)
+                    }
+                    highlight={activeStep === index}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Bottom Info */}
-        <div className="mt-20 text-center">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-gray-200 dark:border-white/10 text-sm text-gray-600 dark:text-gray-300">
-            ⏱ Average Timeline: 90 Days
+        {/* Mobile vertical journey */}
+        <div className="md:hidden relative pl-2">
+          <div className="absolute left-[27px] top-4 bottom-4 w-0.5 bg-gray-200 overflow-hidden">
+            <div
+              className="w-full bg-lime-400 transition-all duration-700 ease-out"
+              style={{ height: `${visiblePct * 100}%` }}
+            />
+          </div>
+
+          <div className="space-y-5">
+            {steps.map((step, index) => (
+              <div
+                key={step.number}
+                className={`relative flex gap-4 transition-all duration-700 ${
+                  visibleSteps.includes(index)
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-4"
+                }`}
+                style={{ transitionDelay: `${index * 80}ms` }}
+              >
+                <div
+                  className={`relative z-10 mt-5 w-3.5 h-3.5 rounded-full border-2 shrink-0 ml-[21px] ${
+                    visibleSteps.includes(index)
+                      ? "bg-lime-400 border-lime-500 shadow-[0_0_0_4px_rgba(163,230,53,0.25)]"
+                      : "bg-white border-gray-300"
+                  }`}
+                />
+                <div className="flex-1">
+                  <StepCard
+                    step={step}
+                    active={visibleSteps.includes(index)}
+                    highlight={activeStep === index}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-12 sm:mt-14 text-center">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-lime-400/40 bg-lime-50 text-sm text-lime-900 font-medium">
+            Average timeline: ~90 days
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function StepCard({
+  step,
+  active,
+  highlight,
+}: {
+  step: (typeof steps)[number];
+  active: boolean;
+  highlight: boolean;
+}) {
+  const Icon = step.Icon;
+  return (
+    <div
+      className={`bg-white rounded-2xl p-5 sm:p-6 border shadow-sm transition-all duration-500 ${
+        highlight
+          ? "border-lime-400 shadow-[0_16px_40px_rgba(132,204,22,0.18)] -translate-y-0.5"
+          : active
+            ? "border-gray-200 hover:border-lime-300 hover:shadow-md"
+            : "border-gray-200"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div
+          className={`w-11 h-11 rounded-xl flex items-center justify-center border ${
+            highlight || active
+              ? "bg-lime-400 border-lime-400 text-black"
+              : "bg-lime-50 border-lime-200 text-lime-700"
+          }`}
+        >
+          <Icon size={20} />
+        </div>
+        <span className="text-[11px] font-bold tracking-wider text-gray-400">
+          STEP {step.number}
+        </span>
+      </div>
+      <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
+      <p className="text-sm text-gray-500 mt-2 leading-relaxed">{step.desc}</p>
+    </div>
   );
 }

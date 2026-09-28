@@ -13,6 +13,7 @@ import {
 } from "react-icons/ri";
 
 import { formatEurAmount } from "@/lib/format-currency";
+import { isGoldenVisaEligible } from "@/lib/golden-visa-eligibility";
 
 interface OwnerListingPreviewItem {
   id: string;
@@ -107,10 +108,15 @@ export default function OwnerListingsPreview({
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
                 {/* Badges */}
-                <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+                <div className="absolute left-4 top-4 flex flex-wrap gap-2 z-10">
                   <span className="rounded-full bg-black/30 backdrop-blur-sm border border-white/15 px-3 py-1 text-xs font-medium text-white">
                     {formatPropertyType(listing.propertyType)}
                   </span>
+                  {isGoldenVisaEligible(listing.price) && (
+                    <span className="rounded-full bg-lime-400/95 border border-lime-300/40 px-3 py-1 text-xs font-semibold text-black">
+                      Golden Visa Eligible
+                    </span>
+                  )}
                 </div>
 
                 <div className="absolute top-4 right-4 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
