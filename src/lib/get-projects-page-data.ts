@@ -12,6 +12,14 @@ export type ProjectsPaginationMeta = {
   totalPages: number;
 };
 
+export type ProjectsListFilters = {
+  minPrice?: number;
+  maxPrice?: number;
+  locationQuery?: string;
+  roomsMin?: number;
+  bathroomsMin?: number;
+};
+
 /**
  * Shared listing query for the projects grid (used by the Projects page SSR and GET /api/projects/getProjects).
  * Avoids server-side HTTP self-fetch, which breaks in production when base URL env vars are missing.
@@ -19,6 +27,7 @@ export type ProjectsPaginationMeta = {
 export async function getProjectsPageData(
   page: number,
   limit: number,
+  filters: ProjectsListFilters = {},
 ): Promise<{
   data: unknown[];
   pagination: ProjectsPaginationMeta;
@@ -29,13 +38,48 @@ export async function getProjectsPageData(
   const safeLimit = Math.max(Number(limit) || 1, 1);
   const skip = (safePage - 1) * safeLimit;
 
+  const andFilters: Record<string, unknown>[] = [];
+
+  if (filters.locationQuery?.trim()) {
+    const q = filters.locationQuery.trim();
+    andFilters.push({
+      $or: [
+        { city: { $regex: q, $options: "i" } },
+        { state: { $regex: q, $options: "i" } },
+        { country: { $regex: q, $options: "i" } },
+        { address: { $regex: q, $options: "i" } },
+      ],
+    });
+  }
+
+  if (typeof filters.roomsMin === "number") {
+    andFilters.push({ bedrooms: { $gte: filters.roomsMin } });
+  }
+
+  if (typeof filters.bathroomsMin === "number") {
+    andFilters.push({ bathrooms: { $gte: filters.bathroomsMin } });
+  }
+
+  if (
+    typeof filters.minPrice === "number" ||
+    typeof filters.maxPrice === "number"
+  ) {
+    const priceFilter: Record<string, number> = {};
+    if (typeof filters.minPrice === "number") priceFilter.$gte = filters.minPrice;
+    if (typeof filters.maxPrice === "number") priceFilter.$lte = filters.maxPrice;
+    andFilters.push({ price: priceFilter });
+  }
+
+  const mongoFilter =
+    andFilters.length > 0 ? { $and: andFilters } : ({} as Record<string, unknown>);
+
   const [projects, total] = await Promise.all([
-    House.find({})
+    House.find(mongoFilter)
       .skip(skip)
       .limit(safeLimit)
       .sort({ createdAt: -1 })
       .lean(),
-    House.countDocuments({}),
+    House.countDocuments(mongoFilter),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / safeLimit));
@@ -60,6 +104,7 @@ type HouseCardLean = {
   bedrooms: number;
   bathrooms: number;
   balconies?: number;
+  price?: number;
   images?: string[];
 };
 
@@ -87,5 +132,6 @@ export async function getHighlightedProjectCards(
     beds: doc.bedrooms,
     baths: doc.bathrooms,
     cars: doc.balconies ?? 0,
+    price: typeof doc.price === "number" ? doc.price : undefined,
   }));
 }

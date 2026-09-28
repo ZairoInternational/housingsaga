@@ -5,7 +5,7 @@ export default function ProjectsHero() {
   return (
     <section className="relative w-full h-[520px] sm:h-[600px] flex items-center justify-start text-white overflow-hidden">
       <Image
-        src="/projects-hero.webp"
+        src="/project_page_banner.png"
         alt="Projects hero"
         fill
         priority

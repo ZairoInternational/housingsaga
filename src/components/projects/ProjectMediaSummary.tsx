@@ -1,6 +1,11 @@
 import Image from "next/image";
 import { Euro } from "lucide-react";
-import { RiAspectRatioLine, RiBuildingLine, RiCalendarEventLine } from "react-icons/ri";
+import {
+  RiAspectRatioLine,
+  RiBuildingLine,
+  RiCalendarEventLine,
+} from "react-icons/ri";
+import GoldenVisaRibbon from "@/components/ui/GoldenVisaRibbon";
 
 export interface ListingBadge {
   id: string;
@@ -15,11 +20,11 @@ export interface ProjectMediaSummaryProps {
   state?: string;
   projectType?: string;
   areaSqft?: number;
-  /** Shown as the third stat when set (replaces legacy start date). */
   constructionYear?: number;
   /** @deprecated Prefer `constructionYear` for the third stat. */
   startDateLabel?: string;
   priceRangeLabel?: string;
+  price?: number;
   listingBadges?: ListingBadge[];
 }
 
@@ -41,7 +46,7 @@ const statItems = [
   },
   {
     key: "priceRangeLabel",
-    label: "Price Range",
+    label: "Price",
     Icon: Euro,
   },
 ] as const;
@@ -57,6 +62,7 @@ export default function ProjectMediaSummary({
   constructionYear,
   startDateLabel,
   priceRangeLabel,
+  price,
   listingBadges,
 }: ProjectMediaSummaryProps) {
   const yearOrStartLabel =
@@ -83,24 +89,23 @@ export default function ProjectMediaSummary({
     .filter((s) => values[s.key] !== undefined);
 
   return (
-    <section className="mt-10 sm:mt-12">
+    <section className="mt-8 sm:mt-10">
       <div className="max-w-6xl md:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Title block */}
-        <div className="mb-4">
+        <div className="mb-5">
           {(city || state) && (
-            <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-lime-500 mb-1">
+            <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-lime-600 mb-1.5">
               {[city, state].filter(Boolean).join(", ")}
             </p>
           )}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight min-w-0">
               {name}
             </h1>
             {listingBadges && listingBadges.length > 0 && (
-              <ul className="flex flex-wrap gap-2 shrink-0">
+              <ul className="flex flex-wrap gap-2 shrink-0 sm:max-w-[45%] sm:justify-end">
                 {listingBadges.map((b) => (
                   <li key={b.id}>
-                    <span className="inline-flex items-center rounded-full border border-lime-200 bg-lime-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-lime-800">
+                    <span className="inline-flex items-center rounded-full border border-lime-200 bg-lime-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-lime-800">
                       {b.label}
                     </span>
                   </li>
@@ -109,38 +114,40 @@ export default function ProjectMediaSummary({
             )}
           </div>
           {summary && (
-            <p className="mt-3 text-[15px] sm:text-[16px] leading-relaxed text-gray-600">
+            <p className="mt-3 max-w-3xl text-[15px] sm:text-[16px] leading-relaxed text-gray-600">
               {summary}
             </p>
           )}
         </div>
 
-        {/* Card */}
-        <div className="rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-md">
-          {/* Hero image */}
-          <div className="relative h-[240px] sm:h-[320px] md:h-screen w-full">
+        <div className="rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+          <div className="relative w-full h-[240px] sm:h-[340px] lg:h-[420px]">
             <Image
               src={mainImage}
               alt={name}
               fill
               priority
+              sizes="(min-width: 1280px) 1280px, 100vw"
               className="object-cover"
             />
+            <GoldenVisaRibbon price={price} size="md" />
           </div>
 
-          {/* Stats bar */}
           {activeStats.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-gray-100 border-t border-gray-100 bg-white">
+            <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 border-t border-gray-100">
               {activeStats.map(({ key, label, Icon }) => (
-                <div key={key} className="flex items-center gap-3 px-5 py-4">
-                  <span className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-full bg-lime-100 ">
-                    <Icon className="h-6 w-6 " strokeWidth={0.1} />
+                <div
+                  key={key}
+                  className="flex items-center gap-3 px-4 sm:px-5 py-4 min-w-0"
+                >
+                  <span className="flex-shrink-0 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-lime-100 text-lime-700">
+                    <Icon className="h-5 w-5" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-lime-500 mb-0.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-lime-600 mb-0.5">
                       {label}
                     </p>
-                    <p className="text-[13px] font-semibold text-gray-900 truncate">
+                    <p className="text-[13px] sm:text-sm font-semibold text-gray-900 truncate">
                       {values[key]}
                     </p>
                   </div>

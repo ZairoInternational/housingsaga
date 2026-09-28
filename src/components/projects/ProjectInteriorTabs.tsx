@@ -58,22 +58,23 @@ export default function ProjectInteriorTabs({
 
   return (
     <section className="mt-10 sm:mt-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl md:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
             Interior Space Design
           </h2>
 
-          <div className="inline-flex bg-gray-100 rounded-full p-1">
+          <div className="inline-flex self-start sm:self-auto bg-gray-100 rounded-full p-1 overflow-x-auto max-w-full">
             {visibleTabs.map(({ id, label, Icon }) => (
               <button
                 key={id}
+                type="button"
                 onClick={() => {
                   setActive(id as TabId);
-                  setPlayVideo(false); // reset video when switching tabs
+                  setPlayVideo(false);
                 }}
-                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm transition ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-sm whitespace-nowrap transition ${
                   active === id
                     ? "bg-lime-300 text-gray-900"
                     : "text-gray-500 hover:text-gray-900"
