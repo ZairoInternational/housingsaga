@@ -10,7 +10,7 @@ import ContactSection from "@/components/homepage/ContactSection";
 
 export default function Home() {
   return (    
-    <main className="flex flex-col ">
+    <main className="flex flex-col overflow-x-hidden">
       <Hero />
       <AboutSection />
       <ProjectsSection />

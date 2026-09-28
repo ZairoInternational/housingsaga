@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
@@ -59,7 +60,7 @@ const steps: ProcessStep[] = [
     bullets: [
       "Property management and maintenance support",
       "Tenant sourcing and rental management",
-      "Assistance with Golden Visa renewals and compliance",
+      "Assistance with Golden Visa renewals when applicable",
       "Ongoing advisory for portfolio growth and optimization",
     ],
   },
@@ -163,15 +164,26 @@ export default function ServicesProcessSection() {
             </h2>
 
             <p className="text-gray-600 mt-5 sm:mt-6 max-w-md leading-relaxed text-sm sm:text-base">
-              We provide a smooth, transparent, and fully managed experience,
-              combining local expertise in Greece with personalized support in
-              India.
+              We provide a smooth, transparent, and fully managed experience —
+              for Golden Visa buyers and for clients purchasing property without
+              a residency pathway.
             </p>
 
-            <button className="mt-7 sm:mt-8 inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-300 text-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition">
-              Secure the Greece Golden Visa
-              <ArrowUpRight size={16} />
-            </button>
+            <div className="mt-7 sm:mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/golden-visa"
+                className="inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-300 text-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition"
+              >
+                Explore Golden Visa
+                <ArrowUpRight size={16} />
+              </Link>
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-black border border-gray-300 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition"
+              >
+                Browse all properties
+              </Link>
+            </div>
           </div>
 
           {/* eslint-disable-next-line @next/next/no-img-element */}

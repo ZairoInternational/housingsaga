@@ -5,11 +5,15 @@ import React from "react";
 type SocialButtonProps = {
   children: React.ReactNode;
   delay?: string;
+  href: string;
+  label: string;
 };
 
 export default function SocialButton({
   children,
   delay = "",
+  href,
+  label,
 }: SocialButtonProps) {
   return (
     <div
@@ -21,9 +25,15 @@ export default function SocialButton({
         ${delay}
       `}
     >
-      <button className="w-9 h-9 rounded-md bg-white flex items-center justify-center shadow hover:bg-lime-400 transition text-black">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        className="w-9 h-9 rounded-md bg-white flex items-center justify-center shadow hover:bg-lime-400 transition text-black"
+      >
         {children}
-      </button>
+      </a>
     </div>
   );
 }

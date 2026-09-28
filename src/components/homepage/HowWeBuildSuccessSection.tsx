@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +32,7 @@ const steps = [
 ];
 
 const HowWeBuildSuccessSection: React.FC = () => {
+  const router = useRouter();
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
@@ -130,7 +132,11 @@ useLayoutEffect(() => {
               growth, ensure quality, and deliver long-term success.
             </p>
 
-            <button className="mt-7 sm:mt-8 inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-300 text-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition">
+            <button
+              type="button"
+              onClick={() => router.push("/sign-up")}
+              className="mt-7 sm:mt-8 inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-300 text-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition"
+            >
               Join Us Now
               <ArrowUpRight size={16} />
             </button>

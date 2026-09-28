@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 type ServiceCardData = {
@@ -12,15 +16,14 @@ type ServiceCardData = {
 const serviceCards: ServiceCardData[] = [
   {
     iconSrc: "/minimalist.png",
-    title: "Greece Golden Visa Solutions",
+    title: "Greece Golden Visa Pathway",
     intro:
-      "Complete assistance for obtaining European residency through the Greece Golden Visa program.",
+      "End-to-end support when you want EU residency through property investment — optional, not required.",
     bullets: [
-      "Detailed consultation on eligibility, investment thresholds, and program structure",
-      "Step-by-step guidance on documentation and compliance requirements",
-      "Coordination with Greek authorities for application submission",
-      "Assistance with biometric appointments and residency issuance",
-
+      "Eligibility, thresholds, and program structure explained clearly",
+      "Documentation and compliance guidance step by step",
+      "Coordination with Greek authorities for filing",
+      "Help through biometrics and residency issuance",
     ],
     imageSrc: "/about1.jpg",
     imageAlt: "Golden Visa journey",
@@ -29,12 +32,12 @@ const serviceCards: ServiceCardData[] = [
     iconSrc: "/target.png",
     title: "Strategic Property Advisory",
     intro:
-      "Well-informed investment guidance aligned with your goals—residency, rental income, or capital growth.",
+      "Investment guidance for residency, rental income, lifestyle living, or capital growth — with or without a visa path.",
     bullets: [
-      "Understanding your investment purpose",
-      "Identifying the most suitable locations and property types in Greece",
-      "Recommending properties aligned with Golden Visa eligibility",
-      "Insights into market trends, rental demand, and future appreciation",
+      "Clarify your purpose: visa, yield, second home, or portfolio",
+      "Match locations and property types across Greece",
+      "Visa-eligible picks when needed — or standard homes when not",
+      "Market trends, rental demand, and appreciation outlook",
     ],
     imageSrc: "/about2.jpg",
     imageAlt: "Advisory and property selection",
@@ -43,11 +46,11 @@ const serviceCards: ServiceCardData[] = [
     iconSrc: "/premium.png",
     title: "Verified Property Access",
     intro:
-      "Carefully curated, pre-verified properties evaluated for ownership, compliance, and Golden Visa eligibility.",
+      "Curated homes and investments — pre-checked for ownership and compliance. Golden Visa eligibility when it matters; open inventory when it doesn’t.",
     bullets: [
       "Clear ownership and title verification",
       "Legal and regulatory compliance",
-      "Eligibility under the Greece Golden Visa program",
+      "Visa-eligible options plus non-visa properties",
       "Rental yield potential and market demand",
     ],
     imageSrc: "/about3.jpg",
@@ -56,8 +59,30 @@ const serviceCards: ServiceCardData[] = [
 ];
 
 export default function ServicesCardSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="bg-[#f3f4f6] text-gray-900 py-16 sm:py-16 lg:py-18 overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="bg-[#f3f4f6] text-gray-900 py-14 sm:py-16 lg:py-20 overflow-hidden"
+    >
       <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 lg:gap-10">
           <div className="max-w-3xl">
@@ -66,55 +91,74 @@ export default function ServicesCardSection() {
               <span className="uppercase">Our Services</span>
             </div>
 
-            <h2 className="text-[clamp(2.2rem,5vw,4.5rem)] font-medium leading-[1.1] tracking-tight">
-              Comprehensive Solution for Greece Golden Visa
+            <h2 className="text-[clamp(2rem,4.5vw,3.75rem)] font-medium leading-[1.1] tracking-tight">
+              Property, residency &amp; support —{" "}
+              <span className="text-lime-600">your way</span>
             </h2>
+            <p className="mt-4 text-sm sm:text-base text-gray-600 max-w-2xl leading-relaxed">
+              HousingSaga helps you buy in Greece for investment or living.
+              Golden Visa is one pathway we offer — we also list and advise on
+              properties that don’t require visa eligibility.
+            </p>
           </div>
 
-          <div className="shrink-0">
-            <div className="inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-500 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300">
-              Secure the Greece Golden Visa
+          <div className="shrink-0 flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/golden-visa"
+              className="inline-flex items-center justify-center gap-2 bg-lime-400 hover:bg-lime-300 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300"
+            >
+              Explore Golden Visa
               <ArrowRight size={16} />
-            </div>
+            </Link>
+            <Link
+              href="/projects"
+              className="inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300"
+            >
+              Browse all properties
+            </Link>
           </div>
         </div>
 
-        <div className="mt-8 sm:mt-16 lg:mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-5 items-start ">
+        <div className="mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
           {serviceCards.map((card, index) => (
-            <div
+            <article
               key={card.title}
               className={`
-      flex flex-col rounded-3xl bg-white/70 border border-gray-100 
-      shadow-[0_20px_50px_rgba(0,0,0,0.06)]
-      ${index === 0 ? "md:pb-0" : ""}
-      ${index === 1 ? "md:pb-0" : ""}
-      ${index === 2 ? "md:pb-0" : ""}
-    `}
+                group flex h-full flex-col rounded-3xl bg-white border border-gray-200
+                shadow-[0_16px_40px_rgba(0,0,0,0.06)]
+                transition-all duration-700 ease-out
+                hover:-translate-y-1 hover:shadow-[0_22px_50px_rgba(0,0,0,0.1)]
+                hover:border-lime-400/40
+                ${
+                  visible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-8"
+                }
+              `}
+              style={{ transitionDelay: `${index * 120}ms` }}
             >
-              <div className="p-7 sm:p-8 flex flex-col">
-                <div className="flex items-start gap-4 sm:gap-5">
-                  <div className="w-14 h-14 flex items-center justify-center text-lime-500  shrink-0">
+              <div className="p-6 sm:p-7 flex flex-col flex-1 min-h-0">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-lime-500 shrink-0 rounded-xl bg-lime-50 border border-lime-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={card.iconSrc}
-                      alt={`${card.title} icon`}
-                      className="w-full h-full object-contain"
+                      alt=""
+                      className="w-8 h-8 object-contain"
                       draggable={false}
                     />
                   </div>
 
-                  <div className="min-w-0">
-                    <h3 className="text-xl sm:text-2xl font-semibold leading-snug mb-2">
-                      {card.title}
-                    </h3>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                    {card.intro}
-                  </p>
+                  <h3 className="text-lg sm:text-xl font-semibold leading-snug text-[#1c1c1c] pt-1">
+                    {card.title}
+                  </h3>
                 </div>
 
-                <ul className="mt-5 sm:mt-6 space-y-2 text-sm sm:text-base text-gray-600 leading-relaxed">
+                <p className="mt-4 text-sm text-gray-600 leading-relaxed">
+                  {card.intro}
+                </p>
+
+                <ul className="mt-5 space-y-2 text-sm text-gray-600 leading-relaxed flex-1">
                   {card.bullets.map((bullet) => (
                     <li key={bullet} className="flex items-start gap-2">
                       <span className="mt-2 h-1.5 w-1.5 rounded-full bg-lime-400 shrink-0" />
@@ -123,20 +167,21 @@ export default function ServicesCardSection() {
                   ))}
                 </ul>
 
-                <div className="mt-7 sm:mt-8 rounded-2xl overflow-hidden h-[160px] sm:h-[200px]">
+                <div className="mt-6 rounded-2xl overflow-hidden h-[180px] sm:h-[200px] relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={card.imageSrc}
                     alt={card.imageAlt}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     draggable={false}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
     </section>
   );
 }
-
