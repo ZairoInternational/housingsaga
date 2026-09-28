@@ -1,18 +1,12 @@
 "use client";
 
-import EmployeeCard from "../ui/EmployeeCard";
-
-export type TeamMember = {
-  id: number;
-  name: string;
-  role: string;
-  image: string;
-};
+import EmployeeCard, { type TeamMember } from "../ui/EmployeeCard";
 
 export default function TeamGrid() {
  const teamMembers: TeamMember[] = [
    {
      id: 1,
+     profileId: "zaid",
      name: "Zaid Bin Hashmat",
      role: "Founder",
      image: "/team-7.jpeg",
@@ -20,33 +14,38 @@ export default function TeamGrid() {
    },
    {
      id: 2,
+     profileId: "maria-saridou",
      name: "Maria saridou",
      role: "Founder of Greece Branch",
      image: "/team-1.png",
    },
    {
      id: 3,
+     profileId: "seda",
      name: "Seda Celen",
      role: "Real Estate Consultant",
      image: "/team-2.png",
    },
    {
      id: 4,
+     profileId: "maria-boutali",
      name: "Maria Boutali",
      role: "Lawyer",
      image: "/team-3.png",
    },
    {
      id: 5,
+     profileId: "siddartha",
      name: "Siddartha Jain",
      role: "Chief Marketing Officer",
      image: "/team-4.jpeg",
    },
    {
      id: 6,
+     profileId: "ankita",
      name: "Ankita Nigam",
      role: "Chief Operating Officer",
-     image: "/team-8.jpeg",
+     image: "/ankita_nigam.png",
    },
  ];
   return (
