@@ -8,6 +8,8 @@ const searchSchema = z.object({
   locationQuery: z.string().trim().min(1).optional(),
   roomsMin: z.number().int().min(1).optional(),
   bathroomsMin: z.number().int().min(1).optional(),
+  minPrice: z.number().min(0).optional(),
+  maxPrice: z.number().min(0).optional(),
   page: z.number().int().min(1).optional(),
   limit: z.number().int().min(1).max(50).optional(),
 });
@@ -30,6 +32,8 @@ export async function POST(request: NextRequest) {
       locationQuery,
       roomsMin,
       bathroomsMin,
+      minPrice,
+      maxPrice,
       page = 1,
       limit = 9,
     } = parsed.data;
@@ -53,6 +57,13 @@ export async function POST(request: NextRequest) {
 
     if (typeof bathroomsMin === "number") {
       andFilters.push({ bathrooms: { $gte: bathroomsMin } });
+    }
+
+    if (typeof minPrice === "number" || typeof maxPrice === "number") {
+      const priceFilter: Record<string, number> = {};
+      if (typeof minPrice === "number") priceFilter.$gte = minPrice;
+      if (typeof maxPrice === "number") priceFilter.$lte = maxPrice;
+      andFilters.push({ price: priceFilter });
     }
 
     const mongoFilter =

@@ -2,6 +2,7 @@ import ProjectsDetailHero from "@/components/projects/ProjectsDetailHero";
 import ProjectMediaSummary from "@/components/projects/ProjectMediaSummary";
 import ProjectAbout from "@/components/projects/ProjectAbout";
 import ProjectKeyFeatures from "@/components/projects/ProjectKeyFeatures";
+import ProjectContactAgent from "@/components/projects/ProjectContactAgent";
 import ProjectPropertyDetails from "@/components/projects/ProjectPropertyDetails";
 import ProjectAmenities from "@/components/projects/ProjectAmenities";
 import ProjectUtilities from "@/components/projects/ProjectUtilities";
@@ -11,6 +12,7 @@ import { connectDb } from "@/lib/db";
 import { House } from "@/models/houseModel";
 import type { HouseValidationSchema } from "@/schemas/property.schema";
 import { formatEurAmount } from "@/lib/format-currency";
+import { isGoldenVisaEligible } from "@/lib/golden-visa-eligibility";
 import {
   formatDashCaseLabel,
   formatFloorStatus,
@@ -105,6 +107,9 @@ function buildListingBadges(project: ProjectDetail) {
   if (project.isAvailable) {
     badges.push({ id: "available", label: "Available for rent" });
   }
+  if (isGoldenVisaEligible(project.price)) {
+    badges.push({ id: "golden-visa", label: "Golden Visa Eligible" });
+  }
   return badges;
 }
 
@@ -136,6 +141,41 @@ export default async function ProjectDetailPage({
   );
   const furnishingLabel = formatDashCaseLabel(project.furnishing);
 
+  const highlights = [
+    {
+      icon: "bed" as const,
+      title: `${project.bedrooms} Bedrooms`,
+      subtitle: `${project.bathrooms} Bathrooms · ready to live`,
+    },
+    {
+      icon: "building" as const,
+      title: `${project.carpetArea.toLocaleString()} SQFT`,
+      subtitle: formatDashCaseLabel(project.propertyType),
+    },
+    {
+      icon: "star" as const,
+      title:
+        project.amenities.length > 0
+          ? `${project.amenities.length} Premium Amenities`
+          : "Premium Amenities",
+      subtitle:
+        project.amenities.length > 0
+          ? "Luxury finishes & lifestyle extras"
+          : "Quality interiors throughout",
+    },
+    {
+      icon: "shield" as const,
+      title: isGoldenVisaEligible(project.price)
+        ? "Investment Potential"
+        : project.isVerified
+          ? "Verified Listing"
+          : "Investment Ready",
+      subtitle: isGoldenVisaEligible(project.price)
+        ? "Golden Visa eligible property"
+        : "Reviewed by HousingSaga",
+    },
+  ];
+
   return (
     <main className="bg-white min-h-screen pb-12">
       <ProjectsDetailHero
@@ -157,29 +197,40 @@ export default async function ProjectDetailPage({
         areaSqft={project.carpetArea}
         constructionYear={project.constructionYear}
         priceRangeLabel={priceRangeLabel}
+        price={project.price}
         listingBadges={listingBadges}
       />
 
-      <section className="mt-10 sm:mt-12">
-        <div className="max-w-6xl md:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,0.9fr)]">
-          <ProjectAbout
-            sections={[
-              { title: "About this property", body: project.description },
-            ]}
-          />
-          <div className="space-y-4">
-            <ProjectKeyFeatures
-              bedrooms={project.bedrooms}
-              bathrooms={project.bathrooms}
-              balconies={project.balconies}
-              areaSqft={project.carpetArea}
-            />
-            <ProjectPropertyDetails
-              furnishingLabel={furnishingLabel}
-              floorStatusLabel={floorStatusLabel}
-              leaseTerm={project.leaseTerm}
-              depositAmount={project.depositAmount}
-            />
+      {/* About + sidebar — matches attached design (no % split) */}
+      <section className="relative mt-8 sm:mt-10 overflow-hidden bg-[#fbfcfa]">
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_left,_rgba(190,242,100,0.18),_transparent_50%)]" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-14">
+            <div className="min-w-0 flex-1">
+              <ProjectAbout
+                title={project.name}
+                description={project.description}
+                summary={project.summary}
+                highlights={highlights}
+              />
+            </div>
+
+            <aside className="w-full lg:w-[380px] xl:w-[400px] shrink-0 space-y-5">
+              <ProjectKeyFeatures
+                bedrooms={project.bedrooms}
+                bathrooms={project.bathrooms}
+                areaSqft={project.carpetArea}
+                hasAmenities={project.amenities.length > 0}
+              />
+              <ProjectContactAgent />
+              <ProjectPropertyDetails
+                furnishingLabel={furnishingLabel}
+                floorStatusLabel={floorStatusLabel}
+                leaseTerm={project.leaseTerm}
+                depositAmount={project.depositAmount}
+              />
+            </aside>
           </div>
         </div>
       </section>
@@ -196,7 +247,13 @@ export default async function ProjectDetailPage({
       <ProjectMapSection
         latitude={project.coordinates?.latitude}
         longitude={project.coordinates?.longitude}
-        address={project.address}
+        areaLabel={[project.city, project.state].filter(Boolean).join(", ")}
+        address={
+          !project.coordinates?.latitude
+            ? [project.city, project.state].filter(Boolean).join(", ") ||
+              undefined
+            : undefined
+        }
       />
     </main>
   );

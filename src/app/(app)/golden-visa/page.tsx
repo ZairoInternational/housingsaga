@@ -1,7 +1,6 @@
-// app/golden-visa/page.tsx
 import Benefits from "@/components/golden-visa/Benefits";
+import BrandBridgeBanner from "@/components/golden-visa/BrandBridgeBanner";
 import DocumentsAccordion from "@/components/golden-visa/DocumentsAccordion";
-import FAQ from "@/components/golden-visa/FAQ";
 import FinalCTA from "@/components/golden-visa/FinalCTA";
 import HeroSection from "@/components/golden-visa/HeroSection";
 import InvestmentOptions from "@/components/golden-visa/InvestmentOptions";
@@ -22,11 +21,11 @@ export default function Page() {
         <WhyChoose />
         <Benefits />
         <InvestmentOptions />
+        <BrandBridgeBanner />
         <ProcessSteps />
         <Services />
         <TrustIndicators />
         <DocumentsAccordion />
-        {/* <FAQ /> */}
       </main>
 
       <FinalCTA />

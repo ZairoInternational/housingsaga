@@ -9,6 +9,22 @@
   font-style: normal;
 }
 
+.script-accent {
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .material-symbols-outlined {
   font-variation-settings:
     'FILL' 0,
@@ -149,8 +165,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply overflow-x-hidden;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
 }
 

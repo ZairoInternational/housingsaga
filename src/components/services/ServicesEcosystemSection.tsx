@@ -110,7 +110,9 @@ export default function ServicesEcosystemSection() {
           {/* RIGHT */}
           <div className="text-gray-600 leading-relaxed text-sm sm:text-base md:text-lg max-w-xl lg:pt-10">
             At Housing Saga, we bring together real estate expertise, legal
-            support, and residency solutions into a single, integrated platform.
+            support, and optional residency solutions into one platform — for
+            Golden Visa clients and for buyers who simply want a home or
+            investment in Greece.
           </div>
         </div>
 

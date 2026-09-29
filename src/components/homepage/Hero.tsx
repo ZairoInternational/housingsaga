@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import CountUp from "@/components/CountUp";
 import { useRouter } from "next/navigation";
+import { signalProjectsNavigation } from "@/components/projects/ProjectsRouteProgress";
 
 const Hero: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -88,7 +89,14 @@ const Hero: React.FC = () => {
               {/* RIGHT ACTION */}
               <div className="hidden lg:flex items-center justify-end w-[20%]">
                 <div className="w-[140px] h-[140px] xl:w-[160px] xl:h-[160px] rounded-full bg-black/30 backdrop-blur-lg ring-1 ring-white/20 flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
-                  <ArrowUpRight onClick={() => router.push("/projects")} size={42} className="text-white" />
+                  <ArrowUpRight
+                    onClick={() => {
+                      signalProjectsNavigation();
+                      router.push("/projects");
+                    }}
+                    size={42}
+                    className="text-white cursor-pointer"
+                  />
                 </div>
               </div>
             </div>

@@ -76,7 +76,13 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
       initial={{ x: "-100%" }}
       animate={{ x: open ? 0 : "-100%" }}
       transition={{ duration: 0.2 }}
-      className=" bg-white dark:bg-neutral-900 absolute left-0 top-0 h-full w-64 p-2 z-50"
+      aria-hidden={!open}
+      className={`
+        fixed inset-y-0 left-0 z-50
+        h-full w-64 max-w-[85vw]
+        bg-white dark:bg-neutral-900 p-2
+        ${open ? "pointer-events-auto" : "pointer-events-none"}
+      `}
     >
       <button
         onClick={() => onOpenChange(false)}

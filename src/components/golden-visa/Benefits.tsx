@@ -71,17 +71,17 @@ export default function Benefits() {
   return (
     <section
       ref={sectionRef}
-      className="py-24 bg-[#2b2420] text-white relative overflow-hidden"
+      className="py-14 sm:py-16 lg:py-20 bg-[#2b2420] text-white relative overflow-hidden"
     >
       
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-14">
-          <div className="inline-block px-4 py-2 bg-yellow-500/15 text-yellow-100 rounded-full text-sm font-semibold mb-4 border border-yellow-400/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-10 sm:mb-12">
+          <div className="inline-block px-4 py-2 bg-lime-500/15 text-lime-100 rounded-full text-sm font-semibold mb-4 border border-lime-400/30">
             Program Benefits
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold mb-4">Key Benefits</h2>
-          <p className="text-lg text-white/60 max-w-2xl mx-auto">
-            Unlock exclusive advantages with the Greece Golden Visa program
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Key Benefits</h2>
+          <p className="text-base sm:text-lg text-white/60 max-w-2xl mx-auto">
+            Advantages of the Greece Golden Visa — plus property options without a visa path
           </p>
         </div>
 
@@ -95,8 +95,8 @@ export default function Benefits() {
                   : "opacity-0 translate-y-8"
               }`}
             >
-              <div className="flex gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-yellow-400/25 hover:bg-white/6 transition-colors">
-                <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-yellow-500/15 border border-yellow-400/30 text-yellow-100 flex items-center justify-center">
+              <div className="flex gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-lime-400/25 hover:bg-white/6 transition-colors">
+                <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-lime-500/15 border border-lime-400/30 text-lime-100 flex items-center justify-center">
                   <benefit.Icon size={18} />
                 </div>
                 <div className="min-w-0">
@@ -112,8 +112,16 @@ export default function Benefits() {
           ))}
         </div>
 
-        <div className="text-center mt-16">
-          <button className="group px-10 py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-2xl transition-all duration-200 shadow-lg shadow-yellow-500/20">
+        <div className="text-center mt-10 sm:mt-12">
+          <button
+            type="button"
+            onClick={() =>
+              document
+                .getElementById("investment-options")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className="group px-10 py-4 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-2xl transition-all duration-200 shadow-lg shadow-lime-500/20"
+          >
             <span className="flex items-center gap-2">
               Get Started Today
               <svg

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { signalProjectsNavigation } from "@/components/projects/ProjectsRouteProgress";
 
 interface ProjectsPaginationProps {
   page: number;
@@ -33,6 +34,7 @@ export default function ProjectsPagination({
       params.set("page", String(target));
     }
     const qs = params.toString();
+    signalProjectsNavigation();
     router.push(qs ? `${pathname}?${qs}` : pathname);
   };
 
@@ -44,7 +46,7 @@ export default function ProjectsPagination({
         type="button"
         onClick={() => goToPage(page - 1)}
         disabled={!canPrev}
-        className="px-3 py-1.5 rounded-full border text-xs sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="px-3 py-1.5 rounded-full border text-xs sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
       >
         Previous
       </button>
@@ -57,7 +59,7 @@ export default function ProjectsPagination({
         type="button"
         onClick={() => goToPage(page + 1)}
         disabled={!canNext}
-        className="px-3 py-1.5 rounded-full border text-xs sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="px-3 py-1.5 rounded-full border text-xs sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
       >
         Next
       </button>

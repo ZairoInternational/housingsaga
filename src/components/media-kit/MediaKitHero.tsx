@@ -2,16 +2,17 @@ import Image from "next/image";
 
 export default function MediaKitHero() {
   return (
-    <section className="relative w-full h-[520px] sm:h-[600px] flex items-center justify-center text-white">
+    <section className="relative w-full h-[520px] sm:h-[600px] flex items-center justify-center text-white overflow-hidden">
       <Image
-        src="/media-kit-hero.webp"
+        src="/media_kit.png"
         alt="Media kit hero"
         fill
         priority
-        className="object-cover"
+        sizes="100vw"
+        className="object-cover object-center"
       />
       <div className="absolute inset-0 bg-black/55" />
-      <div className="relative text-center px-4">
+      <div className="relative z-10 text-center px-4">
         <p className="text-sm sm:text-base text-lime-400 mb-3 tracking-[0.24em] uppercase">
           Press & Brand Assets
         </p>
@@ -19,10 +20,10 @@ export default function MediaKitHero() {
           Media Kit
         </h1>
         <p className="text-sm sm:text-base text-white/80 max-w-xl mx-auto">
-          Download official logos, brand guidelines, and media resources for HousingSaga.
+          Download official logos, brand guidelines, and media resources for
+          HousingSaga.
         </p>
       </div>
     </section>
   );
 }
-

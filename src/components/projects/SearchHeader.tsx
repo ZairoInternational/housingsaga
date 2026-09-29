@@ -8,6 +8,8 @@ export type ProjectsSearchFilters = {
   locationQuery?: string;
   roomsMin?: number;
   bathroomsMin?: number;
+  minPrice?: number;
+  maxPrice?: number;
 };
 
 const ROOM_OPTIONS: Array<{ label: string; value: number | null }> = [
@@ -93,12 +95,37 @@ export default function SearchHeader({
 
   const [roomsMin, setRoomsMin] = useState<number | undefined>(initialValue?.roomsMin);
   const [bathroomsMin, setBathroomsMin] = useState<number | undefined>(initialValue?.bathroomsMin);
+  const [minPrice, setMinPrice] = useState<number | undefined>(initialValue?.minPrice);
+  const [maxPrice, setMaxPrice] = useState<number | undefined>(initialValue?.maxPrice);
+
+  useEffect(() => {
+    setRoomsMin(initialValue?.roomsMin);
+    setBathroomsMin(initialValue?.bathroomsMin);
+    setMinPrice(initialValue?.minPrice);
+    setMaxPrice(initialValue?.maxPrice);
+    if (initialValue?.locationQuery) {
+      setLocationText(initialValue.locationQuery);
+      setSelectedPlace({
+        query: initialValue.locationQuery,
+        display: initialValue.locationQuery,
+      });
+    }
+  }, [initialValue]);
 
   const roomsSelectValue = useMemo(() => String(roomsMin ?? 0), [roomsMin]);
   const bathroomsSelectValue = useMemo(
     () => String(bathroomsMin ?? 0),
     [bathroomsMin],
   );
+
+  const priceLabel = useMemo(() => {
+    if (typeof minPrice === "number" && typeof maxPrice === "number") {
+      return `€${minPrice.toLocaleString()} – €${maxPrice.toLocaleString()}`;
+    }
+    if (typeof minPrice === "number") return `From €${minPrice.toLocaleString()}`;
+    if (typeof maxPrice === "number") return `Up to €${maxPrice.toLocaleString()}`;
+    return null;
+  }, [minPrice, maxPrice]);
 
   useEffect(() => {
     let cancelled = false;
@@ -157,6 +184,8 @@ export default function SearchHeader({
       ...(selectedPlace.query?.trim() ? { locationQuery: selectedPlace.query.trim() } : {}),
       ...(typeof roomsMin === "number" ? { roomsMin } : {}),
       ...(typeof bathroomsMin === "number" ? { bathroomsMin } : {}),
+      ...(typeof minPrice === "number" ? { minPrice } : {}),
+      ...(typeof maxPrice === "number" ? { maxPrice } : {}),
     };
 
     onSearch(nextFilters);
@@ -241,6 +270,44 @@ export default function SearchHeader({
               </select>
             </div>
 
+            {/* Price range (from Golden Visa tiers / manual) */}
+            <div className="w-full sm:w-36">
+              <label htmlFor="projects-min-price" className="sr-only">
+                Min price
+              </label>
+              <input
+                id="projects-min-price"
+                type="number"
+                min={0}
+                step={1000}
+                placeholder="Min €"
+                value={minPrice ?? ""}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  setMinPrice(e.target.value === "" || !Number.isFinite(n) ? undefined : n);
+                }}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141827] text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/30 focus:border-lime-500/40 transition"
+              />
+            </div>
+            <div className="w-full sm:w-36">
+              <label htmlFor="projects-max-price" className="sr-only">
+                Max price
+              </label>
+              <input
+                id="projects-max-price"
+                type="number"
+                min={0}
+                step={1000}
+                placeholder="Max €"
+                value={maxPrice ?? ""}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  setMaxPrice(e.target.value === "" || !Number.isFinite(n) ? undefined : n);
+                }}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141827] text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/30 focus:border-lime-500/40 transition"
+              />
+            </div>
+
             {/* Search */}
             <div className="lg:w-44">
               <button
@@ -259,6 +326,24 @@ export default function SearchHeader({
               </button>
             </div>
           </div>
+
+          {priceLabel && (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-lime-100 text-lime-800 text-xs font-semibold px-3 py-1.5">
+                Price filter: {priceLabel}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMinPrice(undefined);
+                    setMaxPrice(undefined);
+                  }}
+                  className="underline underline-offset-2 hover:no-underline"
+                >
+                  Clear
+                </button>
+              </span>
+            </div>
+          )}
         </form>
       </div>
     </section>

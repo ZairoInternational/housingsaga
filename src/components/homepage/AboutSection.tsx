@@ -57,11 +57,11 @@ const AboutSection: React.FC = () => {
         </div>
 
         {/* CARDS */}
-        <div className="mt-12 sm:mt-16 lg:mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-14 items-end">
+        <div className="mt-12 sm:mt-16 lg:mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-14 items-stretch">
           {aboutItems.map((item, index) => (
-            <div key={index} className="flex flex-col gap-5 sm:gap-6">
+            <div key={index} className="flex h-full flex-col gap-5 sm:gap-6">
               {/* TEXT BLOCK */}
-              <div className="flex items-start gap-4 sm:gap-5 mb-6 sm:mb-8 lg:mb-10">
+              <div className="flex items-start gap-4 sm:gap-5 mb-6 sm:mb-8 lg:mb-10 min-h-0 lg:min-h-[170px]">
                 <div className="w-14 h-10 sm:w-16 sm:h-12 lg:w-20 lg:h-14 flex items-center justify-center text-lime-500 shrink-0">
                   <img
                     src={`/${item.icon}`}
@@ -70,7 +70,7 @@ const AboutSection: React.FC = () => {
                   />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <h3 className="text-xl sm:text-2xl lg:text-4xl roboto-condensed font-normal mb-1.5 sm:mb-2">
                     {item.title}
                   </h3>
@@ -82,19 +82,7 @@ const AboutSection: React.FC = () => {
               </div>
 
               {/* IMAGE */}
-              <div
-                className={`
-                  overflow-hidden rounded-3xl
-                  shadow-[0_20px_50px_rgba(0,0,0,0.08)]
-                  ${
-                    index === 0
-                      ? "h-[230px] sm:h-[320px] lg:h-[550px]"
-                      : index === 1
-                        ? "h-[200px] sm:h-[290px] lg:h-[520px]"
-                        : "h-[170px] sm:h-[260px] lg:h-[480px]"
-                  }
-                `}
-              >
+              <div className="mt-auto overflow-hidden rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] h-[230px] sm:h-[320px] lg:h-[520px]">
                 <img
                   src={item.image}
                   alt={item.title}
