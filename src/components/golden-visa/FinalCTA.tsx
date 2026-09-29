@@ -30,7 +30,10 @@ export default function FinalCTA() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <ScheduleCallbackButton className="group px-8 py-4 bg-lime-400 hover:bg-lime-300 text-black text-base font-bold rounded-2xl shadow-2xl shadow-lime-500/25 transition-all duration-200">
+          <ScheduleCallbackButton
+            defaultReason="Golden Visa consultation"
+            className="group px-8 py-4 bg-lime-400 hover:bg-lime-300 text-black text-base font-bold rounded-2xl shadow-2xl shadow-lime-500/25 transition-all duration-200"
+          >
             <span className="flex items-center gap-3">
               Schedule Free Consultation
               <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

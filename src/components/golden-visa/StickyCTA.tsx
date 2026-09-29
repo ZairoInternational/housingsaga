@@ -44,7 +44,10 @@ export default function StickyCTA() {
               >
                 Download Guide
               </button>
-              <ScheduleCallbackButton className="flex-1 sm:flex-none group px-4 sm:px-6 py-2.5 sm:py-3 bg-lime-400 hover:bg-lime-300 text-black rounded-xl font-semibold shadow-lg shadow-lime-500/25 transition text-sm">
+              <ScheduleCallbackButton
+                defaultReason="Golden Visa consultation"
+                className="flex-1 sm:flex-none group px-4 sm:px-6 py-2.5 sm:py-3 bg-lime-400 hover:bg-lime-300 text-black rounded-xl font-semibold shadow-lg shadow-lime-500/25 transition text-sm"
+              >
                 <span className="flex items-center justify-center gap-2">
                   Schedule Meeting
                   <svg

@@ -171,7 +171,10 @@ export default function DocumentsAccordion() {
           <p className="text-gray-700 dark:text-gray-300">
             Our document specialists will guide you through every step of the preparation process
           </p>
-          <ScheduleCallbackButton className="px-8 py-3 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-xl shadow-lg shadow-lime-500/20 transition-all duration-200">
+          <ScheduleCallbackButton
+            defaultReason="Documents & application support"
+            className="px-8 py-3 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-xl shadow-lg shadow-lime-500/20 transition-all duration-200"
+          >
             Get Document Checklist
           </ScheduleCallbackButton>
         </div>

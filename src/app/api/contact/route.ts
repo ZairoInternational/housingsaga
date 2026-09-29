@@ -22,6 +22,7 @@ const contactBodySchema = z
     requestType: z.enum(["contact", "callback"]).optional().default("contact"),
     preferredDate: z.string().optional().nullable(),
     preferredWindow: z.string().optional().nullable(),
+    reason: z.string().trim().min(1).max(200).optional().nullable(),
   })
   .superRefine((data, ctx) => {
     if (data.requestType === "callback") {
@@ -44,6 +45,13 @@ const contactBodySchema = z
           code: z.ZodIssueCode.custom,
           message: "Preferred time window is required",
           path: ["preferredWindow"],
+        });
+      }
+      if (!data.reason?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Reason is required for callback requests",
+          path: ["reason"],
         });
       }
       return;

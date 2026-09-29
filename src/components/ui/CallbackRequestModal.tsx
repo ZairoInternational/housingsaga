@@ -17,9 +17,24 @@ const TIME_WINDOWS = [
   { value: "3:00 PM – 5:00 PM", short: "3–5 PM" },
 ] as const;
 
+export const CALLBACK_REASONS = [
+  "Golden Visa consultation",
+  "Property investment advice",
+  "Property viewing / shortlist help",
+  "Documents & application support",
+  "Pricing or partnership inquiry",
+  "Meet the team",
+  "General inquiry",
+  "Other",
+] as const;
+
+export type CallbackReason = (typeof CALLBACK_REASONS)[number];
+
 type Props = {
   open: boolean;
   onClose: () => void;
+  /** Pre-selects a reason based on where the modal was opened */
+  defaultReason?: CallbackReason | string;
 };
 
 function tomorrowISODate() {
@@ -28,12 +43,27 @@ function tomorrowISODate() {
   return d.toISOString().slice(0, 10);
 }
 
-export default function CallbackRequestModal({ open, onClose }: Props) {
+function normalizeReason(value?: string): CallbackReason {
+  if (value && (CALLBACK_REASONS as readonly string[]).includes(value)) {
+    return value as CallbackReason;
+  }
+  return "General inquiry";
+}
+
+export default function CallbackRequestModal({
+  open,
+  onClose,
+  defaultReason,
+}: Props) {
   const titleId = useId();
   const [mounted, setMounted] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [reason, setReason] = useState<CallbackReason>(
+    normalizeReason(defaultReason),
+  );
+  const [reasonOther, setReasonOther] = useState("");
   const [date, setDate] = useState(tomorrowISODate());
   const [windowSlot, setWindowSlot] = useState<string>(TIME_WINDOWS[2].value);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +72,11 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    setReason(normalizeReason(defaultReason));
+  }, [open, defaultReason]);
 
   useEffect(() => {
     if (!open) return;
@@ -75,11 +110,18 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
 
   if (!open || !mounted) return null;
 
+  const resolvedReason =
+    reason === "Other"
+      ? reasonOther.trim() || "Other"
+      : reason;
+
   const resetAndClose = () => {
     setSubmitted(false);
     setName("");
     setPhone("");
     setEmail("");
+    setReason(normalizeReason(defaultReason));
+    setReasonOther("");
     setDate(tomorrowISODate());
     setWindowSlot(TIME_WINDOWS[2].value);
     onClose();
@@ -89,6 +131,10 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
     e.preventDefault();
     if (!name.trim() || !phone.trim() || !date || !windowSlot) {
       toast.error("Please fill name, phone, date, and time window.");
+      return;
+    }
+    if (reason === "Other" && !reasonOther.trim()) {
+      toast.error("Please tell us the reason for your callback.");
       return;
     }
 
@@ -101,11 +147,12 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
           name: name.trim(),
           email: email.trim() || null,
           phone: phone.trim(),
-          subject: "Callback request",
-          message: `Please call me back on ${date} between ${windowSlot}.`,
+          subject: `Callback request — ${resolvedReason}`,
+          message: `Please call me back on ${date} between ${windowSlot}.\nReason: ${resolvedReason}`,
           requestType: "callback",
           preferredDate: date,
           preferredWindow: windowSlot,
+          reason: resolvedReason,
         }),
       });
 
@@ -175,8 +222,8 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
               Request a callback window
             </h2>
             <p className="text-white/60 text-xs sm:text-sm mt-1.5 sm:mt-2 leading-relaxed">
-              Pick a date and a 2-hour window. We’ll try to connect within that
-              time on Mon–Fri.
+              Pick a date, time window, and reason. We’ll try to connect within
+              that time on Mon–Fri.
             </p>
           </div>
           <button
@@ -197,7 +244,9 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
                 <p className="text-sm text-white/70 mt-1 leading-relaxed">
                   We’ll aim to call you on{" "}
                   <span className="text-white">{date}</span> between{" "}
-                  <span className="text-white">{windowSlot}</span>.
+                  <span className="text-white">{windowSlot}</span>
+                  {" "}about{" "}
+                  <span className="text-white">{resolvedReason}</span>.
                 </p>
               </div>
 
@@ -247,6 +296,35 @@ export default function CallbackRequestModal({ open, onClose }: Props) {
                 autoComplete="email"
                 type="email"
               />
+
+              <label className="flex flex-col gap-2 text-sm w-full">
+                <span className="text-white/60">Reason for callback *</span>
+                <select
+                  required
+                  value={reason}
+                  onChange={(e) =>
+                    setReason(normalizeReason(e.target.value))
+                  }
+                  className="h-12 w-full rounded-full bg-black border border-white/10 px-4 sm:px-5 text-sm outline-none focus:border-lime-400 appearance-none"
+                  style={{ maxWidth: "100%", boxSizing: "border-box" }}
+                  aria-label="Reason for callback"
+                >
+                  {CALLBACK_REASONS.map((option) => (
+                    <option key={option} value={option} className="bg-[#111]">
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {reason === "Other" && (
+                <Field
+                  label="Tell us more *"
+                  value={reasonOther}
+                  onChange={setReasonOther}
+                  placeholder="What would you like to discuss?"
+                />
+              )}
 
               <label className="flex flex-col gap-2 text-sm w-full">
                 <span className="text-white/60">Preferred date *</span>

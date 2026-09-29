@@ -92,7 +92,10 @@ export default function HeroSection() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <ScheduleCallbackButton className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-semibold text-sm transition-all duration-200 shadow-lg shadow-lime-500/20">
+            <ScheduleCallbackButton
+              defaultReason="Golden Visa consultation"
+              className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-semibold text-sm transition-all duration-200 shadow-lg shadow-lime-500/20"
+            >
               Schedule a Meeting
               <FiArrowRight
                 size={16}

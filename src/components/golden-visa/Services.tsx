@@ -151,7 +151,10 @@ export default function Services() {
                         </li>
                       ))}
                     </ul>
-                    <ScheduleCallbackButton className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-black bg-lime-400 hover:bg-lime-300 px-4 py-2 rounded-full transition">
+                    <ScheduleCallbackButton
+                      defaultReason="Golden Visa consultation"
+                      className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-black bg-lime-400 hover:bg-lime-300 px-4 py-2 rounded-full transition"
+                    >
                       Book a consult
                       <FiArrowRight size={14} />
                     </ScheduleCallbackButton>

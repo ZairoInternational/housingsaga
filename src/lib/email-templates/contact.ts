@@ -7,6 +7,7 @@ export type ContactEmailParams = {
   requestType?: "contact" | "callback";
   preferredDate?: string | null;
   preferredWindow?: string | null;
+  reason?: string | null;
 };
 
 function escapeHtml(value: string) {
@@ -27,9 +28,10 @@ export function renderContactEmail(params: ContactEmailParams) {
   const safeSubject = escapeHtml(params.subject?.trim() || "");
   const safeDate = escapeHtml(params.preferredDate ?? "");
   const safeWindow = escapeHtml(params.preferredWindow ?? "");
+  const safeReason = escapeHtml(params.reason ?? "");
 
   const subject = isCallback
-    ? `Callback request: ${params.preferredDate ?? "TBD"} · ${params.preferredWindow ?? "TBD"}`
+    ? `Callback request${params.reason ? ` — ${params.reason}` : ""}: ${params.preferredDate ?? "TBD"} · ${params.preferredWindow ?? "TBD"}`
     : safeSubject
       ? `New Contact Message: ${safeSubject}`
       : "New Contact Message";
@@ -57,7 +59,12 @@ export function renderContactEmail(params: ContactEmailParams) {
           }
           ${
             isCallback
-              ? `<p style="margin:0 0 8px 0;"><strong style="color:#fff;">Preferred date:</strong> ${safeDate}</p>
+              ? `${
+                  safeReason
+                    ? `<p style="margin:0 0 8px 0;"><strong style="color:#fff;">Reason:</strong> ${safeReason}</p>`
+                    : ""
+                }
+                 <p style="margin:0 0 8px 0;"><strong style="color:#fff;">Preferred date:</strong> ${safeDate}</p>
                  <p style="margin:0 0 8px 0;"><strong style="color:#fff;">Time window:</strong> ${safeWindow}</p>`
               : ""
           }
@@ -72,7 +79,9 @@ export function renderContactEmail(params: ContactEmailParams) {
   const text = isCallback
     ? `Callback request\n\nFrom: ${params.name}${
         params.email ? ` <${params.email}>` : ""
-      }\nPhone: ${params.phone ?? "(not provided)"}\nPreferred date: ${
+      }\nPhone: ${params.phone ?? "(not provided)"}\nReason: ${
+        params.reason ?? "(not provided)"
+      }\nPreferred date: ${
         params.preferredDate ?? "(not provided)"
       }\nTime window: ${params.preferredWindow ?? "(not provided)"}\n\nMessage:\n${params.message}`
     : `New Contact Message\n\nSubject: ${params.subject ?? "(not provided)"}\nFrom: ${params.name} <${params.email ?? ""}>${

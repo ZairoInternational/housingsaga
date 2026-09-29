@@ -177,7 +177,10 @@ export default function AboutFounder() {
                 Start Your Golden Visa Journey
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
               </Link>
-              <ScheduleCallbackButton className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#14532d]/15 hover:border-lime-400 bg-white text-[#14532d] px-6 py-3.5 text-sm font-semibold transition">
+              <ScheduleCallbackButton
+                defaultReason="Meet the team"
+                className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#14532d]/15 hover:border-lime-400 bg-white text-[#14532d] px-6 py-3.5 text-sm font-semibold transition"
+              >
                 Schedule a Meeting
               </ScheduleCallbackButton>
             </div>

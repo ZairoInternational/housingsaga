@@ -165,7 +165,10 @@ export default function InvestmentOptions() {
 
         <div className="text-center mt-10 sm:mt-12 space-y-3">
           <p className="text-gray-600">Not sure which option is right for you?</p>
-          <ScheduleCallbackButton className="px-8 py-3 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:bg-gray-50 hover:border-lime-400 transition-all duration-300">
+          <ScheduleCallbackButton
+            defaultReason="Property investment advice"
+            className="px-8 py-3 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-xl hover:bg-gray-50 hover:border-lime-400 transition-all duration-300"
+          >
             Schedule a Free Consultation
           </ScheduleCallbackButton>
         </div>

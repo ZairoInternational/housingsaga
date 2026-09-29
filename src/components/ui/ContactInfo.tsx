@@ -131,6 +131,7 @@ export default function ContactInfo() {
       <CallbackRequestModal
         open={callbackOpen}
         onClose={() => setCallbackOpen(false)}
+        defaultReason="General inquiry"
       />
     </div>
   );
