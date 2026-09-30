@@ -15,7 +15,8 @@ const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blogs", "Cont
 
 const Navbar = () => {
   const router = useRouter();
-  const { isLoggedIn, logout, role } = useAuthStore();
+  const { isLoggedIn, logout, role, name, email } = useAuthStore();
+  const displayName = name?.trim() || "Your profile";
   // const [isDarkMode, setIsDarkMode] = useDarkMode();
 
   const [isClient, setIsClient] = useState(false);
@@ -192,10 +193,12 @@ const Navbar = () => {
                             <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                               <UserRound size={16} />
                             </div>
-                            <div>
-                              <div className="text-sm font-medium">Account</div>
-                              <div className="text-xs text-gray-500">
-                                Manage your account
+                            <div className="min-w-0">
+                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {displayName}
+                              </div>
+                              <div className="text-xs text-gray-500 truncate">
+                                {email ?? "Manage your profile"}
                               </div>
                             </div>
                           </div>
@@ -239,14 +242,6 @@ const Navbar = () => {
                             className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                           >
                             Dashboard
-                          </Link>
-                          <Link
-                            role="menuitem"
-                            href="/settings"
-                            onClick={() => setIsProfileOpen(false)}
-                            className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                          >
-                            Settings
                           </Link>
                         </div>
 

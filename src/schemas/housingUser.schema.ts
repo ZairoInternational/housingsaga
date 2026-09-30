@@ -15,6 +15,7 @@ export const userSchema = z.object({
   subscriptionValidTill: z.date().nullable().optional(),
   paymentStatus: z.enum(["active", "inactive"]).nullable().optional(),
   paidListingAddresses: z.array(z.string()).default([]).optional(),
+  savedPropertyIds: z.array(z.string()).default([]).optional(),
 });
 
 export type UserValidationSchema = z.infer<typeof userSchema>;

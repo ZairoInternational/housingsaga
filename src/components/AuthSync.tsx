@@ -22,6 +22,7 @@ export default function AuthSync(): React.ReactElement | null {
   const { data: session } = useSession();
   const setAccessToken = useAuthStore((s) => s.setAccessToken);
   const setRole = useAuthStore((s) => s.setRole);
+  const setProfile = useAuthStore((s) => s.setProfile);
 
   useEffect(() => {
     let mounted = true;
@@ -34,6 +35,10 @@ export default function AuthSync(): React.ReactElement | null {
       if (s.role) {
         setRole(s.role);
       }
+      setProfile({
+        name: s.user?.name,
+        email: s.user?.email,
+      });
     };
 
     // reactive session first
@@ -52,7 +57,7 @@ export default function AuthSync(): React.ReactElement | null {
     return () => {
       mounted = false;
     };
-  }, [session, setAccessToken, setRole]);
+  }, [session, setAccessToken, setRole, setProfile]);
 
   return null;
 }
