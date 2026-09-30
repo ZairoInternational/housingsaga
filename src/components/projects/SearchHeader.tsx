@@ -195,6 +195,7 @@ export default function SearchHeader({
     <section className="w-full py-8 sm:py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form
+          noValidate
           onSubmit={onSubmit}
           className="
             rounded-2xl bg-white/90 dark:bg-white/5
@@ -279,7 +280,7 @@ export default function SearchHeader({
                 id="projects-min-price"
                 type="number"
                 min={0}
-                step={1000}
+                step="any"
                 placeholder="Min €"
                 value={minPrice ?? ""}
                 onChange={(e) => {
@@ -297,7 +298,7 @@ export default function SearchHeader({
                 id="projects-max-price"
                 type="number"
                 min={0}
-                step={1000}
+                step="any"
                 placeholder="Max €"
                 value={maxPrice ?? ""}
                 onChange={(e) => {
