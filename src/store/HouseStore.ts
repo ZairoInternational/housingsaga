@@ -53,6 +53,7 @@ export interface HouseFormData {
   isAvailable: boolean;
   isFeatured: boolean;
   isNew: boolean;
+  goldenVisaEligible: boolean;
 }
 
 interface HouseFormStore {
@@ -117,6 +118,7 @@ export const initialHouseFormData: HouseFormData = {
   isAvailable: false,
   isFeatured: false,
   isNew: false,
+  goldenVisaEligible: false,
 };  
 
 export const useHouseFormStore = create<HouseFormStore>()(

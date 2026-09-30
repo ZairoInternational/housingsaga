@@ -106,6 +106,7 @@ type HouseCardLean = {
   balconies?: number;
   price?: number;
   images?: string[];
+  goldenVisaEligible?: boolean;
 };
 
 /**
@@ -133,5 +134,6 @@ export async function getHighlightedProjectCards(
     baths: doc.bathrooms,
     cars: doc.balconies ?? 0,
     price: typeof doc.price === "number" ? doc.price : undefined,
+    goldenVisaEligible: doc.goldenVisaEligible,
   }));
 }

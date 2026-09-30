@@ -120,6 +120,7 @@ const pricingSchema = z.object({
   negotiable: z.boolean().optional(),
   allInclusivePrice: z.boolean().optional(),
   govChargesIncluded: z.boolean().optional(),
+  goldenVisaEligible: z.boolean().optional(),
 });
 
 const STEP_SCHEMAS: Record<string, z.ZodTypeAny> = {

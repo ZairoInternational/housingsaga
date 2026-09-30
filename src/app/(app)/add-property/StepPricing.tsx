@@ -97,6 +97,17 @@ export default function StepPricing() {
           ))}
         </div>
       </div>
+
+      <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
+        <SectionTitle>Golden Visa</SectionTitle>
+        <Toggle
+          id="goldenVisaEligible"
+          label="Eligible for Golden Visa"
+          hint="Turn this on only if this property qualifies. The Golden Visa badge is shown when this is checked."
+          checked={!!formData.goldenVisaEligible}
+          onChange={(v) => updateField("goldenVisaEligible", v)}
+        />
+      </div>
     </div>
   );
 }

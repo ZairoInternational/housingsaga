@@ -2,7 +2,8 @@ import Link from "next/link";
 import { isGoldenVisaEligible } from "@/lib/golden-visa-eligibility";
 
 type Props = {
-  price?: number | null;
+  /** Set only when the listing was marked eligible for Golden Visa */
+  eligible?: boolean | null;
   /** Visual size for cards vs detail banners */
   size?: "sm" | "md";
   /** Optional link to Golden Visa page */
@@ -11,15 +12,15 @@ type Props = {
 };
 
 /**
- * Corner ribbon shown on properties priced at/above the Golden Visa threshold.
+ * Corner ribbon shown on Golden Visa–eligible properties.
  */
 export default function GoldenVisaRibbon({
-  price,
+  eligible,
   size = "sm",
   href = "/golden-visa",
   className = "",
 }: Props) {
-  if (!isGoldenVisaEligible(price)) return null;
+  if (!isGoldenVisaEligible(eligible)) return null;
 
   const compact = size === "sm";
 

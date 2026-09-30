@@ -18,6 +18,7 @@ export type PropertyCardData = {
   baths: number;
   cars: number;
   price?: number;
+  goldenVisaEligible?: boolean;
 };
 
 type PropertyCardProps = {
@@ -159,7 +160,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         `}
       >
         <GoldenVisaRibbon
-          price={card.price}
+          eligible={card.goldenVisaEligible}
           size={isCompact ? "sm" : "md"}
           className="z-40"
         />

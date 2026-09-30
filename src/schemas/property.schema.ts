@@ -102,6 +102,7 @@ export const houseValidationSchema = z.object({
   isAvailable: z.boolean(),
   isFeatured: z.boolean(),
   isNew: z.boolean(),
+  goldenVisaEligible: z.boolean().default(false),
 
   tags: z.array(z.string()).optional(),
 

@@ -28,6 +28,7 @@ interface OwnerListingPreviewItem {
   image?: string;
   isActive: boolean;
   isVerified: boolean;
+  goldenVisaEligible?: boolean;
 }
 
 interface OwnerListingsPreviewProps {
@@ -112,7 +113,7 @@ export default function OwnerListingsPreview({
                   <span className="rounded-full bg-black/30 backdrop-blur-sm border border-white/15 px-3 py-1 text-xs font-medium text-white">
                     {formatPropertyType(listing.propertyType)}
                   </span>
-                  {isGoldenVisaEligible(listing.price) && (
+                  {isGoldenVisaEligible(listing.goldenVisaEligible) && (
                     <span className="rounded-full bg-lime-400/95 border border-lime-300/40 px-3 py-1 text-xs font-semibold text-black">
                       Golden Visa Eligible
                     </span>
