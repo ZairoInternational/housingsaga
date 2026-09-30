@@ -53,16 +53,15 @@ export default function ContactForm() {
       if (!res.ok) {
         const json = (await res.json().catch(() => null)) as {
           error?: string;
-          details?: string;
+          details?: unknown;
         } | null;
         const errorMessage =
-          json?.error ??
+          (typeof json?.error === "string" && json.error) ||
+          (typeof json?.details === "string" && json.details) ||
           "Something went wrong while sending your message. Please try again.";
         setStatus({
           type: "error",
-          message: json?.details
-            ? `${errorMessage} (${json.details})`
-            : errorMessage,
+          message: errorMessage,
         });
         toast.error(errorMessage);
         return;

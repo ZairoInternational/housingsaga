@@ -159,8 +159,13 @@ export default function CallbackRequestModal({
       if (!res.ok) {
         const json = (await res.json().catch(() => null)) as {
           error?: string;
+          details?: unknown;
         } | null;
-        toast.error(json?.error ?? "Could not submit request. Try again.");
+        const errorMessage =
+          (typeof json?.error === "string" && json.error) ||
+          (typeof json?.details === "string" && json.details) ||
+          "Could not submit request. Try again.";
+        toast.error(errorMessage);
         return;
       }
 

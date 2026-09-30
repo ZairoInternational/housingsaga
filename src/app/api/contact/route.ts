@@ -72,8 +72,19 @@ export async function POST(request: NextRequest) {
     const parsed = contactBodySchema.safeParse(body);
 
     if (!parsed.success) {
+      const flat = parsed.error.flatten();
+      const fieldMessages = Object.entries(flat.fieldErrors).flatMap(
+        ([field, messages]) =>
+          (messages ?? []).map((message) => `${field}: ${message}`),
+      );
+      const formMessages = flat.formErrors ?? [];
+      const details = [...formMessages, ...fieldMessages].join("; ");
+
       return NextResponse.json(
-        { error: "Validation failed", details: parsed.error.flatten() },
+        {
+          error: details || "Validation failed",
+          details: details || "Validation failed",
+        },
         { status: 400 },
       );
     }
