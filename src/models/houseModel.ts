@@ -228,6 +228,11 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
       type: Boolean,
       required: true,
     },
+    goldenVisaEligible: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   { timestamps: true }
 );

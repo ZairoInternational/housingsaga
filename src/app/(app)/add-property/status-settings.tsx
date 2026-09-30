@@ -96,6 +96,22 @@ export default function StatusSettings() {
             New Property *
           </label>
         </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="goldenVisaEligible"
+            name="goldenVisaEligible"
+            checked={formData.goldenVisaEligible}
+            onChange={handleCheckboxChange}
+            className="w-4 h-4 text-teal-600 bg-gray-700 border-gray-600 rounded focus:ring-teal-500 focus:ring-2"
+          />
+          <label
+            htmlFor="goldenVisaEligible"
+            className="ml-2 text-sm font-medium "
+          >
+            Golden Visa Eligible
+          </label>
+        </div>
       </div>
     </div>
   );

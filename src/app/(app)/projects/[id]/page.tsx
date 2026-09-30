@@ -52,6 +52,7 @@ interface ProjectDetail {
   isFeatured: boolean;
   isNew: boolean;
   isAvailable: boolean;
+  goldenVisaEligible?: boolean;
 }
 
 function toProjectDetail(
@@ -87,6 +88,7 @@ function toProjectDetail(
     isFeatured: doc.isFeatured,
     isNew: doc.isNew,
     isAvailable: doc.isAvailable,
+    goldenVisaEligible: doc.goldenVisaEligible,
   };
 }
 
@@ -107,7 +109,7 @@ function buildListingBadges(project: ProjectDetail) {
   if (project.isAvailable) {
     badges.push({ id: "available", label: "Available for rent" });
   }
-  if (isGoldenVisaEligible(project.price)) {
+  if (isGoldenVisaEligible(project.goldenVisaEligible)) {
     badges.push({ id: "golden-visa", label: "Golden Visa Eligible" });
   }
   return badges;
@@ -165,12 +167,12 @@ export default async function ProjectDetailPage({
     },
     {
       icon: "shield" as const,
-      title: isGoldenVisaEligible(project.price)
+      title: isGoldenVisaEligible(project.goldenVisaEligible)
         ? "Investment Potential"
         : project.isVerified
           ? "Verified Listing"
           : "Investment Ready",
-      subtitle: isGoldenVisaEligible(project.price)
+      subtitle: isGoldenVisaEligible(project.goldenVisaEligible)
         ? "Golden Visa eligible property"
         : "Reviewed by HousingSaga",
     },
@@ -197,7 +199,7 @@ export default async function ProjectDetailPage({
         areaSqft={project.carpetArea}
         constructionYear={project.constructionYear}
         priceRangeLabel={priceRangeLabel}
-        price={project.price}
+        goldenVisaEligible={project.goldenVisaEligible}
         listingBadges={listingBadges}
       />
 

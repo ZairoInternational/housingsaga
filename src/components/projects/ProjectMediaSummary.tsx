@@ -24,7 +24,7 @@ export interface ProjectMediaSummaryProps {
   /** @deprecated Prefer `constructionYear` for the third stat. */
   startDateLabel?: string;
   priceRangeLabel?: string;
-  price?: number;
+  goldenVisaEligible?: boolean;
   listingBadges?: ListingBadge[];
 }
 
@@ -62,7 +62,7 @@ export default function ProjectMediaSummary({
   constructionYear,
   startDateLabel,
   priceRangeLabel,
-  price,
+  goldenVisaEligible,
   listingBadges,
 }: ProjectMediaSummaryProps) {
   const yearOrStartLabel =
@@ -130,7 +130,10 @@ export default function ProjectMediaSummary({
               sizes="(min-width: 1280px) 1280px, 100vw"
               className="object-cover"
             />
-            <GoldenVisaRibbon price={price} size="md" />
+            <GoldenVisaRibbon
+              eligible={goldenVisaEligible}
+              size="md"
+            />
           </div>
 
           {activeStats.length > 0 && (

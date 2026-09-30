@@ -69,9 +69,11 @@ export default function ContactFormSection() {
       if (!res.ok) {
         const json = (await res.json().catch(() => null)) as {
           error?: string;
+          details?: unknown;
         } | null;
         const errorMessage =
-          json?.error ??
+          (typeof json?.error === "string" && json.error) ||
+          (typeof json?.details === "string" && json.details) ||
           "Something went wrong while sending your message. Please try again.";
         setStatus({ type: "error", message: errorMessage });
         toast.error(errorMessage);
@@ -216,7 +218,7 @@ export default function ContactFormSection() {
             <aside className="space-y-5">
               <div className="relative overflow-hidden rounded-2xl min-h-[240px] sm:min-h-[280px]">
                 <Image
-                  src="/contact-show1.jfif"
+                  src="/contact-show1.webp"
                   alt="Your dream home awaits"
                   fill
                   sizes="(min-width: 1024px) 420px, 100vw"

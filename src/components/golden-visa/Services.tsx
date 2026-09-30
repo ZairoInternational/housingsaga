@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   FiArrowRight,
@@ -166,18 +167,12 @@ export default function Services() {
         </div>
 
         <div className="mt-10 text-center">
-          <button
-            type="button"
-            onClick={() => {
-              setExpanded(0);
-              document
-                .getElementById("services")
-                ?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-            className="px-8 py-3.5 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-2xl transition shadow-lg shadow-lime-500/20"
+          <Link
+            href="/services"
+            className="inline-flex px-8 py-3.5 bg-lime-400 hover:bg-lime-300 text-black font-semibold rounded-2xl transition shadow-lg shadow-lime-500/20"
           >
             Explore service details
-          </button>
+          </Link>
         </div>
       </div>
     </section>

@@ -55,6 +55,7 @@ export interface HouseForForm {
   isAvailable: boolean;
   isFeatured: boolean;
   isNew: boolean;
+  goldenVisaEligible?: boolean;
 }
 
 function toNumber(value: unknown): number | undefined {
@@ -135,6 +136,7 @@ export function buildHousePayload(
     isAvailable: Boolean(raw.isAvailable),
     isFeatured: Boolean(raw.isFeatured),
     isNew: Boolean(raw.isNew),
+    goldenVisaEligible: Boolean(raw.goldenVisaEligible),
     listedBy: "owner",
   });
 }
@@ -194,6 +196,7 @@ export function toHouseFormData(house: HouseForForm): HouseFormData {
     isAvailable: house.isAvailable,
     isFeatured: house.isFeatured,
     isNew: house.isNew,
+    goldenVisaEligible: house.goldenVisaEligible === true,
   };
 }
 

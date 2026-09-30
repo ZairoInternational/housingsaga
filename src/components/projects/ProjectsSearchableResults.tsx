@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import PropertyCard, {
   type PropertyCardData,
@@ -8,6 +8,7 @@ import PropertyCard, {
 import ProjectsPagination from "@/components/projects/ProjectsPagination";
 import type { ProjectsSearchFilters } from "@/components/projects/SearchHeader";
 import SearchHeader from "@/components/projects/SearchHeader";
+import { PropertyCardSkeleton } from "@/components/projects/ProjectsResultsSkeleton";
 
 type ProjectsApiHouse = {
   _id: string;
@@ -20,6 +21,7 @@ type ProjectsApiHouse = {
   balconies?: number;
   images?: string[];
   price?: number;
+  goldenVisaEligible?: boolean;
 };
 
 type ProjectsPagination = {
@@ -40,54 +42,59 @@ function mapHouseToPropertyCardData(house: ProjectsApiHouse): PropertyCardData {
     baths: house.bathrooms,
     cars: house.balconies ?? 0,
     price: typeof house.price === "number" ? house.price : undefined,
+    goldenVisaEligible: house.goldenVisaEligible,
   };
 }
 
-function PropertyCardSkeleton({ index }: { index: number }) {
-  return (
-    <div
-      className="rounded-2xl overflow-hidden bg-[#111] shadow-lg animate-pulse"
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
-      <div className="h-[260px] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800" />
-        <div className="absolute top-3.5 left-3.5 h-8 w-28 rounded-full bg-white/10" />
-        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-          <div className="space-y-2 w-2/3">
-            <div className="h-5 rounded bg-white/15" />
-            <div className="h-3 w-1/2 rounded bg-lime-400/30" />
-          </div>
-          <div className="h-8 w-8 rounded-full bg-lime-400/40" />
-        </div>
-      </div>
-    </div>
-  );
+function readOptionalNumber(params: URLSearchParams, key: string) {
+  const raw = params.get(key);
+  if (!raw) return undefined;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function readFiltersFromUrl(params: URLSearchParams): {
+  filters: ProjectsSearchFilters;
+  page: number;
+} {
+  const minPrice = readOptionalNumber(params, "minPrice");
+  const maxPrice = readOptionalNumber(params, "maxPrice");
+  const roomsMin = readOptionalNumber(params, "roomsMin");
+  const bathroomsMin = readOptionalNumber(params, "bathroomsMin");
+  const locationQuery = params.get("locationQuery")?.trim();
+
+  return {
+    page: Math.max(readOptionalNumber(params, "page") ?? 1, 1),
+    filters: {
+      ...(minPrice !== undefined ? { minPrice } : {}),
+      ...(maxPrice !== undefined ? { maxPrice } : {}),
+      ...(roomsMin !== undefined ? { roomsMin } : {}),
+      ...(bathroomsMin !== undefined ? { bathroomsMin } : {}),
+      ...(locationQuery ? { locationQuery } : {}),
+    },
+  };
 }
 
 export default function ProjectsSearchableResults({
-  initialCards,
-  initialPagination,
-  initialHasError,
   limit,
-  initialFilters = {},
 }: {
-  initialCards: PropertyCardData[];
-  initialPagination: ProjectsPagination | null;
-  initialHasError: boolean;
   limit: number;
-  initialFilters?: ProjectsSearchFilters;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const [filters, setFilters] = useState<ProjectsSearchFilters>(initialFilters);
-  const [cards, setCards] = useState<PropertyCardData[]>(initialCards);
-  const [pagination, setPagination] = useState<ProjectsPagination | null>(
-    initialPagination,
+  const didInitialFetch = useRef(false);
+  const initialFromUrl = readFiltersFromUrl(
+    new URLSearchParams(searchParams?.toString() ?? ""),
   );
-  const [hasError, setHasError] = useState<boolean>(initialHasError);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const [filters, setFilters] = useState<ProjectsSearchFilters>(
+    initialFromUrl.filters,
+  );
+  const [cards, setCards] = useState<PropertyCardData[]>([]);
+  const [pagination, setPagination] = useState<ProjectsPagination | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const isEmpty = !hasError && !loading && cards.length === 0;
 
@@ -115,7 +122,11 @@ export default function ProjectsSearchableResults({
   );
 
   const request = useCallback(
-    async (nextFilters: ProjectsSearchFilters, nextPage: number) => {
+    async (
+      nextFilters: ProjectsSearchFilters,
+      nextPage: number,
+      updateUrl = true,
+    ) => {
       setLoading(true);
       setHasError(false);
 
@@ -146,7 +157,7 @@ export default function ProjectsSearchableResults({
 
         setCards(json.data.map(mapHouseToPropertyCardData));
         setPagination(json.pagination);
-        syncUrl(nextFilters, nextPage);
+        if (updateUrl) syncUrl(nextFilters, nextPage);
       } catch {
         setHasError(true);
       } finally {
@@ -155,6 +166,16 @@ export default function ProjectsSearchableResults({
     },
     [limit, syncUrl],
   );
+
+  useEffect(() => {
+    if (didInitialFetch.current) return;
+    didInitialFetch.current = true;
+    const { filters: fromUrl, page } = readFiltersFromUrl(
+      new URLSearchParams(searchParams?.toString() ?? ""),
+    );
+    setFilters(fromUrl);
+    void request(fromUrl, page, false);
+  }, [request, searchParams]);
 
   const onPageChange = useCallback(
     async (nextPage: number) => {
@@ -226,7 +247,7 @@ export default function ProjectsSearchableResults({
                   : cards.map((card, i) => (
                       <div
                         key={card.id}
-                        className="opacity-0 animate-[fadeUp_0.45s_ease-out_forwards]"
+                        className="animate-[fadeUp_0.45s_ease-out_both]"
                         style={{ animationDelay: `${i * 50}ms` }}
                       >
                         <PropertyCard card={card} size="compact" />

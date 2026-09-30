@@ -118,6 +118,22 @@ export default function PricingDetails() {
             Government Charges Included *
           </label>
         </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="goldenVisaEligible"
+            name="goldenVisaEligible"
+            checked={formData.goldenVisaEligible}
+            onChange={handleInputChange}
+            className="w-4 h-4 text-teal-600  border-gray-600 rounded focus:ring-teal-700 focus:ring-2"
+          />
+          <label
+            htmlFor="goldenVisaEligible"
+            className="ml-2 text-sm font-medium "
+          >
+            Golden Visa Eligible
+          </label>
+        </div>
       </div>
     </div>
   );
