@@ -86,11 +86,14 @@ export const authOptions: NextAuthOptions = {
 
       const tokenRecord = token as Record<string, unknown>;
 
-      const applyDbUser = (dbUser: { _id: { toString(): string }; role?: unknown; phone?: unknown; onboarded?: unknown }) => {
+      const applyDbUser = (dbUser: { _id: { toString(): string }; name?: unknown; role?: unknown; phone?: unknown; onboarded?: unknown }) => {
         tokenRecord.userId = dbUser._id.toString();
         tokenRecord.role = dbUser.role;
         tokenRecord.phone = dbUser.phone;
         tokenRecord.onboarded = dbUser.onboarded;
+        if (typeof dbUser.name === "string" && dbUser.name.trim()) {
+          tokenRecord.name = dbUser.name.trim();
+        }
 
         if (dbUser.onboarded) {
           tokenRecord.accessToken = generateAccessToken(dbUser._id.toString());

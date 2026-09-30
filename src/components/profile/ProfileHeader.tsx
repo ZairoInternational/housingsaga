@@ -1,12 +1,12 @@
 import Image from "next/image";
 import {
   RiCalendarLine,
-  RiEdit2Line,
   RiMailLine,
   RiPhoneLine,
   RiShieldCheckLine,
   RiUser3Line,
 } from "react-icons/ri";
+import EditProfileButton from "@/components/profile/EditProfileButton";
 
 
 type UserRole = "owner" | "buyer" | "admin" | null;
@@ -151,10 +151,7 @@ export default function ProfileHeader({
                     Ready to manage
                   </p>
                 </div>
-                <button className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/8 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm">
-                  <RiEdit2Line className="h-4 w-4" />
-                  Edit profile
-                </button>
+                <EditProfileButton name={name} email={email} phone={phone} />
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { IoLocationOutline } from "react-icons/io5";
 import GoldenVisaRibbon from "@/components/ui/GoldenVisaRibbon";
+import SaveHomeButton from "@/components/account/SaveHomeButton";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -163,6 +164,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           eligible={card.goldenVisaEligible}
           size={isCompact ? "sm" : "md"}
           className="z-40"
+        />
+        <SaveHomeButton
+          propertyId={card.id}
+          className="absolute top-3 right-3 z-50"
         />
 
         {/* eslint-disable-next-line @next/next/no-img-element */}

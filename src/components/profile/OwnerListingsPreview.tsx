@@ -33,6 +33,7 @@ interface OwnerListingPreviewItem {
 
 interface OwnerListingsPreviewProps {
   listings: OwnerListingPreviewItem[];
+  showIntro?: boolean;
 }
 
 function formatPropertyType(value: string) {
@@ -43,10 +44,12 @@ function formatPropertyType(value: string) {
 
 export default function OwnerListingsPreview({
   listings,
+  showIntro = true,
 }: OwnerListingsPreviewProps) {
   return (
     <section className="py-10">
       {/* Section header */}
+      {showIntro && (
       <div className="flex items-end justify-between gap-4 mb-6">
         <div>
           <p className="text-lime-500 font-semibold uppercase tracking-widest text-xs mb-3">
@@ -60,6 +63,7 @@ export default function OwnerListingsPreview({
           </p>
         </div>
       </div>
+      )}
 
       {listings.length === 0 ? (
         <article className="rounded-2xl border border-dashed border-gray-200 dark:border-white/10 bg-[#f7f6f3] dark:bg-[#13161f] px-6 py-16 text-center">

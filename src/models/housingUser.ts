@@ -26,10 +26,18 @@ const userSchema = new mongoose.Schema<UserValidationSchema>(
       required: false,
       default: [],
     },
+    savedPropertyIds: {
+      type: [String],
+      required: false,
+      default: [],
+    },
   },
   { timestamps: true }
 );
 
-export const HousingUsers =
-  mongoose.models.HousingUsers ||
-  mongoose.model<UserValidationSchema>("HousingUsers", userSchema);
+delete (mongoose.models as Record<string, unknown>).HousingUsers;
+
+export const HousingUsers = mongoose.model<UserValidationSchema>(
+  "HousingUsers",
+  userSchema,
+);
