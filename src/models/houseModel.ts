@@ -233,11 +233,20 @@ const HouseSchema: Schema = new Schema<HouseValidationSchema>(
       required: true,
       default: false,
     },
+    isSold: {
+      type: Boolean,
+      default: false,
+    },
+    HSID: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
   },
   { timestamps: true }
 );
 
-export const House =
-  mongoose.models?.House ||
-  mongoose.model<HouseValidationSchema>("House", HouseSchema);
+delete (mongoose.models as Record<string, unknown>).House;
+
+export const House = mongoose.model<HouseValidationSchema>("House", HouseSchema);
 

@@ -39,6 +39,7 @@ const RESOURCE_LINKS = [
   { label: "Help Center", href: "/help-center" },
   { label: "FAQ", href: "/faq" },
   { label: "Services", href: "/services" },
+  { label: "Earn with Us", href: "/earn-with-us" },
 ];
 
 const SOCIALS = [

@@ -4,8 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { IoLocationOutline } from "react-icons/io5";
-import GoldenVisaRibbon from "@/components/ui/GoldenVisaRibbon";
 import SaveHomeButton from "@/components/account/SaveHomeButton";
+import { isGoldenVisaEligible } from "@/lib/golden-visa-eligibility";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -160,15 +160,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           }
         `}
       >
-        <GoldenVisaRibbon
-          eligible={card.goldenVisaEligible}
-          size={isCompact ? "sm" : "md"}
-          className="z-40"
-        />
         <SaveHomeButton
           propertyId={card.id}
           className="absolute top-3 right-3 z-50"
         />
+        {isGoldenVisaEligible(card.goldenVisaEligible) && (
+          <Link
+            href="/golden-visa"
+            className="absolute left-3.5 top-14 z-40 inline-flex items-center rounded-full bg-lime-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-black shadow-md hover:bg-lime-300"
+          >
+            Golden Visa
+          </Link>
+        )}
 
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

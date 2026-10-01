@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Menu, UserRound, Phone, ArrowRight} from "lucide-react";
 
@@ -14,6 +14,7 @@ import Image from "next/image";
 const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blogs", "Contact"];
 
 const Navbar = () => {
+  const pathname = usePathname();
   const router = useRouter();
   const { isLoggedIn, logout, role, name, email } = useAuthStore();
   const displayName = name?.trim() || "Your profile";

@@ -29,6 +29,7 @@ export type OwnerListingItem = {
   image?: string;
   isActive: boolean;
   isVerified: boolean;
+  isSold?: boolean;
   goldenVisaEligible?: boolean;
 };
 
@@ -52,6 +53,7 @@ type ListingDoc = {
   images?: string[];
   isActive: boolean;
   isVerified: boolean;
+  isSold?: boolean;
   goldenVisaEligible?: boolean;
 };
 
@@ -96,6 +98,7 @@ export async function loadOwnerListings(userId: string): Promise<OwnerListingIte
       images: 1,
       isActive: 1,
       isVerified: 1,
+      isSold: 1,
       goldenVisaEligible: 1,
     })
     .lean<ListingDoc[]>();
@@ -113,6 +116,7 @@ export async function loadOwnerListings(userId: string): Promise<OwnerListingIte
     image: listing.images?.[0],
     isActive: listing.isActive,
     isVerified: listing.isVerified,
+    isSold: listing.isSold === true,
     goldenVisaEligible: listing.goldenVisaEligible,
   }));
 }
