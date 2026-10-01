@@ -38,7 +38,7 @@ export async function getProjectsPageData(
   const safeLimit = Math.max(Number(limit) || 1, 1);
   const skip = (safePage - 1) * safeLimit;
 
-  const andFilters: Record<string, unknown>[] = [];
+  const andFilters: Record<string, unknown>[] = [{ isSold: { $ne: true } }];
 
   if (filters.locationQuery?.trim()) {
     const q = filters.locationQuery.trim();
@@ -119,7 +119,7 @@ export async function getHighlightedProjectCards(
 
   const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 20);
 
-  const docs = await House.find({})
+  const docs = await House.find({ isSold: { $ne: true } })
     .sort({ isFeatured: -1, createdAt: -1 })
     .limit(safeLimit)
     .lean<HouseCardLean[]>();

@@ -43,6 +43,7 @@ interface ProfileHouse {
   images?: string[];
   isActive: boolean;
   isVerified: boolean;
+  isSold?: boolean;
   goldenVisaEligible?: boolean;
 }
 
@@ -94,6 +95,7 @@ export default async function ProfilePage() {
           images: 1,
           isActive: 1,
           isVerified: 1,
+          isSold: 1,
           goldenVisaEligible: 1,
         })
         .lean<ProfileHouse[]>()
@@ -221,6 +223,7 @@ export default async function ProfilePage() {
                     image: listing.images?.[0],
                     isActive: listing.isActive,
                     isVerified: listing.isVerified,
+                    isSold: listing.isSold === true,
                     goldenVisaEligible: listing.goldenVisaEligible,
                   }))}
                 />

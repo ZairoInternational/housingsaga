@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       limit = 9,
     } = parsed.data;
 
-    const andFilters: Record<string, unknown>[] = [];
+    const andFilters: Record<string, unknown>[] = [{ isSold: { $ne: true } }];
 
     if (locationQuery) {
       andFilters.push({

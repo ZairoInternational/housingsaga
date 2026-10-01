@@ -11,6 +11,7 @@ import {
 } from "@/lib/services/entitlement-service";
 
 import type { HouseFormData } from "@/store/HouseStore";
+import { allocateHsid } from "@/lib/hsid";
 import { House } from "../../../models/houseModel";
 import { HousingUsers } from "@/models/housingUser";
 
@@ -67,7 +68,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const created = await House.create(parsed);
+    const HSID = await allocateHsid();
+    const created = await House.create({ ...parsed, HSID });
 
     // Convert the "first address quota" token into the real addressKey
     // only after the listing was successfully created.

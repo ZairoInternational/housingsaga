@@ -121,10 +121,10 @@ export default function BrandBridgeBanner() {
               </div>
 
               <Link
-                href="/projects"
+                href="/earn-with-us"
                 className="w-fit text-xs sm:text-sm font-semibold text-[#5c5c5c] hover:text-black underline underline-offset-4"
               >
-                Or browse HousingSaga properties
+                Or learn how to earn with VacationSaga
               </Link>
             </div>
 

@@ -52,11 +52,12 @@ interface ProjectDetail {
   isFeatured: boolean;
   isNew: boolean;
   isAvailable: boolean;
+  isSold?: boolean;
   goldenVisaEligible?: boolean;
 }
 
 function toProjectDetail(
-  doc: HouseValidationSchema & { _id: unknown },
+  doc: HouseValidationSchema & { _id: unknown; isSold?: boolean },
 ): ProjectDetail {
   return {
     id: String(doc._id),
@@ -88,13 +89,16 @@ function toProjectDetail(
     isFeatured: doc.isFeatured,
     isNew: doc.isNew,
     isAvailable: doc.isAvailable,
+    isSold: doc.isSold === true,
     goldenVisaEligible: doc.goldenVisaEligible,
   };
 }
 
 function buildListingBadges(project: ProjectDetail) {
   const badges: { id: string; label: string }[] = [];
-  if (project.isActive) {
+  if (project.isSold) {
+    badges.push({ id: "sold", label: "Sold" });
+  } else if (project.isActive) {
     badges.push({ id: "active", label: "Active listing" });
   }
   if (project.isFeatured) {
@@ -106,7 +110,7 @@ function buildListingBadges(project: ProjectDetail) {
   if (project.isNew) {
     badges.push({ id: "new", label: "New property" });
   }
-  if (project.isAvailable) {
+  if (!project.isSold && project.isAvailable) {
     badges.push({ id: "available", label: "Available for rent" });
   }
   if (isGoldenVisaEligible(project.goldenVisaEligible)) {
@@ -122,7 +126,7 @@ export default async function ProjectDetailPage({
 
   await connectDb();
   const doc = await House.findById(id).lean<
-    (HouseValidationSchema & { _id: unknown }) | null
+    (HouseValidationSchema & { _id: unknown; isSold?: boolean }) | null
   >();
 
   if (!doc) {
