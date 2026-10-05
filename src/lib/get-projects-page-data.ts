@@ -1,3 +1,5 @@
+import { getLocale } from "next-intl/server";
+
 import type { PropertyCardData } from "@/components/ui/propertyCard";
 
 import { connectDb } from "@/lib/db";
@@ -119,6 +121,9 @@ export async function getHighlightedProjectCards(
 
   const safeLimit = Math.min(Math.max(Math.floor(limit), 1), 20);
 
+  const locale = await getLocale();
+  const numberLocale = locale === "el" ? "el-GR" : "en-US";
+
   const docs = await House.find({ isSold: { $ne: true } })
     .sort({ isFeatured: -1, createdAt: -1 })
     .limit(safeLimit)
@@ -129,7 +134,7 @@ export async function getHighlightedProjectCards(
     img: doc.images?.[0]?.trim() || FALLBACK_PROPERTY_IMAGE,
     title: doc.name,
     tag: [doc.city, doc.state].filter(Boolean).join(", "),
-    area: doc.carpetArea.toLocaleString("en-US"),
+    area: doc.carpetArea.toLocaleString(numberLocale),
     beds: doc.bedrooms,
     baths: doc.bathrooms,
     cars: doc.balconies ?? 0,

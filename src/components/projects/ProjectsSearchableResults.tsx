@@ -9,6 +9,7 @@ import ProjectsPagination from "@/components/projects/ProjectsPagination";
 import type { ProjectsSearchFilters } from "@/components/projects/SearchHeader";
 import SearchHeader from "@/components/projects/SearchHeader";
 import { PropertyCardSkeleton } from "@/components/projects/ProjectsResultsSkeleton";
+import { useLocale } from "next-intl";
 
 type ProjectsApiHouse = {
   _id: string;
@@ -31,13 +32,16 @@ type ProjectsPagination = {
   totalPages: number;
 };
 
-function mapHouseToPropertyCardData(house: ProjectsApiHouse): PropertyCardData {
+function mapHouseToPropertyCardData(
+  house: ProjectsApiHouse,
+  locale: string,
+): PropertyCardData {
   return {
     id: house._id,
     img: house.images?.[0] ?? "/property.jpeg",
     title: house.name,
     tag: `${house.city}, ${house.state}`,
-    area: house.carpetArea.toString(),
+    area: house.carpetArea.toLocaleString(locale === "el" ? "el-GR" : "en-US"),
     beds: house.bedrooms,
     baths: house.bathrooms,
     cars: house.balconies ?? 0,
@@ -83,6 +87,7 @@ export default function ProjectsSearchableResults({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const locale = useLocale();
   const didInitialFetch = useRef(false);
   const initialFromUrl = readFiltersFromUrl(
     new URLSearchParams(searchParams?.toString() ?? ""),
@@ -155,7 +160,7 @@ export default function ProjectsSearchableResults({
           pagination: ProjectsPagination;
         };
 
-        setCards(json.data.map(mapHouseToPropertyCardData));
+        setCards(json.data.map((house) => mapHouseToPropertyCardData(house, locale)));
         setPagination(json.pagination);
         if (updateUrl) syncUrl(nextFilters, nextPage);
       } catch {
@@ -164,8 +169,15 @@ export default function ProjectsSearchableResults({
         setLoading(false);
       }
     },
-    [limit, syncUrl],
+    [limit, locale, syncUrl],
   );
+
+  const seenLocale = useRef(locale);
+  useEffect(() => {
+    if (seenLocale.current === locale) return;
+    seenLocale.current = locale;
+    void request(filters, pagination?.page ?? 1, false);
+  }, [filters, locale, pagination?.page, request]);
 
   useEffect(() => {
     if (didInitialFetch.current) return;

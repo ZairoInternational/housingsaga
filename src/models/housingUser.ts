@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema<UserValidationSchema>(
       required: false,
       default: [],
     },
+    preferredLanguage: {
+      type: String,
+      enum: ["en", "el", "it"],
+      default: "en",
+    },
   },
   { timestamps: true }
 );

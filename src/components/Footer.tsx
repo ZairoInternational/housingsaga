@@ -13,6 +13,7 @@ import {
   Phone,
   Youtube,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   SITE_EMAIL,
   SITE_OFFICES,
@@ -21,26 +22,26 @@ import {
 } from "@/lib/site-contact";
 
 const QUICK_LINKS = [
-  { label: "Overview", href: "/overview" },
-  { label: "Projects", href: "/projects" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Contact", href: "/contact" },
-];
+  { labelKey: "overview", href: "/overview" },
+  { labelKey: "projects", href: "/projects" },
+  { labelKey: "pricing", href: "/pricing" },
+  { labelKey: "contact", href: "/contact" },
+] as const;
 
 const COMPANY_LINKS = [
-  { label: "About Us", href: "/about-us" },
-  { label: "Our Team", href: "/our-team" },
-  { label: "Golden Visa", href: "/golden-visa" },
-  { label: "Media Kit", href: "/media-kit" },
-];
+  { labelKey: "about", href: "/about-us" },
+  { labelKey: "team", href: "/our-team" },
+  { labelKey: "goldenVisa", href: "/golden-visa" },
+  { labelKey: "mediaKit", href: "/media-kit" },
+] as const;
 
 const RESOURCE_LINKS = [
-  { label: "Blog", href: "/blogs" },
-  { label: "Help Center", href: "/help-center" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Services", href: "/services" },
-  { label: "Earn with Us", href: "/earn-with-us" },
-];
+  { labelKey: "blog", href: "/blogs" },
+  { labelKey: "help", href: "/help-center" },
+  { labelKey: "faq", href: "/faq" },
+  { labelKey: "services", href: "/services" },
+  { labelKey: "earn", href: "/earn-with-us" },
+] as const;
 
 const SOCIALS = [
   {
@@ -139,26 +140,39 @@ function SocialRow({
   );
 }
 
-const OFFICE_CARDS = [
-  {
-    office: SITE_OFFICES[0],
-    flag: "/greece.png",
-    flagAlt: "Greece",
-    label: "Greece Office",
-    thumb: "/office-greece-thumb.jpg",
-    thumbAlt: "Parthenon, Athens",
-  },
-  {
-    office: SITE_OFFICES[1],
-    flag: "/india.png",
-    flagAlt: "India",
-    label: "India Office",
-    thumb: "/office-india-thumb.jpg",
-    thumbAlt: "India Gate, New Delhi",
-  },
-] as const;
-
 export default function Footer() {
+  const t = useTranslations("footer");
+  const quickLinks = QUICK_LINKS.map((link) => ({
+    href: link.href,
+    label: t(link.labelKey),
+  }));
+  const companyLinks = COMPANY_LINKS.map((link) => ({
+    href: link.href,
+    label: t(link.labelKey),
+  }));
+  const resourceLinks = RESOURCE_LINKS.map((link) => ({
+    href: link.href,
+    label: t(link.labelKey),
+  }));
+  const officeCards = [
+    {
+      office: SITE_OFFICES[0],
+      flag: "/greece.png",
+      flagAlt: t("greeceAlt"),
+      label: t("greeceOffice"),
+      thumb: "/office-greece-thumb.jpg",
+      thumbAlt: t("athensAlt"),
+    },
+    {
+      office: SITE_OFFICES[1],
+      flag: "/india.png",
+      flagAlt: t("indiaAlt"),
+      label: t("indiaOffice"),
+      thumb: "/office-india-thumb.jpg",
+      thumbAlt: t("delhiAlt"),
+    },
+  ] as const;
+
   return (
     <footer className="relative w-full text-white overflow-hidden">
       {/* Background */}
@@ -204,17 +218,16 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mt-4 text-sm font-medium text-white">
-              Your dream home. Our priority.
+              {t("tagline")}
             </p>
             <p className="mt-3 text-[13px] text-white/65 leading-relaxed max-w-[320px]">
-              Discover, explore and book the best properties around the world
-              with HousingSaga.
+              {t("blurb")}
             </p>
             <Link
               href="/projects"
               className="mt-5 inline-flex items-center gap-2 rounded-full bg-lime-400 hover:bg-lime-300 text-black text-sm font-semibold px-5 py-2.5 transition"
             >
-              Explore Properties
+              {t("explore")}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <div className="mt-5">
@@ -223,9 +236,9 @@ export default function Footer() {
           </div>
 
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 lg:gap-10 lg:pl-6">
-            <LinkColumn title="Quick Links" links={QUICK_LINKS} />
-            <LinkColumn title="Company" links={COMPANY_LINKS} />
-            <LinkColumn title="Resources" links={RESOURCE_LINKS} />
+            <LinkColumn title={t("quickLinks")} links={quickLinks} />
+            <LinkColumn title={t("company")} links={companyLinks} />
+            <LinkColumn title={t("resources")} links={resourceLinks} />
           </div>
         </div>
 
@@ -238,10 +251,10 @@ export default function Footer() {
               </span>
               <div>
                 <h3 className="text-[13px] font-bold uppercase tracking-[0.16em] text-lime-400">
-                  Our Offices
+                  {t("offices")}
                 </h3>
                 <p className="text-sm text-white/55 mt-0.5">
-                  Visit us in Greece or India
+                  {t("visit")}
                 </p>
               </div>
             </div>
@@ -252,20 +265,20 @@ export default function Footer() {
                 className="inline-flex items-center gap-2 text-sm font-semibold text-lime-400 hover:text-lime-300 transition"
               >
                 <Phone className="h-4 w-4" />
-                Call us: {SITE_PHONE_DISPLAY}
+                {t("callUs", { phone: SITE_PHONE_DISPLAY })}
               </a>
               <Link
                 href="/contact#contact-form"
                 className="inline-flex items-center justify-center gap-1.5 rounded-full border border-lime-400/90 text-lime-300 hover:bg-lime-400 hover:text-black text-sm font-semibold px-5 py-2.5 transition"
               >
-                Get In Touch
+                {t("getInTouch")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
-            {OFFICE_CARDS.map(
+            {officeCards.map(
               ({ office, flag, flagAlt, label, thumb, thumbAlt }) => (
                 <div
                   key={office.id}
@@ -295,7 +308,7 @@ export default function Footer() {
                       rel="noopener noreferrer"
                       className="mt-auto pt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-lime-400 hover:text-lime-300 transition"
                     >
-                      View Location
+                      {t("viewLocation")}
                       <ArrowRight className="h-3.5 w-3.5" />
                     </a>
                   </div>
@@ -328,19 +341,19 @@ export default function Footer() {
       <div className="relative border-t border-white/10 bg-black/40 backdrop-blur-sm">
         <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row items-center gap-4 lg:gap-6 text-[12px] text-white/75">
           <p className="lg:flex-1 text-center lg:text-left">
-            © 2026 Housing Saga. All rights reserved.
+            {t("rights")}
           </p>
 
           <div className="flex items-center gap-3 order-first lg:order-none">
             <span className="hidden sm:block h-px w-12 bg-lime-400/70" />
             <span className="uppercase tracking-[0.16em] text-white/90 text-[11px] font-semibold whitespace-nowrap">
-              Better Stays · Brighter Futures
+              {t("motto")}
             </span>
             <span className="hidden sm:block h-px w-12 bg-lime-400/70" />
           </div>
 
           <div className="lg:flex-1 flex items-center justify-center lg:justify-end gap-3">
-            <span className="text-white/60">Follow Us</span>
+            <span className="text-white/60">{t("follow")}</span>
             <SocialRow variant="plain" />
           </div>
         </div>
@@ -349,7 +362,7 @@ export default function Footer() {
       {/* Back to top */}
       <button
         type="button"
-        aria-label="Back to top"
+        aria-label={t("backToTop")}
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className="
           fixed z-40

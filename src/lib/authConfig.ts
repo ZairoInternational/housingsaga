@@ -7,6 +7,7 @@ import type { DefaultSession } from "next-auth";
 import { connectDb } from "@/lib/db";
 import { HousingUsers } from "@/models/housingUser";
 import { generateAccessToken } from "@/lib/token";
+import { isLocale } from "@/i18n/config";
 
 connectDb();
 
@@ -86,11 +87,14 @@ export const authOptions: NextAuthOptions = {
 
       const tokenRecord = token as Record<string, unknown>;
 
-      const applyDbUser = (dbUser: { _id: { toString(): string }; name?: unknown; role?: unknown; phone?: unknown; onboarded?: unknown }) => {
+      const applyDbUser = (dbUser: { _id: { toString(): string }; name?: unknown; role?: unknown; phone?: unknown; onboarded?: unknown; preferredLanguage?: unknown }) => {
         tokenRecord.userId = dbUser._id.toString();
         tokenRecord.role = dbUser.role;
         tokenRecord.phone = dbUser.phone;
         tokenRecord.onboarded = dbUser.onboarded;
+        tokenRecord.preferredLanguage = isLocale(dbUser.preferredLanguage)
+          ? dbUser.preferredLanguage
+          : "en";
         if (typeof dbUser.name === "string" && dbUser.name.trim()) {
           tokenRecord.name = dbUser.name.trim();
         }
@@ -167,6 +171,9 @@ export const authOptions: NextAuthOptions = {
         | boolean
         | undefined;
 
+      (session.user as Record<string, unknown>).preferredLanguage = (token as Record<string, unknown>).preferredLanguage as
+        | string
+        | undefined;
       // console.log("[NextAuth][session] returning session:", session);
       return session;
     },

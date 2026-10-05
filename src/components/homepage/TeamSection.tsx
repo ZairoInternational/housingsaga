@@ -1,16 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Slider from "@/components/ui/slider";
 import { ArrowUpRight } from "lucide-react";
-import EmployeeCard, { TeamMember } from "@/components/ui/EmployeeCard";
+import EmployeeCard, { type TeamMember } from "@/components/ui/EmployeeCard";
 
-const teamMembers: TeamMember[] = [
+type RoleKey =
+  | "roleFounder"
+  | "roleGreece"
+  | "roleConsultant"
+  | "roleLawyer"
+  | "roleCmo"
+  | "roleCoo";
+
+const teamMembers: (Omit<TeamMember, "role"> & { roleKey: RoleKey })[] = [
   {
     id: 1,
     profileId: "zaid",
     name: "Zaid Bin Hashmat",
-    role: "Founder",
+    roleKey: "roleFounder",
     image: "/team-7.jpeg",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
@@ -18,7 +27,7 @@ const teamMembers: TeamMember[] = [
     id: 2,
     profileId: "maria-saridou",
     name: "Maria saridou",
-    role: "Founder of Greece Branch",
+    roleKey: "roleGreece",
     image: "/team-1.png",
     socials: {
       facebook: "#",
@@ -31,7 +40,7 @@ const teamMembers: TeamMember[] = [
     id: 3,
     profileId: "seda",
     name: "Seda Celen",
-    role: "Real Estate Consultant",
+    roleKey: "roleConsultant",
     image: "/team-2.png",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
@@ -39,7 +48,7 @@ const teamMembers: TeamMember[] = [
     id: 4,
     profileId: "maria-boutali",
     name: "Maria Boutali",
-    role: "Lawyer",
+    roleKey: "roleLawyer",
     image: "/team-3.png",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
@@ -47,7 +56,7 @@ const teamMembers: TeamMember[] = [
     id: 5,
     profileId: "siddartha",
     name: "Siddartha Jain",
-    role: "Chief Marketing Officer",
+    roleKey: "roleCmo",
     image: "/team-4.jpeg",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
@@ -55,7 +64,7 @@ const teamMembers: TeamMember[] = [
     id: 6,
     profileId: "ankita",
     name: "Ankita Nigam",
-    role: "Chief Operating Officer",
+    roleKey: "roleCoo",
     image: "/team-8.jpeg",
     socials: { facebook: "#", twitter: "#", instagram: "#", linkedin: "#" },
   },
@@ -63,6 +72,7 @@ const teamMembers: TeamMember[] = [
 
 export default function TeamSection() {
   const router = useRouter();
+  const t = useTranslations("homeSections");
 
   return (
     <section className="w-full bg-[#f5f5f5] py-16 sm:py-24 overflow-x-hidden">
@@ -72,11 +82,11 @@ export default function TeamSection() {
           <div className="min-w-0">
             <p className="flex items-center gap-2 text-sm text-gray-500 mb-4">
               <span className="w-[6px] h-[6px] bg-lime-400 rounded-full"></span>
-              Professional Team
+              {t("teamEyebrow")}
             </p>
 
             <h2 className="text-[clamp(1.75rem,7vw,3.25rem)] font-semibold leading-[1.1] text-[#1c1c1c] max-w-[540px]">
-              Your Property, Our Professional Team
+              {t("teamTitle")}
             </h2>
           </div>
 
@@ -85,7 +95,7 @@ export default function TeamSection() {
             onClick={() => router.push("/our-team")}
             className="flex items-center gap-2 bg-lime-400 hover:bg-lime-300 transition px-6 py-3 rounded-full text-sm font-medium text-black"
           >
-            Meet Our Team
+            {t("meetTeam")}
             <ArrowUpRight size={16} />
           </button>
         </div>
@@ -93,7 +103,10 @@ export default function TeamSection() {
         {/* Slider */}
         <Slider itemWidth={400} gap={24} showDots={false} showArrows={false}>
           {teamMembers.map((member) => (
-            <EmployeeCard key={member.id} member={member} />
+            <EmployeeCard
+              key={member.id}
+              member={{ ...member, role: t(member.roleKey) }}
+            />
           ))}
         </Slider>
       </div>

@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import CallbackRequestModal from "@/components/ui/CallbackRequestModal";
 import {
   SITE_EMAIL,
@@ -20,30 +21,30 @@ import {
 
 export default function ContactInfo() {
   const [callbackOpen, setCallbackOpen] = useState(false);
+  const t = useTranslations("contactBlock");
 
   return (
     <div className="flex flex-col gap-8 sm:gap-10 min-w-0 w-full max-w-full">
       <div className="min-w-0">
         <p className="flex items-center gap-3 text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-lime-400 mb-4">
           <span className="h-px w-8 bg-lime-400" aria-hidden />
-          Get In Touch
+          {t("eyebrow")}
         </p>
 
         <h2 className="text-[clamp(2rem,5.5vw,3.35rem)] font-semibold leading-[1.1] tracking-tight">
-          Contact Our{" "}
-          <span className="text-lime-400">Agency</span>
+          {t("title")}{" "}
+          <span className="text-lime-400">{t("titleAccent")}</span>
         </h2>
 
         <p className="mt-4 text-[15px] sm:text-base text-white/65 leading-relaxed max-w-[540px]">
-          Have a question about Golden Visa, property investment, or viewing
-          homes in Greece? Our team is ready to help.
+          {t("lead")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
         <ContactItem
           icon={<Phone className="h-4 w-4" />}
-          label="Phone Support"
+          label={t("phone")}
         >
           <a
             href={`tel:${SITE_PHONE_TEL}`}
@@ -53,7 +54,7 @@ export default function ContactInfo() {
           </a>
         </ContactItem>
 
-        <ContactItem icon={<Mail className="h-4 w-4" />} label="Email Us">
+        <ContactItem icon={<Mail className="h-4 w-4" />} label={t("email")}>
           <a
             href={`mailto:${SITE_EMAIL}`}
             className="text-[15px] sm:text-base font-semibold text-white hover:text-lime-300 transition break-all"
@@ -64,7 +65,7 @@ export default function ContactInfo() {
 
         <ContactItem
           icon={<MessageCircle className="h-4 w-4" />}
-          label="Chat Support"
+          label={t("chat")}
         >
           <a
             href={SITE_WHATSAPP_URL}
@@ -72,18 +73,18 @@ export default function ContactInfo() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-[15px] sm:text-base font-semibold text-white hover:text-lime-300 transition"
           >
-            Start WhatsApp chat
+            {t("whatsapp")}
             <ArrowRight className="h-3.5 w-3.5 text-lime-400" />
           </a>
         </ContactItem>
 
         <ContactItem
           icon={<Clock3 className="h-4 w-4" />}
-          label="Opening Hours"
+          label={t("hours")}
           className="sm:col-span-2 xl:col-span-1"
         >
           <p className="text-[15px] sm:text-base font-semibold text-white">
-            Mon – Fri: 8am – 6pm
+            {t("hoursValue")}
           </p>
         </ContactItem>
       </div>
@@ -101,20 +102,19 @@ export default function ContactInfo() {
 
           <div className="min-w-0 flex-1 text-center sm:text-left">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-lime-400">
-              Book A Call
+              {t("book")}
             </p>
             <p className="mt-1 text-base sm:text-lg font-semibold text-white leading-snug">
-              Let&apos;s find your perfect property
+              {t("bookTitle")}
             </p>
             <p className="mt-1 text-sm text-white/55 leading-relaxed">
-              Pick a date and a 2-hour window — we&apos;ll try to connect within
-              that time.
+              {t("bookText")}
             </p>
           </div>
 
           <div className="sm:shrink-0 flex flex-col items-center sm:items-end gap-2.5 w-full sm:w-auto">
             <p className="text-xs text-white/55 text-center sm:text-right">
-              HousingSaga Agent
+              {t("agent")}
             </p>
             <button
               type="button"
@@ -122,7 +122,7 @@ export default function ContactInfo() {
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-lime-400/90 text-lime-300 hover:bg-lime-400 hover:text-black text-sm font-semibold px-5 py-2.5 transition"
             >
               <CalendarDays className="h-4 w-4" />
-              Request callback
+              {t("callback")}
             </button>
           </div>
         </div>

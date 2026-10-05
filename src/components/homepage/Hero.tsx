@@ -5,11 +5,13 @@ import React, { useEffect, useState } from "react";
 import CountUp from "@/components/CountUp";
 import { useRouter } from "next/navigation";
 import { signalProjectsNavigation } from "@/components/projects/ProjectsRouteProgress";
+import { useTranslations } from "next-intl";
 
 const Hero: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const router = useRouter();
+  const t = useTranslations("home");
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 60);
     return () => clearTimeout(t);
@@ -20,7 +22,7 @@ const Hero: React.FC = () => {
       {/* Background */}
       <img
         src="/h1_bg-1.jpg"
-        alt="hero background"
+        alt={t("heroAlt")}
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
@@ -40,14 +42,14 @@ const Hero: React.FC = () => {
                 <div className="flex items-center gap-3 text-xs sm:text-sm mb-4">
                   <span className="w-2 h-2 rounded-full bg-lime-400" />
                   <span className="uppercase tracking-wide">
-                    Modern Homes For Modern Life
+                    {t("eyebrow")}
                   </span>
                 </div>
 
                 <h1 className="font-medium leading-[1.05] break-words max-w-[22ch] text-[clamp(2.2rem,6vw,5rem)] lg:text-[clamp(4rem,7vw,8rem)]">
-                  Discover Your
+                  {t("titleLine1")}
                   <br />
-                  Dream Property
+                  {t("titleLine2")}
                 </h1>
 
                 {/* VIDEO + DESCRIPTION */}
@@ -56,7 +58,7 @@ const Hero: React.FC = () => {
                   <div className="relative w-full sm:w-[300px] h-20 sm:h-24 rounded-full overflow-hidden shadow-lg flex-shrink-0">
                     <img
                       src="/property-3.jpeg"
-                      alt="property preview"
+                      alt={t("previewAlt")}
                       className="w-full h-full object-cover"
                     />
 
@@ -79,8 +81,7 @@ const Hero: React.FC = () => {
                   {/* DESCRIPTION */}
                   <div className="max-w-xl">
                     <p className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed">
-                      Explore homes, offices, and rentals with ease. We connect
-                      you with properties that match your lifestyle and needs.
+                      {t("lead")}
                     </p>
                   </div>
                 </div>
@@ -110,9 +111,9 @@ const Hero: React.FC = () => {
               {/* ADDRESS */}
               <div className="space-y-2 text-sm sm:text-base md:text-lg font-light">
                 <p>
-                  We are here: 2 Charokopou str, Kallithea 17671 Athens, Greece
+                  {t("address")}
                 </p>
-                <p>Email us: support@housingsaga.com</p>
+                <p>{t("email")}</p>
               </div>
 
               {/* STATS */}
@@ -122,7 +123,7 @@ const Hero: React.FC = () => {
                 </div>
 
                 <p className="text-lg sm:text-xl text-white/80 mt-2">
-                  Properties Listed
+                  {t("listed")}
                 </p>
               </div>
             </div>
@@ -151,6 +152,7 @@ const Hero: React.FC = () => {
           <button
             onClick={() => setShowVideo(false)}
             className="absolute top-6 right-6 text-white text-2xl"
+            aria-label={t("closeVideo")}
           >
             ✕
           </button>

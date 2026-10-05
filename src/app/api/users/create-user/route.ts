@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isLocale } from "@/i18n/config";
 import { connectDb } from "@/lib/db";
 import { sendEmail } from "@/lib/mailer";
 import { renderWelcomeEmail } from "@/lib/email-templates/welcome";
@@ -69,7 +71,12 @@ export async function POST(req: NextRequest) {
     user.save();
 
     try {
-      const { subject, html, text } = renderWelcomeEmail({ name });
+      const cookieStore = await cookies();
+      const cookieLocale = cookieStore.get("locale")?.value;
+      const { subject, html, text } = renderWelcomeEmail({
+        name,
+        locale: isLocale(cookieLocale) ? cookieLocale : "en",
+      });
       await sendEmail({ to: email, subject, html, text });
     } catch (mailErr) {
       console.error("[MAILER][WELCOME] failed:", mailErr);

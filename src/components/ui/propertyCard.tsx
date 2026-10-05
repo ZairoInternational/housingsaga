@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { IoLocationOutline } from "react-icons/io5";
+import { useLocale, useTranslations } from "next-intl";
+
 import SaveHomeButton from "@/components/account/SaveHomeButton";
 import { isGoldenVisaEligible } from "@/lib/golden-visa-eligibility";
 
@@ -117,6 +119,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   const destination = href ?? `/projects/${card.id}`;
   const isCompact = size === "compact";
+  const t = useTranslations("property");
+  const locale = useLocale();
+  const numberLocale = locale === "el" ? "el-GR" : "en-US";
 
   const stats: {
     name: "area" | "beds" | "baths" | "cars";
@@ -144,7 +149,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       {!isNavigationBlocked && (
         <Link
           href={destination}
-          aria-label={`View ${card.title}`}
+          aria-label={t("viewProperty", { title: card.title })}
           className="absolute inset-0 z-30"
         />
       )}
@@ -169,7 +174,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             href="/golden-visa"
             className="absolute left-3.5 top-14 z-40 inline-flex items-center rounded-full bg-lime-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-black shadow-md hover:bg-lime-300"
           >
-            Golden Visa
+            {t("goldenVisa")}
           </Link>
         )}
 
@@ -265,7 +270,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </h3>
             {typeof card.price === "number" && card.price > 0 && (
               <p className="mt-1 text-lime-300 text-sm font-medium">
-                €{card.price.toLocaleString("en-US")}
+                €{card.price.toLocaleString(numberLocale)}
               </p>
             )}
           </div>

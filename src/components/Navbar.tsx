@@ -10,14 +10,33 @@ import { useAuthStore } from "@/store/AuthStore";
 import Sidebar from "./Sidebar";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
-const NAV_LINKS = ["Home", "Golden Visa", "Services", "Projects", "Blogs", "Contact"];
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
+import { SITE_PHONE_DISPLAY } from "@/lib/site-contact";
+
+const NAV_LINKS = [
+  { href: "/", key: "home" },
+  { href: "/golden-visa", key: "goldenVisa" },
+  { href: "/services", key: "services" },
+  { href: "/projects", key: "projects" },
+  { href: "/blogs", key: "blogs" },
+  { href: "/contact", key: "contact" },
+] as const;
+
+const COMPACT_NAV_LINKS = [
+  { href: "/", key: "home" },
+  { href: "/services", key: "services" },
+  { href: "/projects", key: "projects" },
+  { href: "/contact", key: "contact" },
+] as const;
 
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { isLoggedIn, logout, role, name, email } = useAuthStore();
-  const displayName = name?.trim() || "Your profile";
+  const t = useTranslations("nav");
+  const displayName = name?.trim() || t("yourProfile");
   // const [isDarkMode, setIsDarkMode] = useDarkMode();
 
   const [isClient, setIsClient] = useState(false);
@@ -88,7 +107,7 @@ const Navbar = () => {
             >
               <Image
                 src="/housinglogo.png"
-                alt="HousingSaga logo"
+                alt={t("logoAlt")}
                 width={100}
                 height={100}
                 className="w-8 h-10 sm:w-9 sm:h-11 lg:w-20 lg:h-18 object-contain"
@@ -99,20 +118,15 @@ const Navbar = () => {
             <nav className="hidden lg:flex items-center gap-6 xl:gap-8 ">
               {NAV_LINKS.map((item) => (
                 <Link
-                  key={item}
-                  // href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  href={
-                    item === "Home"
-                      ? "/"
-                      : `/${item.toLowerCase().replace(/\s+/g, "-")}`
-                  }
+                  key={item.key}
+                  href={item.href}
                   className="relative block overflow-hidden h-5 text-gray-300 hover:text-white text-sm font-medium group"
                 >
                   <span className="block transition-transform duration-300 ease-out group-hover:translate-y-full">
-                    {item}
+                    {t(item.key)}
                   </span>
                   <span className="absolute left-0 top-0 block -translate-y-full transition-transform duration-300 ease-out group-hover:translate-y-0">
-                    {item}
+                    {t(item.key)}
                   </span>
                 </Link>
               ))}
@@ -120,22 +134,17 @@ const Navbar = () => {
 
             {/* On md screens show a condensed nav (fewer items or abbreviated) */}
             <nav className="hidden md:flex lg:hidden items-center gap-4">
-              {["Home", "Services", "Projects", "Contact"].map((item) => (
+              {COMPACT_NAV_LINKS.map((item) => (
                 <Link
-                  key={item}
-                  // href={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  href={
-                    item === "Home"
-                      ? "/"
-                      : `/${item.toLowerCase().replace(/\s+/g, "-")}`
-                  }
+                  key={item.key}
+                  href={item.href}
                   className="relative block overflow-hidden h-5 text-gray-300 hover:text-white text-xs font-medium group"
                 >
                   <span className="block transition-transform duration-300 ease-out group-hover:translate-y-full">
-                    {item}
+                    {t(item.key)}
                   </span>
                   <span className="absolute left-0 top-0 block -translate-y-full transition-transform duration-300 ease-out group-hover:translate-y-0">
-                    {item}
+                    {t(item.key)}
                   </span>
                 </Link>
               ))}
@@ -150,16 +159,18 @@ const Navbar = () => {
                 <Phone size={14} className="text-black" />
               </div>
               <span className="text-white hover:text-lime-300 transition-colors text-xs xl:text-sm">
-                Call us: +91 9076621166
+                {t("callUs", { phone: SITE_PHONE_DISPLAY })}
               </span>
             </div>
+
+            <LanguageSwitcher />
 
             {/* Get In Touch — hidden on mobile */}
             <Link
               href="/contact"
               className="hidden sm:inline-flex items-center gap-2 bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white px-3 lg:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
             >
-              <span>Get In Touch</span>
+              <span>{t("getInTouch")}</span>
               <ArrowRight size={14} />
             </Link>
 
@@ -199,7 +210,7 @@ const Navbar = () => {
                                 {displayName}
                               </div>
                               <div className="text-xs text-gray-500 truncate">
-                                {email ?? "Manage your profile"}
+                                {email ?? t("manageProfile")}
                               </div>
                             </div>
                           </div>
@@ -214,7 +225,7 @@ const Navbar = () => {
                             onClick={() => setIsProfileOpen(false)}
                             className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                           >
-                            My Profile
+                            {t("myProfile")}
                           </Link>
                           {role === "owner" && (
                             <Link
@@ -223,7 +234,7 @@ const Navbar = () => {
                               onClick={() => setIsProfileOpen(false)}
                               className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                             >
-                              My Listings
+                              {t("myListings")}
                             </Link>
                           )}
                           {role === "buyer" && (
@@ -233,7 +244,7 @@ const Navbar = () => {
                               onClick={() => setIsProfileOpen(false)}
                               className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                             >
-                              My Purchases
+                              {t("myPurchases")}
                             </Link>
                           )}
                           <Link
@@ -242,7 +253,7 @@ const Navbar = () => {
                             onClick={() => setIsProfileOpen(false)}
                             className="px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                           >
-                            Dashboard
+                            {t("dashboard")}
                           </Link>
                         </div>
 
@@ -261,7 +272,7 @@ const Navbar = () => {
                               router.push("/");
                             }}
                           >
-                            Sign out
+                            {t("signOut")}
                           </button>
                         </div>
                       </div>
@@ -272,7 +283,7 @@ const Navbar = () => {
                     onClick={handleAuthToggle}
                     className="hidden md:inline-flex items-center px-4 py-2.5 rounded-full bg-lime-500 hover:bg-lime-600 active:bg-lime-700 text-white text-sm font-medium transition-colors"
                   >
-                    Login
+                    {t("login")}
                   </button>
                 )}
               </div>
@@ -282,7 +293,7 @@ const Navbar = () => {
             <button
               onClick={() => setSidebarOpen(true)}
               className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-[#22272e] text-white hover:bg-[#2d3440] transition-colors"
-              aria-label="Open menu"
+              aria-label={t("openMenu")}
             >
               <Menu size={18} />
             </button>

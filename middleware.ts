@@ -2,6 +2,19 @@ import { withAuth } from "next-auth/middleware";
 import { NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
+import { defaultLocale, isLocale } from "@/i18n/config";
+
+function withDefaultLocale(request: NextRequestWithAuth, response: NextResponse) {
+  if (!isLocale(request.cookies.get("locale")?.value)) {
+    response.cookies.set("locale", defaultLocale, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
+  }
+  return response;
+}
+
 // Routes that don't require onboarding
 const unprotectedRoutes = [
   "/sign-in",
@@ -18,21 +31,24 @@ export default withAuth(function middleware(request: NextRequestWithAuth) {
 
   // Allow API routes (they have their own auth checks)
   if (apiRoutes.test(pathname)) {
-    return NextResponse.next();
+    return withDefaultLocale(request, NextResponse.next());
   }
 
   // Allow unprotected routes
   if (unprotectedRoutes.some(route => pathname.startsWith(route))) {
-    return NextResponse.next();
+    return withDefaultLocale(request, NextResponse.next());
   }
 
   // Check if user is not onboarded
   if (token && !token.onboarded) {
     console.log("[Middleware] User not onboarded, redirecting to /onboarding");
-    return NextResponse.redirect(new URL("/onboarding", request.url));
+    return withDefaultLocale(
+      request,
+      NextResponse.redirect(new URL("/onboarding", request.url)),
+    );
   }
 
-  return NextResponse.next();
+  return withDefaultLocale(request, NextResponse.next());
 }, {
   callbacks: {
     authorized: () => {

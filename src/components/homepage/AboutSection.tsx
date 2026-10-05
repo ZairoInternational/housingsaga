@@ -3,27 +3,26 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const AboutSection: React.FC = () => {
+  const t = useTranslations("homeSections");
   const aboutItems = [
     {
-      title: "Our Mission",
-      description:
-        "Deliver trusted real estate solutions focused on client success, innovation, and sustainable growth.",
+      title: t("missionTitle"),
+      description: t("missionText"),
       image: "/about1.jpg",
       icon: "minimalist.png",
     },
     {
-      title: "Our Vision",
-      description:
-        "Redefine modern living through innovation, quality, and meaningful property experiences that elevate everyday life.",
+      title: t("visionTitle"),
+      description: t("visionText"),
       image: "/about2.jpg",
       icon: "target.png",
     },
     {
-      title: "Our Value",
-      description:
-        "Uphold integrity, professionalism, and dedication in every service to exceed client expectations.",
+      title: t("valueTitle"),
+      description: t("valueText"),
       image: "/about3.jpg",
       icon: "premium.png",
     },
@@ -37,20 +36,20 @@ const AboutSection: React.FC = () => {
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 text-xs text-lime-500 mb-5 lg:mb-6 tracking-wide">
               <span className="w-2 h-2 rounded-full bg-lime-400 inline-block" />
-              <span className="uppercase">About The Property</span>
+              <span className="uppercase">{t("aboutEyebrow")}</span>
             </div>
 
             <h2 className="text-[clamp(2.2rem,5vw,4.5rem)] font-medium leading-[1.1] tracking-tight">
-              Innovating Property
+              {t("aboutTitle1")}
               <br />
-              Solutions Together
+              {t("aboutTitle2")}
             </h2>
           </div>
 
           <div className="shrink-0">
             <button className="inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-500 text-gray-900 px-5 sm:px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300"
             onClick={() => router.push("/about-us")}>
-              More About Us
+              {t("aboutCta")}
               <ArrowUpRight size={16} />
             </button>
           </div>

@@ -12,6 +12,7 @@ export function formatDashCaseLabel(value: string): string {
 export function formatFloorStatus(
   floors?: number | null,
   propertyOnFloor?: number,
+  locale: "en" | "el" = "en",
 ): string | undefined {
   const floorCount =
     floors !== undefined && floors !== null && !Number.isNaN(floors)
@@ -25,13 +26,17 @@ export function formatFloorStatus(
       : undefined;
 
   if (unitFloor !== undefined && floorCount !== undefined) {
-    return `Floor ${unitFloor} of ${floorCount}`;
+    return locale === "el"
+      ? `Όροφος ${unitFloor} από ${floorCount}`
+      : `Floor ${unitFloor} of ${floorCount}`;
   }
   if (unitFloor !== undefined) {
-    return `Floor ${unitFloor}`;
+    return locale === "el" ? `Όροφος ${unitFloor}` : `Floor ${unitFloor}`;
   }
   if (floorCount !== undefined) {
-    return `${floorCount} floors in building`;
+    return locale === "el"
+      ? `${floorCount} όροφοι στο κτίριο`
+      : `${floorCount} floors in building`;
   }
   return undefined;
 }
