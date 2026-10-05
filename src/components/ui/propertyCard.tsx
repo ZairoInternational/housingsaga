@@ -20,6 +20,9 @@ export type PropertyCardData = {
   cars: number;
   price?: number;
   goldenVisaEligible?: boolean;
+  featured?: boolean;
+  /** Region used by the homepage area filter, usually the state. */
+  region?: string;
 };
 
 type PropertyCardProps = {

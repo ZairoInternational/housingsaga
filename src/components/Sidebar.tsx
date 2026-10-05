@@ -6,6 +6,17 @@ import { Moon, Sun, X } from "lucide-react";
 
 import useDarkMode from "@/hooks/useToggleTheme";
 
+const SIDEBAR_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Projects", href: "/projects" },
+  { label: "Golden Visa", href: "/golden-visa" },
+  { label: "Services", href: "/services" },
+  { label: "Buy & Earn", href: "/earn-with-us" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
+];
+
 interface SidebarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -93,18 +104,16 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
 
       {/* Nav Links */}
       <div className=" flex flex-col items-center mt-12 gap-y-4">
-        {["Home", "Real Estate", "FAQs", "Blogs", "Contact"].map(
-          (item, index) => (
+        {SIDEBAR_LINKS.map((item) => (
             <Link
-              key={index}
-              href={`/${item.toLowerCase().split(" ").join("-")}`}
+              key={item.href}
+              href={item.href}
               className="mx-4 font-medium cursor-pointer dark:text-white"
               onClick={() => onOpenChange(false)}
             >
-              {item}
+              {item.label}
             </Link>
-          )
-        )}
+          ))}
       </div>
 
       {/* Theme Toggle Button */}
