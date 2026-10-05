@@ -39,7 +39,7 @@ const RESOURCE_LINKS = [
   { label: "Help Center", href: "/help-center" },
   { label: "FAQ", href: "/faq" },
   { label: "Services", href: "/services" },
-  { label: "Earn with Us", href: "/earn-with-us" },
+  { label: "Buy & Earn", href: "/earn-with-us" },
 ];
 
 const SOCIALS = [
@@ -91,7 +91,7 @@ function LinkColumn({
   links: { label: string; href: string }[];
 }) {
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 text-left">
       <h3 className="text-[12px] font-bold uppercase tracking-[0.18em] text-lime-400">
         {title}
       </h3>
@@ -222,7 +222,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 lg:gap-10 lg:pl-6">
+          <div className="grid grid-cols-3 items-start gap-4 sm:gap-8 lg:col-span-8 lg:gap-10 lg:pl-6">
             <LinkColumn title="Quick Links" links={QUICK_LINKS} />
             <LinkColumn title="Company" links={COMPANY_LINKS} />
             <LinkColumn title="Resources" links={RESOURCE_LINKS} />
