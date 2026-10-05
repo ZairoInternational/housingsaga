@@ -103,6 +103,7 @@ export const houseValidationSchema = z.object({
   isFeatured: z.boolean(),
   isNew: z.boolean(),
   goldenVisaEligible: z.boolean().default(false),
+  isSold: z.boolean().default(false),
   /** Public property code. Assigned by the server, not the listing form. */
   HSID: z
     .string()
