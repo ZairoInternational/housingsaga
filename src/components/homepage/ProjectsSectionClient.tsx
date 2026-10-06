@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight, ArrowUpRight, MapPin } from "lucide-react";
 import SaveHomeButton from "@/components/account/SaveHomeButton";
 import { formatEurAmount } from "@/lib/format-currency";
@@ -19,6 +20,7 @@ const MAX_AREA_FILTERS = 4;
 export default function ProjectsSectionClient({
   projects,
 }: ProjectsSectionClientProps) {
+  const t = useTranslations("homeSections");
   const [area, setArea] = useState("all");
   const { areas, hasMoreRegions } = useMemo(() => {
     const counts = new Map<string, { count: number; first: number }>();
@@ -110,18 +112,17 @@ export default function ProjectsSectionClient({
                 <span className="highlight-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.95)]" />
               </span>
-              Highlighted real projects
+              {t("projectsEyebrow")}
             </div>
             <h2 className="text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Showcasing Innovative
+              {t("projectsTitle1")}
               <br className="hidden sm:inline" />{" "}
               <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                Property Projects
+                {t("projectsTitle2")}
               </span>
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-400 sm:text-lg">
-              Redefine modern living through innovation, quality, and meaningful
-              property experiences that elevate everyday life.
+              {t("projectsLead")}
             </p>
           </div>
 
@@ -142,7 +143,7 @@ export default function ProjectsSectionClient({
                     href="/projects"
                     className="inline-flex shrink-0 items-center gap-1 rounded-xl px-3 py-1.5 text-emerald-300 transition hover:bg-white/10 hover:text-white"
                   >
-                    Other regions
+                    {t("projectsOtherRegions")}
                     <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
                   </Link>
                 )}
@@ -152,7 +153,7 @@ export default function ProjectsSectionClient({
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                aria-label="Previous projects"
+                aria-label={t("projectsPrev")}
                 disabled={visible.length <= 1 || !canPrev}
                 onClick={() => emblaApi?.scrollPrev()}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-slate-900/70 text-slate-300 shadow-md backdrop-blur-md transition hover:border-emerald-500/40 hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-40"
@@ -161,7 +162,7 @@ export default function ProjectsSectionClient({
               </button>
               <button
                 type="button"
-                aria-label="Next projects"
+                aria-label={t("projectsNext")}
                 disabled={visible.length <= 1 || !canNext}
                 onClick={() => emblaApi?.scrollNext()}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-slate-900/70 text-slate-300 shadow-md backdrop-blur-md transition hover:border-emerald-500/40 hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-40"
@@ -173,31 +174,29 @@ export default function ProjectsSectionClient({
         </div>
 
         {visible.length > 0 ? (
-          <>
-            <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex gap-6">
-                {visible.map((card) => (
-                  <div
-                    key={card.id}
-                    className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_calc(50%-0.75rem)] lg:flex-[0_0_calc(33.333%-1rem)]"
-                  >
-                    <ShowcaseCard card={card} />
-                  </div>
-                ))}
-              </div>
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-6">
+              {visible.map((card) => (
+                <div
+                  key={card.id}
+                  className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_calc(50%-0.75rem)] lg:flex-[0_0_calc(33.333%-1rem)]"
+                >
+                  <ShowcaseCard card={card} />
+                </div>
+              ))}
             </div>
-          </>
+          </div>
         ) : (
           <div className="rounded-3xl border border-white/10 bg-slate-900/60 px-6 py-14 text-center text-slate-400">
             <p className="text-base font-semibold text-slate-200">
-              No properties in this area.
+              {t("projectsEmpty")}
             </p>
             <button
               type="button"
               onClick={() => setArea("all")}
               className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-300"
             >
-              Show highlighted projects
+              {t("projectsShowAll")}
             </button>
           </div>
         )}
@@ -231,6 +230,8 @@ function AreaButton({
 }
 
 function ShowcaseCard({ card }: { card: PropertyCardData }) {
+  const t = useTranslations("homeSections");
+  const property = useTranslations("property");
   const goldenVisa = isGoldenVisaEligible(card.goldenVisaEligible);
   const price =
     typeof card.price === "number" && card.price > 0
@@ -265,7 +266,7 @@ function ShowcaseCard({ card }: { card: PropertyCardData }) {
           <div className="mb-1 flex flex-wrap items-center gap-2">
             {card.featured && (
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                Featured
+                {t("projectsFeatured")}
               </span>
             )}
             {goldenVisa && (
@@ -273,7 +274,7 @@ function ShowcaseCard({ card }: { card: PropertyCardData }) {
                 href="/golden-visa"
                 className="relative z-30 text-[11px] font-bold uppercase tracking-wider text-emerald-300 underline-offset-2 hover:underline"
               >
-                Golden Visa
+                {property("goldenVisa")}
               </Link>
             )}
           </div>
@@ -291,7 +292,7 @@ function ShowcaseCard({ card }: { card: PropertyCardData }) {
 
       <Link
         href={`/projects/${card.id}`}
-        aria-label={`View ${card.title}`}
+        aria-label={property("viewProperty", { title: card.title })}
         className="absolute inset-0 z-20"
       />
     </article>

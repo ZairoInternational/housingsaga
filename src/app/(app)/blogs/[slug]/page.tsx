@@ -3,7 +3,10 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import ContactSection from "@/components/homepage/ContactSection";
+import { getLocale, getTranslations } from "next-intl/server";
+
 import { blogPosts, getBlogPost } from "@/data/blogs";
+import { localizeBlogPost } from "@/lib/localize-blog";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -15,18 +18,30 @@ export function generateStaticParams() {
 
 export default async function BlogDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
-  if (!post) notFound();
+  const source = getBlogPost(slug);
+  if (!source) notFound();
+
+  const locale = await getLocale();
+  const t = await getTranslations("blog");
+  const post = localizeBlogPost(
+    source,
+    locale,
+    t(`categories.${source.category}`),
+  );
+  const dateLocale = locale === "el" ? "el-GR" : "en-GB";
 
   const related = blogPosts
-    .filter((p) => p.slug !== post.slug)
-    .filter((p) => p.category === post.category)
+    .filter((p) => p.slug !== source.slug)
+    .filter((p) => p.category === source.category)
     .slice(0, 3);
 
-  const relatedFallback =
+  const relatedFallback = (
     related.length > 0
       ? related
-      : blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+      : blogPosts.filter((p) => p.slug !== source.slug).slice(0, 3)
+  ).map((item) =>
+    localizeBlogPost(item, locale, t(`categories.${item.category}`)),
+  );
 
   return (
     <main className="bg-white min-h-screen">
@@ -46,17 +61,17 @@ export default async function BlogDetailPage({ params }: PageProps) {
             className="inline-flex items-center gap-2 text-sm text-white/75 hover:text-lime-300 mb-5 w-fit"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Blog
+            {t("back")}
           </Link>
           <span className="inline-flex w-fit rounded-full bg-lime-400 text-black text-[11px] font-bold px-3 py-1 mb-3">
-            {post.category}
+            {post.categoryLabel}
           </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight">
             {post.title}
           </h1>
           <p className="mt-3 text-sm text-white/70">
             {post.author} · {post.readTime} ·{" "}
-            {new Date(post.publishedAt).toLocaleDateString("en-GB", {
+            {new Date(post.publishedAt).toLocaleDateString(dateLocale, {
               day: "numeric",
               month: "short",
               year: "numeric",
@@ -82,13 +97,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
         <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
           <p className="text-sm text-gray-500">
-            Want help applying this to a property search?
+            {t("help")}
           </p>
           <Link
             href="/contact"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-lime-400 hover:bg-lime-300 text-black font-semibold text-sm px-5 py-2.5 transition"
           >
-            Talk to HousingSaga
+            {t("talk")}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -98,7 +113,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         <section className="bg-[#f4f4f2] py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-xl sm:text-2xl font-bold text-[#111] mb-8">
-              Related articles
+              {t("related")}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedFallback.map((item) => (
@@ -118,7 +133,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                   </div>
                   <div className="p-5">
                     <p className="text-[11px] text-gray-500 mb-1">
-                      {item.category} · {item.readTime}
+                      {item.categoryLabel} · {item.readTime}
                     </p>
                     <h3 className="font-bold text-[#111] leading-snug group-hover:text-[#14532d] transition line-clamp-2">
                       {item.title}

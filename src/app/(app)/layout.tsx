@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 // import { Poppins } from "next/font/google";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import "../globals.css";
 import Footer from "@/components/Footer";
@@ -7,23 +8,26 @@ import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 import ClientProviders from "@/components/ClientProviders";
 import ProjectsRouteProgress from "@/components/projects/ProjectsRouteProgress";
+import IntlProvider from "@/components/i18n/IntlProvider";
 import Link from "next/link";
 
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
-
-
-export const metadata: Metadata = {
-  title: "Housing Saga",
-  description: "Get your dream home",
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <Link rel="preconnect" href="https://fonts.googleapis.com" />
         <Link
@@ -41,14 +45,15 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* Client-side providers mounted here */}
-        <Navbar />
-        <ClientProviders >
-          {children}
-          <Footer />
-          <Toaster position="top-right" />
-          <ProjectsRouteProgress />
-        </ClientProviders>
+        <IntlProvider>
+          <ClientProviders>
+            <Navbar />
+            {children}
+            <Footer />
+            <Toaster position="top-right" />
+            <ProjectsRouteProgress />
+          </ClientProviders>
+        </IntlProvider>
       </body>
     </html>
   );

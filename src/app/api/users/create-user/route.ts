@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+import { isLocale, type Locale } from "@/i18n/config";
 import { connectDb } from "@/lib/db";
 import { sendEmail } from "@/lib/mailer";
 import { renderWelcomeEmail } from "@/lib/email-templates/welcome";
@@ -59,17 +61,24 @@ export async function POST(req: NextRequest) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const cookieStore = await cookies();
+    const cookieLocale = cookieStore.get("locale")?.value;
+    const preferredLanguage: Locale = isLocale(cookieLocale) ? cookieLocale : "en";
 
     const user = await HousingUsers.create({
       name,
       email,
       phone: phone && phone.trim() ? phone : null,
       password: hashedPassword,
+      preferredLanguage,
     });
     user.save();
 
     try {
-      const { subject, html, text } = renderWelcomeEmail({ name });
+      const { subject, html, text } = renderWelcomeEmail({
+        name,
+        locale: preferredLanguage,
+      });
       await sendEmail({ to: email, subject, html, text });
     } catch (mailErr) {
       console.error("[MAILER][WELCOME] failed:", mailErr);

@@ -4,18 +4,21 @@ import { createPortal } from "react-dom";
 import { useEffect, useRef } from "react";
 import { Moon, Sun, X } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import useDarkMode from "@/hooks/useToggleTheme";
 
 const SIDEBAR_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Projects", href: "/projects" },
-  { label: "Golden Visa", href: "/golden-visa" },
-  { label: "Services", href: "/services" },
-  { label: "Buy & Earn", href: "/earn-with-us" },
-  { label: "Blogs", href: "/blogs" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
-];
+  { href: "/", key: "home" },
+  { href: "/projects", key: "projects" },
+  { href: "/golden-visa", key: "goldenVisa" },
+  { href: "/services", key: "services" },
+  { href: "/earn-with-us", key: "earn" },
+  { href: "/blogs", key: "blogs" },
+  { href: "/faq", key: "faq" },
+  { href: "/contact", key: "contact" },
+] as const;
 
 interface SidebarProps {
   open: boolean;
@@ -27,6 +30,7 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const [isDarkMode, setIsDarkMode] = useDarkMode();
+  const t = useTranslations("sidebar");
 
   {
     /* Handling Outside click to close sidebar */
@@ -98,12 +102,14 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
       <button
         onClick={() => onOpenChange(false)}
         className="absolute right-2 top-2 cursor-pointer"
+        aria-label={t("close")}
       >
         <X />
       </button>
 
       {/* Nav Links */}
       <div className=" flex flex-col items-center mt-12 gap-y-4">
+        <LanguageSwitcher tone="light" />
         {SIDEBAR_LINKS.map((item) => (
             <Link
               key={item.href}
@@ -111,7 +117,7 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
               className="mx-4 font-medium cursor-pointer dark:text-white"
               onClick={() => onOpenChange(false)}
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           ))}
       </div>

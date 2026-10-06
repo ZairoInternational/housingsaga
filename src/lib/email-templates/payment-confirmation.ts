@@ -7,6 +7,7 @@ export type PaymentConfirmationEmailParams = {
   razorpayPaymentId: string;
   razorpayOrderId: string;
   paidAt: Date;
+  locale?: "en" | "el";
 };
 
 function escapeHtml(value: string) {
@@ -26,9 +27,25 @@ export function renderPaymentConfirmationEmail(
 
   const amountLabel = formatEurAmount(params.amountEuro);
 
-  const subject = "HousingSaga Payment Confirmed";
+  const greek = params.locale === "el";
+  const subject = greek
+    ? "Επιβεβαίωση πληρωμής HousingSaga"
+    : "HousingSaga Payment Confirmed";
+  const heading = greek
+    ? `Η πληρωμή επιβεβαιώθηκε για ${safePlanName}`
+    : `Payment confirmed for ${safePlanName}`;
+  const greeting = greek
+    ? `Γεια σας ${safeName}, λάβαμε την πληρωμή σας.`
+    : `Hi ${safeName}, we have received your payment.`;
+  const amountLabelName = greek ? "Ποσό" : "Amount";
+  const orderLabel = greek ? "Αριθμός παραγγελίας" : "Order ID";
+  const paymentLabel = greek ? "Αριθμός πληρωμής" : "Payment ID";
+  const paidLabel = greek ? "Πληρώθηκε" : "Paid at";
+  const warning = greek
+    ? "Αν δεν κάνατε εσείς αυτή την πληρωμή, επικοινωνήστε αμέσως με την υποστήριξη."
+    : "If you didn’t make this payment, please contact our support immediately.";
 
-  const paidAtLabel = params.paidAt.toLocaleString("en-GB", {
+  const paidAtLabel = params.paidAt.toLocaleString(greek ? "el-GR" : "en-GB", {
     year: "numeric",
     month: "short",
     day: "2-digit",
@@ -44,28 +61,30 @@ export function renderPaymentConfirmationEmail(
             HousingSaga
           </div>
           <h1 style="margin:10px 0 0 0;font-size:22px;line-height:1.2;color:#fff;">
-            Payment confirmed for ${safePlanName}
+            ${heading}
           </h1>
           <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:rgba(229,231,235,.85);">
-            Hi ${safeName}, we have received your payment.
+            ${greeting}
           </p>
 
           <div style="margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;color:rgba(229,231,235,.75);line-height:1.7;">
-            <div><strong style="color:#fff;font-weight:700;">Amount:</strong> ${amountLabel}</div>
-            <div><strong style="color:#fff;font-weight:700;">Order ID:</strong> ${escapeHtml(params.razorpayOrderId)}</div>
-            <div><strong style="color:#fff;font-weight:700;">Payment ID:</strong> ${escapeHtml(params.razorpayPaymentId)}</div>
-            <div><strong style="color:#fff;font-weight:700;">Paid at:</strong> ${escapeHtml(paidAtLabel)}</div>
+            <div><strong style="color:#fff;font-weight:700;">${amountLabelName}:</strong> ${amountLabel}</div>
+            <div><strong style="color:#fff;font-weight:700;">${orderLabel}:</strong> ${escapeHtml(params.razorpayOrderId)}</div>
+            <div><strong style="color:#fff;font-weight:700;">${paymentLabel}:</strong> ${escapeHtml(params.razorpayPaymentId)}</div>
+            <div><strong style="color:#fff;font-weight:700;">${paidLabel}:</strong> ${escapeHtml(paidAtLabel)}</div>
           </div>
 
           <div style="margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(229,231,235,.6);">
-            If you didn’t make this payment, please contact our support immediately.
+            ${warning}
           </div>
         </div>
       </div>
     </div>
   `;
 
-  const text = `Payment confirmed for ${params.planName}.\n\nAmount: ${amountLabel}\nOrder ID: ${params.razorpayOrderId}\nPayment ID: ${params.razorpayPaymentId}\nPaid at: ${paidAtLabel}\n\nIf you didn't make this payment, please contact support.`;
+  const text = greek
+    ? `Η πληρωμή επιβεβαιώθηκε για ${params.planName}.\n\nΠοσό: ${amountLabel}\nΑριθμός παραγγελίας: ${params.razorpayOrderId}\nΑριθμός πληρωμής: ${params.razorpayPaymentId}\nΠληρώθηκε: ${paidAtLabel}\n\n${warning}`
+    : `Payment confirmed for ${params.planName}.\n\nAmount: ${amountLabel}\nOrder ID: ${params.razorpayOrderId}\nPayment ID: ${params.razorpayPaymentId}\nPaid at: ${paidAtLabel}\n\nIf you didn't make this payment, please contact support.`;
 
   return { subject, html, text };
 }

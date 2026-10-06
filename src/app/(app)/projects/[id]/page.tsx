@@ -11,6 +11,8 @@ import ProjectMapSection from "@/components/projects/ProjectMapSection";
 import { connectDb } from "@/lib/db";
 import { House } from "@/models/houseModel";
 import type { HouseValidationSchema } from "@/schemas/property.schema";
+import { getLocale, getTranslations } from "next-intl/server";
+
 import { formatEurAmount } from "@/lib/format-currency";
 import { isGoldenVisaEligible } from "@/lib/golden-visa-eligibility";
 import {
@@ -94,27 +96,30 @@ function toProjectDetail(
   };
 }
 
-function buildListingBadges(project: ProjectDetail) {
+function buildListingBadges(
+  project: ProjectDetail,
+  label: (key: string) => string,
+) {
   const badges: { id: string; label: string }[] = [];
   if (project.isSold) {
-    badges.push({ id: "sold", label: "Sold" });
+    badges.push({ id: "sold", label: label("sold") });
   } else if (project.isActive) {
-    badges.push({ id: "active", label: "Active listing" });
+    badges.push({ id: "active", label: label("activeListing") });
   }
   if (project.isFeatured) {
-    badges.push({ id: "featured", label: "Featured property" });
+    badges.push({ id: "featured", label: label("featuredProperty") });
   }
   if (project.isVerified) {
-    badges.push({ id: "verified", label: "Verified property" });
+    badges.push({ id: "verified", label: label("verifiedProperty") });
   }
   if (project.isNew) {
-    badges.push({ id: "new", label: "New property" });
+    badges.push({ id: "new", label: label("newProperty") });
   }
   if (!project.isSold && project.isAvailable) {
-    badges.push({ id: "available", label: "Available for rent" });
+    badges.push({ id: "available", label: label("availableForRent") });
   }
   if (isGoldenVisaEligible(project.goldenVisaEligible)) {
-    badges.push({ id: "golden-visa", label: "Golden Visa Eligible" });
+    badges.push({ id: "golden-visa", label: label("goldenVisaBadge") });
   }
   return badges;
 }
@@ -129,10 +134,14 @@ export default async function ProjectDetailPage({
     (HouseValidationSchema & { _id: unknown; isSold?: boolean }) | null
   >();
 
+  const locale = await getLocale();
+  const t = await getTranslations("property");
+  const numberLocale = locale === "el" ? "el-GR" : "en-US";
+
   if (!doc) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-sm text-gray-600">Project not found.</p>
+        <p className="text-sm text-gray-600">{t("notFound")}</p>
       </main>
     );
   }
@@ -140,45 +149,47 @@ export default async function ProjectDetailPage({
   const project = toProjectDetail(doc);
   const mainImage = project.images[0] ?? "/property.jpeg";
   const priceRangeLabel = formatEurAmount(project.price);
-  const listingBadges = buildListingBadges(project);
+  const listingBadges = buildListingBadges(project, (key) => t(key));
   const floorStatusLabel = formatFloorStatus(
     project.floors,
     project.propertyOnFloor,
+    locale === "el" ? "el" : "en",
   );
-  const furnishingLabel = formatDashCaseLabel(project.furnishing);
+  const furnishingLabel = t(`furnishingValues.${project.furnishing}`);
+  const propertyTypeLabel = t(`types.${project.propertyType}`);
 
   const highlights = [
     {
       icon: "bed" as const,
-      title: `${project.bedrooms} Bedrooms`,
-      subtitle: `${project.bathrooms} Bathrooms · ready to live`,
+      title: t("bedrooms", { count: project.bedrooms }),
+      subtitle: t("bathroomsReady", { count: project.bathrooms }),
     },
     {
       icon: "building" as const,
-      title: `${project.carpetArea.toLocaleString()} SQFT`,
-      subtitle: formatDashCaseLabel(project.propertyType),
+      title: t("sqft", { area: project.carpetArea.toLocaleString(numberLocale) }),
+      subtitle: propertyTypeLabel,
     },
     {
       icon: "star" as const,
       title:
         project.amenities.length > 0
-          ? `${project.amenities.length} Premium Amenities`
-          : "Premium Amenities",
+          ? t("amenityCount", { count: project.amenities.length })
+          : t("premiumAmenities"),
       subtitle:
         project.amenities.length > 0
-          ? "Luxury finishes & lifestyle extras"
-          : "Quality interiors throughout",
+          ? t("amenitySubtitle")
+          : t("qualityInteriors"),
     },
     {
       icon: "shield" as const,
       title: isGoldenVisaEligible(project.goldenVisaEligible)
-        ? "Investment Potential"
+        ? t("investmentPotential")
         : project.isVerified
-          ? "Verified Listing"
-          : "Investment Ready",
+          ? t("verifiedListing")
+          : t("investmentReady"),
       subtitle: isGoldenVisaEligible(project.goldenVisaEligible)
-        ? "Golden Visa eligible property"
-        : "Reviewed by HousingSaga",
+        ? t("goldenVisaEligible")
+        : t("reviewed"),
     },
   ];
 
@@ -187,8 +198,8 @@ export default async function ProjectDetailPage({
       <ProjectsDetailHero
         title={project.name}
         breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Projects", href: "/projects" },
+          { label: t("home"), href: "/" },
+          { label: t("projects"), href: "/projects" },
           { label: project.name },
         ]}
       />
@@ -199,7 +210,7 @@ export default async function ProjectDetailPage({
         summary={project.summary}
         city={project.city}
         state={project.state}
-        projectType={formatDashCaseLabel(project.propertyType)}
+        projectType={propertyTypeLabel}
         areaSqft={project.carpetArea}
         constructionYear={project.constructionYear}
         priceRangeLabel={priceRangeLabel}

@@ -11,12 +11,19 @@ import {
   UserRound,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 type FormStatus = { type: "success" | "error"; message: string } | null;
 
-const SUBJECTS = ["General Inquiry", "Support", "Partnership", "Golden Visa"];
+const SUBJECTS = [
+  { value: "General Inquiry", labelKey: "general" },
+  { value: "Support", labelKey: "support" },
+  { value: "Partnership", labelKey: "partnership" },
+  { value: "Golden Visa", labelKey: "goldenVisa" },
+] as const;
 
 export default function ContactForm() {
+  const t = useTranslations("contactBlock");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("General Inquiry");
@@ -31,7 +38,7 @@ export default function ContactForm() {
     if (!name.trim() || !email.trim() || !message.trim()) {
       setStatus({
         type: "error",
-        message: "Please fill in name, email, and message.",
+        message: t("required"),
       });
       return;
     }
@@ -58,7 +65,7 @@ export default function ContactForm() {
         const errorMessage =
           (typeof json?.error === "string" && json.error) ||
           (typeof json?.details === "string" && json.details) ||
-          "Something went wrong while sending your message. Please try again.";
+          t("failed");
         setStatus({
           type: "error",
           message: errorMessage,
@@ -69,16 +76,15 @@ export default function ContactForm() {
 
       setStatus({
         type: "success",
-        message: "Message sent. We’ll reply within 1–2 business days.",
+        message: t("sent"),
       });
-      toast.success("Message sent successfully.");
+      toast.success(t("sentToast"));
       setName("");
       setEmail("");
       setSubject("General Inquiry");
       setMessage("");
     } catch {
-      const errorMessage =
-        "Something went wrong while sending your message. Please try again.";
+      const errorMessage = t("failed");
       setStatus({ type: "error", message: errorMessage });
       toast.error(errorMessage);
     } finally {
@@ -94,10 +100,10 @@ export default function ContactForm() {
         </span>
         <div className="min-w-0">
           <h3 className="text-lg sm:text-xl font-semibold text-white">
-            Leave Us A Message
+            {t("formTitle")}
           </h3>
           <p className="mt-1 text-sm text-white/55 leading-relaxed">
-            Tell us what you need — we&apos;ll get back within 1–2 business days.
+            {t("formLead")}
           </p>
         </div>
       </div>
@@ -106,18 +112,18 @@ export default function ContactForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
           <Field
             icon={<UserRound className="h-4 w-4" />}
-            placeholder="Name *"
+            placeholder={t("name")}
             value={name}
             onChange={setName}
-            ariaLabel="Name"
+            ariaLabel={t("nameLabel")}
             autoComplete="name"
           />
           <Field
             icon={<Mail className="h-4 w-4" />}
-            placeholder="Email address *"
+            placeholder={t("emailField")}
             value={email}
             onChange={setEmail}
-            ariaLabel="Email address"
+            ariaLabel={t("emailLabel")}
             type="email"
             autoComplete="email"
           />
@@ -128,14 +134,14 @@ export default function ContactForm() {
             <Globe2 className="h-4 w-4" />
           </span>
           <select
-            aria-label="Subject"
+            aria-label={t("subject")}
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             className="h-[52px] w-full appearance-none rounded-xl bg-[#0d131c]/70 border border-white/15 pl-11 pr-11 text-sm text-white outline-none focus:border-lime-400 transition"
           >
             {SUBJECTS.map((option) => (
-              <option key={option} value={option} className="bg-[#111]">
-                {option}
+              <option key={option.value} value={option.value} className="bg-[#111]">
+                {t(`subjects.${option.labelKey}`)}
               </option>
             ))}
           </select>
@@ -149,8 +155,8 @@ export default function ContactForm() {
             <MessageSquare className="h-4 w-4" />
           </span>
           <textarea
-            aria-label="Message"
-            placeholder="Message *"
+            aria-label={t("messageLabel")}
+            placeholder={t("message")}
             rows={5}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -178,7 +184,7 @@ export default function ContactForm() {
           className="mt-1 w-full h-[54px] rounded-full bg-lime-400 text-black font-semibold flex items-center justify-center gap-2 hover:bg-lime-300 transition disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <Send className="h-4 w-4" />
-          {isSubmitting ? "Sending..." : "Send A Message"}
+          {isSubmitting ? t("sending") : t("send")}
           <ArrowRight className="h-4 w-4" />
         </button>
       </form>

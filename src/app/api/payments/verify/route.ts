@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
         razorpayPaymentId: paymentId,
         razorpayOrderId: orderId,
         paidAt: capturedAt,
+        locale: user?.preferredLanguage === "el" ? "el" : "en",
       });
       await sendEmail({ to, subject, html, text });
     } catch (emailError) {

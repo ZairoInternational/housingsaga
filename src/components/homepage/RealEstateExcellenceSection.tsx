@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import { useTranslations } from "next-intl";
 import CountUp from "@/components/CountUp";
 import { useLayoutEffect } from "react";
 import gsap from "gsap";
@@ -9,6 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const RealEstateExcellenceSection: React.FC = () => {
+  const t = useTranslations("homeSections");
   const imageRef = useRef<HTMLImageElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,16 +46,16 @@ const RealEstateExcellenceSection: React.FC = () => {
           {/* Left */}
           <div>
             <div className="text-xs sm:text-sm text-lime-500 mb-4 font-medium">
-              • What We Offer
+              • {t("offerEyebrow")}
             </div>
 
             <h2
               className="font-semibold leading-[1.05] tracking-tight
               text-[clamp(2.2rem,5vw,4rem)]"
             >
-              A Century Of Real
+              {t("offerTitle1")}
               <br />
-              Estate Excellence
+              {t("offerTitle2")}
             </h2>
           </div>
 
@@ -63,8 +65,7 @@ const RealEstateExcellenceSection: React.FC = () => {
             text-sm sm:text-base md:text-lg
             max-w-lg lg:ml-auto pt-2 lg:pt-10"
           >
-            With over a century of experience, we deliver trusted real estate
-            solutions that define quality, integrity, and long-lasting value.
+            {t("offerLead")}
           </div>
         </div>
 
@@ -81,7 +82,7 @@ const RealEstateExcellenceSection: React.FC = () => {
             sm:border-r border-gray-300
             pr-0 sm:pr-8"
           >
-            <div className="text-xs text-gray-500 mb-4">• Property Deliver</div>
+            <div className="text-xs text-gray-500 mb-4">• {t("statDelivered")}</div>
 
             <div
               className="font-semibold
@@ -98,7 +99,7 @@ const RealEstateExcellenceSection: React.FC = () => {
             lg:border-r border-gray-300
             px-0 sm:px-8"
           >
-            <div className="text-xs text-gray-500 mb-4">• Total Agents</div>
+            <div className="text-xs text-gray-500 mb-4">• {t("statAgents")}</div>
 
             <div
               className="font-semibold
@@ -110,7 +111,7 @@ const RealEstateExcellenceSection: React.FC = () => {
 
           {/* Stat */}
           <div className="pl-0 sm:pl-8">
-            <div className="text-xs text-gray-500 mb-4">• Happy Clients</div>
+            <div className="text-xs text-gray-500 mb-4">• {t("statClients")}</div>
 
             <div
               className="font-semibold

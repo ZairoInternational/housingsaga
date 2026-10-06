@@ -5,34 +5,19 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const steps = [
-  {
-    number: "01",
-    title: "Initial Consultation",
-    text: "We discuss your goals, define priorities, and create a personalized plan for success.",
-  },
-  {
-    number: "02",
-    title: "Market Research",
-    text: "We analyze market trends and locations to find the best property opportunities available.",
-  },
-  {
-    number: "03",
-    title: "Project Execution",
-    text: "Our team manages all details efficiently, ensuring quality, transparency, and timely completion.",
-  },
-  {
-    number: "04",
-    title: "Final Delivery",
-    text: "We deliver finished projects flawlessly, exceeding expectations and ensuring complete client satisfaction.",
-  },
-];
-
 const HowWeBuildSuccessSection: React.FC = () => {
   const router = useRouter();
+  const t = useTranslations("homeSections");
+  const steps = [
+    { number: "01", title: t("step1Title"), text: t("step1Text") },
+    { number: "02", title: t("step2Title"), text: t("step2Text") },
+    { number: "03", title: t("step3Title"), text: t("step3Text") },
+    { number: "04", title: t("step4Title"), text: t("step4Text") },
+  ];
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
@@ -117,19 +102,17 @@ useLayoutEffect(() => {
         <div className="flex flex-col justify-start lg:justify-between">
           <div>
             <div className="text-xs sm:text-sm text-lime-500 mb-4 font-medium">
-              • How We Work
+              • {t("workEyebrow")}
             </div>
 
             <h2 className="font-semibold leading-[1.05] tracking-tight text-[clamp(2.3rem,5vw,4.5rem)]">
-              Understand How
+              {t("workTitle1")}
               <br />
-              We Build Success
+              {t("workTitle2")}
             </h2>
 
             <p className="text-gray-600 mt-5 sm:mt-6 max-w-md leading-relaxed text-sm sm:text-base">
-              We combine strategic planning, market expertise, and client
-              collaboration to create impactful real estate solutions that drive
-              growth, ensure quality, and deliver long-term success.
+              {t("workLead")}
             </p>
 
             <button
@@ -137,14 +120,14 @@ useLayoutEffect(() => {
               onClick={() => router.push("/sign-up")}
               className="mt-7 sm:mt-8 inline-flex items-center gap-2 bg-lime-400 hover:bg-lime-300 text-black px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm font-medium transition"
             >
-              Join Us Now
+              {t("join")}
               <ArrowUpRight size={16} />
             </button>
           </div>
 
           <img
             src="/h2_img3.png"
-            alt="Modern house"
+            alt={t("houseAlt")}
             className="house-image mt-12 sm:mt-14 w-full max-w-md lg:max-w-xl pointer-events-none select-none"
             draggable={false}
           />

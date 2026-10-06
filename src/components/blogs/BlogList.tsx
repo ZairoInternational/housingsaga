@@ -5,13 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   BLOG_CATEGORIES,
   blogPosts,
   getFeaturedPosts,
   getLatestPosts,
   type BlogCategory,
+  type BlogPost,
 } from "@/data/blogs";
+import { localizeBlogPost } from "@/lib/localize-blog";
 
 function parseCategory(
   value: string | null,
@@ -26,10 +29,14 @@ function parseCategory(
 export default function BlogList() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const featured = getFeaturedPosts();
+  const locale = useLocale();
+  const t = useTranslations("blog");
+  const show = (post: BlogPost) =>
+    localizeBlogPost(post, locale, t(`categories.${post.category}`));
+  const featured = getFeaturedPosts().map(show);
   const primary = featured[0];
   const secondary = featured.slice(1, 3);
-  const latest = getLatestPosts(4);
+  const latest = getLatestPosts(4).map(show);
 
   const [activeCategory, setActiveCategory] = useState<"All" | BlogCategory>(
     () => parseCategory(searchParams.get("category")),
@@ -49,9 +56,9 @@ export default function BlogList() {
   };
 
   const filtered = useMemo(() => {
-    if (activeCategory === "All") return blogPosts;
-    return blogPosts.filter((p) => p.category === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === "All") return blogPosts.map(show);
+    return blogPosts.filter((p) => p.category === activeCategory).map(show);
+  }, [activeCategory, locale]);
 
   const gridPosts =
     activeCategory === "All" ? latest : filtered.slice(0, 8);
@@ -63,7 +70,7 @@ export default function BlogList() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-lime-600 mb-8">
             <span className="h-px w-6 bg-lime-500" />
-            Featured Article
+            {t("featured")}
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 lg:gap-8">
@@ -79,7 +86,7 @@ export default function BlogList() {
                       className="object-cover transition duration-500 group-hover:scale-[1.03]"
                     />
                     <span className="absolute top-4 left-4 rounded-full bg-lime-400 text-black text-[11px] font-bold px-3 py-1">
-                      {primary.category}
+                      {primary.categoryLabel}
                     </span>
                   </div>
                 </Link>
@@ -97,7 +104,7 @@ export default function BlogList() {
                     href={`/blogs/${primary.slug}`}
                     className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-lime-600 hover:text-lime-700"
                   >
-                    Read full article
+                    {t("readArticle")}
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -125,7 +132,7 @@ export default function BlogList() {
                   <div className="flex flex-col justify-center min-w-0 py-1 pr-1">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="rounded-full bg-lime-400 text-black text-[10px] font-bold px-2.5 py-0.5">
-                        {post.category}
+                        {post.categoryLabel}
                       </span>
                       <span className="text-[11px] text-gray-500">
                         {post.readTime}
@@ -142,7 +149,7 @@ export default function BlogList() {
                     <Link
                       href={`/blogs/${post.slug}`}
                       className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-lime-400 text-black hover:bg-lime-300 transition self-start"
-                      aria-label={`Read ${post.title}`}
+                      aria-label={t("readNamed", { title: post.title })}
                     >
                       <ArrowUpRight className="h-4 w-4" />
                     </Link>
@@ -162,7 +169,7 @@ export default function BlogList() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-lime-600 mb-5">
             <span className="h-px w-6 bg-lime-500" />
-            Browse by Category
+            {t("browse")}
           </p>
           <div className="flex flex-wrap gap-2.5">
             {BLOG_CATEGORIES.map((cat) => {
@@ -178,7 +185,7 @@ export default function BlogList() {
                       : "bg-white border-gray-200 text-gray-700 hover:border-lime-300"
                   }`}
                 >
-                  {cat}
+                  {t(`categories.${cat}`)}
                 </button>
               );
             })}
@@ -196,10 +203,10 @@ export default function BlogList() {
             <div>
               <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-lime-400 mb-3">
                 <span className="h-px w-6 bg-lime-400" />
-                Latest Insights
+                {t("latest")}
               </p>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
-                Explore Our Latest Articles
+                {t("explore")}
               </h2>
             </div>
             <button
@@ -207,7 +214,7 @@ export default function BlogList() {
               onClick={() => setCategory("All")}
               className="inline-flex items-center gap-2 text-sm font-semibold text-lime-400 hover:text-lime-300 self-start sm:self-auto"
             >
-              View all articles
+              {t("viewAll")}
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -225,7 +232,7 @@ export default function BlogList() {
                         className="object-cover transition duration-500 group-hover:scale-[1.04]"
                       />
                       <span className="absolute bottom-3 left-3 rounded-full bg-lime-400 text-black text-[10px] font-bold px-2.5 py-1">
-                        {post.category}
+                        {post.categoryLabel}
                       </span>
                     </div>
                     <p className="text-[11px] text-white/50 mb-2">
@@ -244,7 +251,7 @@ export default function BlogList() {
 
           {activeCategory !== "All" && filtered.length === 0 && (
             <p className="text-sm text-white/50">
-              No articles in this category yet.
+              {t("empty")}
             </p>
           )}
         </div>

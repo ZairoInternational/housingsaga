@@ -2,24 +2,25 @@
 
 import { Star } from "lucide-react";
 import React from "react";
+import { useTranslations } from "next-intl";
 import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
 
-const items = [
-  { id: 1, content: <>Exclusive Property</> },
-  { id: 2, content: <>Prime Location</> },
-  {
-    id: 3,
-    content: (
-      <>
-        <Star size={16} /> Luxury Living
-      </>
-    ),
-  },
-  { id: 4, content: <>Trusted Agency</> },
-  { id: 5, content: <>Modern Design</> },
-];
-
 const ResidenceVideoHero: React.FC = () => {
+  const t = useTranslations("homeSections");
+  const items = [
+    { id: 1, content: <>{t("marqueeExclusive")}</> },
+    { id: 2, content: <>{t("marqueeLocation")}</> },
+    {
+      id: 3,
+      content: (
+        <>
+          <Star size={16} /> {t("marqueeLuxury")}
+        </>
+      ),
+    },
+    { id: 4, content: <>{t("marqueeAgency")}</> },
+    { id: 5, content: <>{t("marqueeDesign")}</> },
+  ];
   return (
     <section
       className="
@@ -74,7 +75,7 @@ const ResidenceVideoHero: React.FC = () => {
             roboto-condensed
           "
         >
-          • Video Introduction
+          • {t("videoEyebrow")}
         </div>
 
         <h1
@@ -85,9 +86,9 @@ const ResidenceVideoHero: React.FC = () => {
             text-[clamp(2.4rem,6vw,7rem)]
           "
         >
-          See Inside Our
+          {t("videoTitle1")}
           <br />
-          Residence
+          {t("videoTitle2")}
         </h1>
       </div>
 

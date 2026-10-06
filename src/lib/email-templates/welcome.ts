@@ -1,5 +1,6 @@
 export type WelcomeEmailParams = {
   name: string;
+  locale?: "en" | "el" | "it";
 };
 
 function escapeHtml(value: string) {
@@ -13,8 +14,19 @@ function escapeHtml(value: string) {
 
 export function renderWelcomeEmail(params: WelcomeEmailParams) {
   const safeName = escapeHtml(params.name);
+  const greek = params.locale === "el";
 
-  const subject = "Welcome to HousingSaga";
+  const subject = greek ? "Καλώς ήρθατε στο HousingSaga" : "Welcome to HousingSaga";
+  const heading = greek ? `Καλώς ήρθατε, ${safeName}` : `Welcome, ${safeName}`;
+  const body = greek
+    ? "Ο λογαριασμός σας δημιουργήθηκε. Μπορείτε να συνδεθείτε και να ξεκινήσετε να καταχωρείτε ακίνητα, να αποθηκεύετε αγαπημένα και να εξερευνάτε προτάσεις."
+    : "Your account has been created successfully. You can now sign in and start listing properties, saving favourites, and exploring recommendations.";
+  const footer = greek
+    ? "Αν δεν δημιουργήσατε εσείς αυτόν τον λογαριασμό, αγνοήστε αυτό το email."
+    : "If you didn’t create this account, please ignore this email.";
+  const text = greek
+    ? `Καλώς ήρθατε στο HousingSaga, ${params.name}.\n\n${body}\n\n${footer}`
+    : `Welcome to HousingSaga, ${params.name}.\n\nYour account has been created successfully. You can now sign in and get started.\n\nIf you didn’t create this account, please ignore this email.`;
 
   const html = `
   <div style="margin:0;padding:0;background:#0b101b;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;">
@@ -24,19 +36,17 @@ export function renderWelcomeEmail(params: WelcomeEmailParams) {
           HousingSaga
         </div>
         <h1 style="margin:10px 0 0 0;font-size:22px;line-height:1.2;color:#fff;">
-          Welcome, ${safeName}
+          ${heading}
         </h1>
         <p style="margin:12px 0 0 0;font-size:14px;line-height:1.6;color:rgba(229,231,235,.8);">
-          Your account has been created successfully. You can now sign in and start listing properties, saving favourites, and exploring recommendations.
+          ${body}
         </p>
         <div style="margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(229,231,235,.6);">
-          If you didn’t create this account, please ignore this email.
+          ${footer}
         </div>
       </div>
     </div>
   </div>`;
-
-  const text = `Welcome to HousingSaga, ${params.name}.\n\nYour account has been created successfully. You can now sign in and get started.\n\nIf you didn’t create this account, please ignore this email.`;
 
   return { subject, html, text };
 }
