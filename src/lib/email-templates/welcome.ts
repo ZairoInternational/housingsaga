@@ -1,6 +1,6 @@
 export type WelcomeEmailParams = {
   name: string;
-  locale?: "en" | "el";
+  locale?: "en" | "el" | "it";
 };
 
 function escapeHtml(value: string) {
