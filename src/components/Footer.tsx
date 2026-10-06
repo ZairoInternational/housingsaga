@@ -160,7 +160,7 @@ const OFFICE_CARDS = [
 
 export default function Footer() {
   return (
-    <footer className="relative w-full text-white overflow-hidden">
+    <footer className="relative w-full overflow-hidden border-t border-white/10 bg-[#050a0f] text-white">
       {/* Background */}
       <div className="absolute inset-0">
         <Image

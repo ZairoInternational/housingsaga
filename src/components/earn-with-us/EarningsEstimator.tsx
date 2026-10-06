@@ -2,7 +2,7 @@
 
 import { useMemo, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { BadgePercent, Banknote, Building2, CheckCircle2, Info, TrendingUp } from "lucide-react";
+import { BadgePercent, Banknote, Building2, CheckCircle2, Clock3, Info, TrendingUp } from "lucide-react";
 import { useEarnEstimate } from "./estimate-context";
 
 function euro(value: number) {
@@ -23,11 +23,24 @@ function compactEuro(value: number) {
   return `€${Math.round(value)}`;
 }
 
-function niceMax(value: number) {
+function paybackLabel(price: number, annualNet: number) {
+  if (price <= 0 || annualNet <= 0) return null;
+  const totalMonths = Math.max(1, Math.round((price / annualNet) * 12));
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  const yearText = years === 1 ? "1 year" : `${years} years`;
+  const monthText = months === 1 ? "1 month" : `${months} months`;
+  if (years === 0) return monthText;
+  if (months === 0) return yearText;
+  return `${yearText} ${monthText}`;
+}
+
+function chartMax(value: number) {
   if (value <= 0) return 1;
   const power = 10 ** Math.floor(Math.log10(value));
   const scaled = value / power;
-  const nice = scaled <= 1 ? 1 : scaled <= 2 ? 2 : scaled <= 5 ? 5 : 10;
+  const steps = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10];
+  const nice = steps.find((step) => step >= scaled - 0.001) ?? 10;
   return nice * power;
 }
 
@@ -129,39 +142,29 @@ export default function EarningsEstimator() {
     [netIncome, purchasePrice, appreciationRate],
   );
 
-  const incomeMax = niceMax(Math.max(...years.map((year) => year.income), 1));
-  const valueMax = niceMax(Math.max(...years.map((year) => year.value), purchasePrice, 1));
+  const incomeMax = chartMax(Math.max(...years.map((year) => year.income), 1));
+  const valueMax = chartMax(Math.max(...years.map((year) => year.value), purchasePrice, 1));
   const valueTicks = [4, 3, 2, 1, 0].map((step) => (valueMax / 4) * step);
   const incomeTicks = [4, 3, 2, 1, 0].map((step) => (incomeMax / 4) * step);
-
-  const plotLeft = 16;
-  const plotWidth = 288;
-  const barWidth = 22;
-  const slot = plotWidth / years.length;
-  const linePoints = years
-    .map((year, index) => {
-      const x = plotLeft + slot * index + slot / 2;
-      const y = 148 - (year.value / valueMax) * 120;
-      return `${x},${y}`;
-    })
-    .join(" ");
+  const payback = paybackLabel(purchasePrice, netIncome);
 
   return (
     <section id="estimator" className="scroll-mt-28 bg-[#f4f6f1] py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
-          Estimate your potential income
-        </p>
-        <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
-          See what your property could generate.
-        </h2>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Move any control and the results update immediately. These figures are
-          an illustration, not a forecast.
-        </p>
+        <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
+              Estimate your potential income
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
+              See what your property could generate.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+              Move any control and the results update immediately. These figures are
+              an illustration, not a forecast.
+            </p>
 
-        <div className="mt-10 grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
-          <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_20px_50px_-24px_rgba(15,23,42,0.25)] sm:p-8">
+          <div className="mt-8 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_20px_50px_-24px_rgba(15,23,42,0.25)] sm:p-8">
             <h3 className="border-b border-slate-100 pb-4 text-xl font-semibold text-slate-950">
               Property details
             </h3>
@@ -251,7 +254,10 @@ export default function EarningsEstimator() {
 
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                 <div>
-                  <p className="text-sm font-semibold text-slate-800">Annual value growth</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-slate-800">Annual value growth</p>
+                    <GrowthInfo tip="Based on a standard marketplace illustration of about 5% a year. It is not a forecast of what your property will be worth." />
+                  </div>
                   <p className="mt-1 text-sm leading-relaxed text-slate-500">
                     Fixed at 5% for this illustration.
                   </p>
@@ -266,6 +272,7 @@ export default function EarningsEstimator() {
                 </p>
               </div>
             </div>
+          </div>
           </div>
 
           <div className="rounded-3xl bg-[#071422] p-6 text-white shadow-[0_24px_60px_-28px_rgba(7,20,34,0.8)] sm:p-8">
@@ -286,6 +293,7 @@ export default function EarningsEstimator() {
               <p className="text-sm font-semibold">You could receive</p>
               <p className="mt-1 text-4xl font-bold tabular-nums tracking-tight sm:text-5xl">
                 {euro(netIncome)}
+                <span className="ml-2 text-xl font-semibold sm:text-2xl">/ year</span>
               </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-800">
                 after the management fee, from {euro(monthlyRent)} a month.
@@ -315,9 +323,21 @@ export default function EarningsEstimator() {
                 valueClass="text-sky-300"
               />
               <ResultRow
+                icon={<Clock3 className="h-4 w-4" />}
+                label="Time to earn the purchase price back"
+                detail="From rental income alone, before value growth."
+                value={payback ?? "—"}
+                valueClass="max-w-[9.5rem] text-right text-base leading-snug text-white"
+              />
+              <ResultRow
                 icon={<TrendingUp className="h-4 w-4" />}
                 label="Property value after 1 year"
-                detail={`${appreciationRate}% illustrative growth`}
+                detail={
+                  <span className="inline-flex items-center gap-1.5">
+                    {appreciationRate}% illustrative growth
+                    <GrowthInfo tip="Based on a standard marketplace illustration of about 5% a year. It is not a forecast of what your property will be worth." light />
+                  </span>
+                }
                 value={euro(valueAfter1Year)}
               />
               <ResultRow
@@ -328,96 +348,27 @@ export default function EarningsEstimator() {
               />
             </div>
 
-            <div className="mt-8 border-t border-white/10 pt-6">
-              <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="mt-8 space-y-6 border-t border-white/10 pt-6">
+              <div>
                 <h4 className="text-base font-semibold text-white">Five-year picture</h4>
-                <div className="flex gap-4 text-sm text-slate-300">
-                  <span className="inline-flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-lime-400" />
-                    Rental income
-                  </span>
-                  <span className="inline-flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-sky-400" />
-                    Property value
-                  </span>
-                </div>
+                <p className="mt-1 text-sm text-slate-400">
+                  Bars use the left scale. The line uses the right scale. Lime amounts are rental income. Blue amounts are property value.
+                </p>
               </div>
-
-              <div className="mt-5 grid grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] items-start gap-2">
-                <div className="flex h-44 flex-col justify-between text-xs leading-none text-slate-400">
-                  {valueTicks.map((tick) => (
-                    <span key={`v-${tick}`}>{compactEuro(tick)}</span>
-                  ))}
-                </div>
-                <div className="min-w-0">
-                  <svg
-                    viewBox="0 0 320 160"
-                    className="h-44 w-full"
-                    role="img"
-                    aria-label="Five year chart of cumulative rental income and property value"
-                  >
-                    {[0, 1, 2, 3, 4].map((line) => (
-                      <line
-                        key={line}
-                        x1="8"
-                        x2="312"
-                        y1={16 + line * 33}
-                        y2={16 + line * 33}
-                        stroke="rgba(255,255,255,0.08)"
-                      />
-                    ))}
-                    {years.map((year, index) => {
-                      const height = (year.income / incomeMax) * 120;
-                      const x = plotLeft + slot * index + (slot - barWidth) / 2;
-                      return (
-                        <motion.rect
-                          key={year.year}
-                          x={x}
-                          width={barWidth}
-                          rx="5"
-                          initial={reduce ? false : { height: 0, y: 148 }}
-                          animate={{ height, y: 148 - height }}
-                          transition={{ duration: 0.45 }}
-                          fill="#c6ef4a"
-                        />
-                      );
-                    })}
-                    <polyline
-                      points={linePoints}
-                      fill="none"
-                      stroke="#38bdf8"
-                      strokeWidth="2.5"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                    />
-                    {years.map((year, index) => (
-                      <circle
-                        key={`dot-${year.year}`}
-                        cx={plotLeft + slot * index + slot / 2}
-                        cy={148 - (year.value / valueMax) * 120}
-                        r="3.5"
-                        fill="#38bdf8"
-                      />
-                    ))}
-                  </svg>
-                  <div className="grid grid-cols-5 text-center text-xs text-slate-400">
-                    {years.map((year) => (
-                      <span key={year.year}>Year {year.year}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex h-44 flex-col justify-between text-right text-xs leading-none text-slate-400">
-                  {incomeTicks.map((tick) => (
-                    <span key={`i-${tick}`}>{compactEuro(tick)}</span>
-                  ))}
-                </div>
-              </div>
+              <CombinedChart
+                years={years}
+                incomeMax={incomeMax}
+                valueMax={valueMax}
+                incomeTicks={incomeTicks}
+                valueTicks={valueTicks}
+                reduce={Boolean(reduce)}
+              />
             </div>
 
             <ul className="mt-6 grid gap-3 rounded-2xl bg-white/5 p-4 text-sm leading-relaxed text-slate-300 sm:grid-cols-2">
               {[
-                "Bars show rental income added up over five years.",
-                "The line shows property value, on its own scale.",
+                "Rental income is what the home earns, added up over the years.",
+                "Property value starts from the purchase price and grows separately.",
                 "Occupancy and rent can change from year to year.",
                 `${appreciationRate}% growth is an illustration, not a promise.`,
               ].map((note) => (
@@ -434,6 +385,196 @@ export default function EarningsEstimator() {
   );
 }
 
+function GrowthInfo({ tip, light = false }: { tip: string; light?: boolean }) {
+  return (
+    <span className="group relative inline-flex">
+      <button
+        type="button"
+        aria-label="About the 5% growth illustration"
+        className={`flex h-5 w-5 items-center justify-center rounded-full border text-[11px] font-bold leading-none ${
+          light
+            ? "border-white/40 text-white hover:border-white"
+            : "border-slate-300 text-slate-500 hover:border-slate-500"
+        }`}
+      >
+        i
+      </button>
+      <span
+        className={`pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 hidden w-60 -translate-x-1/2 rounded-xl px-3 py-2 text-left text-sm font-medium leading-snug shadow-lg group-hover:block group-focus-within:block ${
+          light ? "bg-white text-slate-900" : "bg-slate-900 text-white"
+        }`}
+      >
+        {tip}
+      </span>
+    </span>
+  );
+}
+
+function CombinedChart({
+  years,
+  incomeMax,
+  valueMax,
+  incomeTicks,
+  valueTicks,
+  reduce,
+}: {
+  years: { year: number; income: number; value: number }[];
+  incomeMax: number;
+  valueMax: number;
+  incomeTicks: number[];
+  valueTicks: number[];
+  reduce: boolean;
+}) {
+  const slot = 304 / years.length;
+  const barWidth = 22;
+  const baseline = 158;
+  const plotHeight = 108;
+  const points = years.map((year, index) => {
+    const cx = 8 + slot * index + slot / 2;
+    const incomeHeight = incomeMax <= 0 ? 0 : (year.income / incomeMax) * plotHeight;
+    const valueHeight = valueMax <= 0 ? 0 : (year.value / valueMax) * plotHeight;
+    const incomeTop = baseline - incomeHeight;
+    const valueTop = baseline - valueHeight;
+    let incomeLabel = incomeTop - 9;
+    let valueLabel = valueTop - 9;
+    if (Math.abs(incomeLabel - valueLabel) < 14) {
+      const upper = Math.min(incomeTop, valueTop);
+      valueLabel = upper - 22;
+      incomeLabel = upper - 9;
+    }
+    return {
+      year: year.year,
+      income: year.income,
+      value: year.value,
+      cx,
+      barX: cx - barWidth / 2,
+      incomeHeight,
+      valueTop,
+      incomeLabel: Math.max(incomeLabel, 10),
+      valueLabel: Math.max(valueLabel, 10),
+    };
+  });
+
+  return (
+    <div>
+      <div className="mb-3 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-white">
+        <p className="inline-flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-lime-400" />
+          Rental income
+        </p>
+        <p className="inline-flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-sky-400" />
+          Property value
+        </p>
+      </div>
+      <div className="grid grid-cols-[3.25rem_minmax(0,1fr)_3.25rem] items-start gap-1.5">
+        <div className="relative h-48">
+          <div
+            className="absolute inset-x-0 flex flex-col justify-between text-right text-[11px] leading-none text-lime-200/80"
+            style={{ top: "28%", bottom: "10%" }}
+          >
+            {incomeTicks.map((tick) => (
+              <span key={`income-${tick}`}>{compactEuro(tick)}</span>
+            ))}
+          </div>
+        </div>
+        <div className="min-w-0">
+          <svg viewBox="0 0 320 176" className="h-48 w-full overflow-visible" role="img" aria-label="Rental income and property value over five years">
+            {[0, 1, 2, 3, 4].map((line) => (
+              <line
+                key={line}
+                x1="4"
+                x2="316"
+                y1={baseline - plotHeight + line * (plotHeight / 4)}
+                y2={baseline - plotHeight + line * (plotHeight / 4)}
+                stroke="rgba(255,255,255,0.08)"
+              />
+            ))}
+            {points.map((point) => {
+              const height = Math.max(point.incomeHeight, 0);
+              return (
+                <motion.rect
+                  key={`income-${point.year}`}
+                  x={point.barX}
+                  width={barWidth}
+                  rx="5"
+                  initial={reduce ? false : { height: 0, y: baseline }}
+                  animate={{ height, y: baseline - height }}
+                  fill="#c6ef4a"
+                />
+              );
+            })}
+            <polyline
+              points={points.map((point) => `${point.cx},${point.valueTop}`).join(" ")}
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+            {points.map((point) => (
+              <circle
+                key={`value-${point.year}`}
+                cx={point.cx}
+                cy={point.valueTop}
+                r="4.5"
+                fill="#38bdf8"
+                stroke="#071422"
+                strokeWidth="2"
+              />
+            ))}
+            {points.map((point) => (
+              <g key={`labels-${point.year}`}>
+                <text
+                  x={point.cx}
+                  y={point.incomeLabel}
+                  textAnchor="middle"
+                  fill="#c6ef4a"
+                  fontSize="8.5"
+                  fontWeight="700"
+                  stroke="#071422"
+                  strokeWidth="3"
+                  paintOrder="stroke"
+                >
+                  {euro(point.income)}
+                </text>
+                <text
+                  x={point.cx}
+                  y={point.valueLabel}
+                  textAnchor="middle"
+                  fill="#7dd3fc"
+                  fontSize="8.5"
+                  fontWeight="700"
+                  stroke="#071422"
+                  strokeWidth="3"
+                  paintOrder="stroke"
+                >
+                  {euro(point.value)}
+                </text>
+              </g>
+            ))}
+          </svg>
+          <div className="grid grid-cols-5 text-center text-xs text-slate-400">
+            {points.map((point) => (
+              <span key={point.year}>Year {point.year}</span>
+            ))}
+          </div>
+        </div>
+        <div className="relative h-48">
+          <div
+            className="absolute inset-x-0 flex flex-col justify-between text-[11px] leading-none text-sky-200/80"
+            style={{ top: "28%", bottom: "10%" }}
+          >
+            {valueTicks.map((tick) => (
+              <span key={`value-${tick}`}>{compactEuro(tick)}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ResultRow({
   icon,
   label,
@@ -445,7 +586,7 @@ function ResultRow({
 }: {
   icon: ReactNode;
   label: string;
-  detail: string;
+  detail: ReactNode;
   value: string;
   detailTone?: "muted" | "lime";
   iconClass?: string;
@@ -465,9 +606,9 @@ function ResultRow({
         </span>
         <div className="min-w-0">
           <p className="text-sm font-medium leading-snug text-white sm:text-base">{label}</p>
-          <p className={detailTone === "lime" ? "mt-1 text-sm text-lime-300" : "mt-1 text-sm text-slate-400"}>
+          <div className={detailTone === "lime" ? "mt-1 text-sm text-lime-300" : "mt-1 text-sm text-slate-400"}>
             {detail}
-          </p>
+          </div>
         </div>
       </div>
       <p className={`shrink-0 pt-0.5 text-lg font-bold tabular-nums sm:text-xl ${valueClass}`}>{value}</p>

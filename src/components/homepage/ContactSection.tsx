@@ -6,8 +6,7 @@ import ContactForm from "@/components/ui/ContactForm";
 
 export default function ContactSection() {
   return (
-    <section className="relative w-full text-white py-16 sm:py-20 lg:py-28 overflow-hidden">
-      {/* Background */}
+    <section className="relative w-full overflow-hidden border-b-[10px] border-[#e8eef4] py-16 text-white sm:py-20 lg:py-28">
       <div className="absolute inset-0">
         <Image
           src="/contact-agency-bg.jpg"
@@ -17,9 +16,8 @@ export default function ContactSection() {
           sizes="100vw"
           priority={false}
         />
-        <div className="absolute inset-0 bg-[#050a0f]/45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050a0f]/65 via-[#050a0f]/30 to-[#050a0f]/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050a0f]/70 via-transparent to-[#050a0f]/25" />
+        <div className="absolute inset-0 bg-[#3a2a22]/28" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#5c4032]/15 via-transparent to-[#241811]/45" />
       </div>
 
       <div className="relative max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 min-w-0">
