@@ -9,6 +9,7 @@ import ProfileShell from "@/components/profile/ProfileShell";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import OwnerSummaryCards from "@/components/profile/OwnerSummaryCards";
 import BuyerSummaryCards from "@/components/profile/BuyerSummaryCards";
+import OwnerAccessLinkCard from "@/components/profile/OwnerAccessLinkCard";
 import OwnerActions from "@/components/profile/OwnerActions";
 import BuyerActions from "@/components/profile/BuyerActions";
 import OwnerListingsPreview from "@/components/profile/OwnerListingsPreview";
@@ -207,6 +208,9 @@ export default async function ProfilePage() {
                   activeListings={activeListings}
                   pendingListings={pendingListings}
                 />
+              </ProfileSectionReveal>
+              <ProfileSectionReveal delay={0.08}>
+                <OwnerAccessLinkCard />
               </ProfileSectionReveal>
               <ProfileSectionReveal delay={0.1}>
                 <OwnerListingsPreview

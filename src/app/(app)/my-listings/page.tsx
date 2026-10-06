@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import AccountPageHeader from "@/components/account/AccountPageHeader";
+import OwnerAccessLinkCard from "@/components/profile/OwnerAccessLinkCard";
 import OwnerListingsPreview from "@/components/profile/OwnerListingsPreview";
 import ProfileShell from "@/components/profile/ProfileShell";
 import { loadOwnerListings, requireAccount } from "@/lib/account";
@@ -35,6 +36,7 @@ export default async function MyListingsPage() {
         title={`${account.name}'s listings`}
         subtitle="Review every property you have submitted, then edit, publish, or check verification status."
       />
+      <OwnerAccessLinkCard />
       <OwnerListingsPreview listings={listings} showIntro={false} />
     </ProfileShell>
   );
