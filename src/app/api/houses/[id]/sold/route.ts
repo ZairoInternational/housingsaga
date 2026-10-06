@@ -1,10 +1,8 @@
-import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 import { authOptions } from "@/lib/authConfig";
-import { connectDb } from "@/lib/db";
-import { House } from "@/models/houseModel";
+import { markPropertySoldForOwner } from "@/lib/owner-properties";
 
 interface RouteContext {
   params: Promise<{
@@ -25,18 +23,9 @@ export async function POST(_request: Request, context: RouteContext) {
     }
 
     const { id } = await context.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Listing not found." }, { status: 404 });
-    }
+    const updated = await markPropertySoldForOwner(userId, id);
 
-    await connectDb();
-    const updated = await House.findOneAndUpdate(
-      { _id: id, owner: userId },
-      { $set: { isSold: true, isAvailable: false, isActive: false } },
-      { new: true, projection: { isSold: 1 } },
-    );
-
-    if (!updated) {
+    if (!updated.ok) {
       return NextResponse.json({ error: "Listing not found." }, { status: 404 });
     }
 
