@@ -112,16 +112,16 @@ export default function EarnHero() {
               management fee for HousingSaga property buyers.
             </motion.p>
 
-            <ol className="mt-8 grid w-full max-w-xl grid-cols-4 gap-2 sm:gap-3">
+            <ol className="mt-8 flex w-full max-w-xl items-stretch">
               {steps.map((step, index) => (
                 <motion.li
                   key={step.title}
                   initial={reduce ? false : { opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.22 + index * 0.07 }}
-                  className="relative h-full"
+                  className="flex min-w-0 flex-1 items-stretch"
                 >
-                  <div className="flex h-full min-h-[8.75rem] flex-col items-center rounded-2xl bg-black/30 px-1.5 py-3 text-center shadow-[0_14px_28px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-sm">
+                  <div className="flex h-full min-h-[8.75rem] w-full flex-col items-center rounded-2xl bg-black/30 px-1.5 py-3 text-center shadow-[0_14px_28px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-sm">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lime-400 text-black shadow-[0_10px_22px_rgba(0,0,0,0.4),0_0_18px_rgba(190,242,100,0.55)]">
                       <step.Icon className="h-5 w-5" aria-hidden />
                     </span>
@@ -129,10 +129,9 @@ export default function EarnHero() {
                     <p className="mt-1 line-clamp-2 text-xs leading-snug text-white/80">{step.hint}</p>
                   </div>
                   {index < steps.length - 1 && (
-                    <ChevronRight
-                      className="absolute -right-2.5 top-5 z-10 hidden h-4 w-4 text-white/50 sm:block"
-                      aria-hidden
-                    />
+                    <span className="z-20 mx-1 mt-5 flex h-6 w-6 shrink-0 items-center justify-center self-start rounded-full bg-lime-400 text-black shadow-[0_0_0_3px_rgba(4,17,13,0.9),0_6px_16px_rgba(0,0,0,0.45)] sm:mx-1.5">
+                      <ChevronRight className="h-4 w-4" strokeWidth={3} aria-hidden />
+                    </span>
                   )}
                 </motion.li>
               ))}

@@ -10,10 +10,13 @@ import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import useDarkMode from "@/hooks/useToggleTheme";
 
 const SIDEBAR_LINKS = [
-  { href: "/home", key: "home" },
-  { href: "/real-estate", key: "realEstate" },
-  { href: "/faqs", key: "faqs" },
+  { href: "/", key: "home" },
+  { href: "/projects", key: "projects" },
+  { href: "/golden-visa", key: "goldenVisa" },
+  { href: "/services", key: "services" },
+  { href: "/earn-with-us", key: "earn" },
   { href: "/blogs", key: "blogs" },
+  { href: "/faq", key: "faq" },
   { href: "/contact", key: "contact" },
 ] as const;
 
@@ -109,15 +112,14 @@ const Sidebar = ({ open, onOpenChange }: SidebarProps) => {
         <LanguageSwitcher tone="light" />
         {SIDEBAR_LINKS.map((item) => (
             <Link
-              key={item.key}
+              key={item.href}
               href={item.href}
               className="mx-4 font-medium cursor-pointer dark:text-white"
               onClick={() => onOpenChange(false)}
             >
               {t(item.key)}
             </Link>
-          )
-        )}
+          ))}
       </div>
 
       {/* Theme Toggle Button */}

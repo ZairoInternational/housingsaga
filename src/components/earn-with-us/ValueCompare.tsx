@@ -29,18 +29,20 @@ export default function ValueCompare() {
   return (
     <section id="benefits" className="scroll-mt-28 bg-white py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
-          The benefit of buying through HousingSaga
-        </p>
-        <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
-          More value. Fewer fees.
-        </h2>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Same purchase price, same rent. The difference is the management fee.
-          This comparison follows the estimator above.
-        </p>
-
-        <div className="relative mt-10 grid gap-5 lg:grid-cols-2 lg:gap-8">
+        <div className="relative grid gap-5 lg:grid-cols-2 lg:gap-8">
+          <div className="flex flex-col gap-8">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
+                The benefit of buying through HousingSaga
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
+                More value. Fewer fees.
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+                Same purchase price, same rent. The difference is the management fee.
+                This comparison follows the estimator above.
+              </p>
+            </div>
           <article className="flex h-full flex-col rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
             <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">
               Buy elsewhere
@@ -80,6 +82,7 @@ export default function ValueCompare() {
               <span className="font-semibold text-slate-800">{euro(standardNet)}</span>
             </p>
           </article>
+          </div>
 
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 hidden h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white bg-slate-950 text-sm font-semibold text-white shadow-lg lg:flex">
             VS

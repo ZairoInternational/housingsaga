@@ -110,7 +110,7 @@ const Navbar = () => {
                 alt={t("logoAlt")}
                 width={100}
                 height={100}
-                className="w-8 h-10 sm:w-9 sm:h-11 lg:w-20 lg:h-18 object-contain"
+                className="h-10 w-auto max-w-[58vw] object-contain object-left sm:h-11 sm:w-9 sm:max-w-none sm:object-center lg:h-18 lg:w-20"
               />
             </Link>
 

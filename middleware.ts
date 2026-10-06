@@ -34,6 +34,16 @@ export default withAuth(function middleware(request: NextRequestWithAuth) {
     return withDefaultLocale(request, NextResponse.next());
   }
 
+  // Private owner portal uses its own PIN session, not the main site login.
+  if (pathname.startsWith("/owner-access")) {
+    const response = NextResponse.next();
+    response.headers.set("Referrer-Policy", "no-referrer");
+    response.headers.set("Cache-Control", "private, no-store");
+    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return response;
+  }
+
   // Allow unprotected routes
   if (unprotectedRoutes.some(route => pathname.startsWith(route))) {
     return withDefaultLocale(request, NextResponse.next());

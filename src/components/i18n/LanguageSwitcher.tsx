@@ -21,7 +21,17 @@ export default function LanguageSwitcher({
   const { data: session, update } = useSession();
   const [pending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
+  const [mobileTop, setMobileTop] = useState<number | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  function placeMenu() {
+    const narrow = window.matchMedia("(max-width: 767px)").matches;
+    if (!narrow || !rootRef.current) {
+      setMobileTop(null);
+      return;
+    }
+    setMobileTop(rootRef.current.getBoundingClientRect().bottom + 8);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -73,7 +83,16 @@ export default function LanguageSwitcher({
         aria-expanded={open}
         aria-label={t("label")}
         disabled={pending}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => {
+          setOpen((value) => {
+            if (value) {
+              setMobileTop(null);
+              return false;
+            }
+            placeMenu();
+            return true;
+          });
+        }}
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs font-semibold transition disabled:opacity-60 ${trigger}`}
       >
         <Languages size={16} aria-hidden />
@@ -89,7 +108,12 @@ export default function LanguageSwitcher({
         <ul
           role="listbox"
           aria-label={t("label")}
-          className="absolute right-0 z-[9999] mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white p-1 text-[#22272e] shadow-xl"
+          style={mobileTop == null ? undefined : { top: mobileTop }}
+          className={`z-[9999] w-56 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-gray-200 bg-white p-1 text-[#22272e] shadow-xl ${
+            mobileTop == null
+              ? "absolute right-0 mt-2"
+              : "fixed left-1/2 -translate-x-1/2"
+          }`}
         >
           {locales.map((code) => {
             const active = current === code;

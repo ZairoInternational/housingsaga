@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import AccountPageHeader from "@/components/account/AccountPageHeader";
 import WishlistGrid from "@/components/account/WishlistGrid";
+import OwnerAccessLinkCard from "@/components/profile/OwnerAccessLinkCard";
 import OwnerListingsPreview from "@/components/profile/OwnerListingsPreview";
 import OwnerSummaryCards from "@/components/profile/OwnerSummaryCards";
 import ProfileShell from "@/components/profile/ProfileShell";
@@ -41,6 +42,7 @@ export default async function DashboardPage() {
             All listings
           </Link>
         </div>
+        <OwnerAccessLinkCard />
         <OwnerSummaryCards
           totalListings={listings.length}
           activeListings={activeListings}

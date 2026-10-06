@@ -92,7 +92,7 @@ function LinkColumn({
   links: { label: string; href: string }[];
 }) {
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 text-left">
       <h3 className="text-[12px] font-bold uppercase tracking-[0.18em] text-lime-400">
         {title}
       </h3>
@@ -174,7 +174,7 @@ export default function Footer() {
   ] as const;
 
   return (
-    <footer className="relative w-full text-white overflow-hidden">
+    <footer className="relative w-full overflow-hidden border-t border-white/10 bg-[#050a0f] text-white">
       {/* Background */}
       <div className="absolute inset-0">
         <Image
