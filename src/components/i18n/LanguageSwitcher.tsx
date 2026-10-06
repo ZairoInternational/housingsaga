@@ -7,7 +7,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { Check, ChevronDown, Languages } from "lucide-react";
 
 import { setLocaleCookie } from "@/i18n/actions";
-import { isLocale, locales, type Locale } from "@/i18n/config";
+import { isLocale, localeDisplayNames, locales, type Locale } from "@/i18n/config";
 
 export default function LanguageSwitcher({
   tone = "dark",
@@ -66,7 +66,7 @@ export default function LanguageSwitcher({
       : "bg-white text-[#22272e] border border-gray-200 shadow-sm hover:bg-gray-50";
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative" translate="no">
       <button
         type="button"
         aria-haspopup="listbox"
@@ -77,7 +77,7 @@ export default function LanguageSwitcher({
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs font-semibold transition disabled:opacity-60 ${trigger}`}
       >
         <Languages size={16} aria-hidden />
-        <span>{t(current)}</span>
+        <span lang={current}>{localeDisplayNames[current].native}</span>
         <ChevronDown
           size={14}
           aria-hidden
@@ -89,10 +89,11 @@ export default function LanguageSwitcher({
         <ul
           role="listbox"
           aria-label={t("label")}
-          className="absolute right-0 z-[9999] mt-2 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white p-1 text-[#22272e] shadow-xl"
+          className="absolute right-0 z-[9999] mt-2 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white p-1 text-[#22272e] shadow-xl"
         >
           {locales.map((code) => {
             const active = current === code;
+            const names = localeDisplayNames[code];
             return (
               <li key={code} role="presentation">
                 <button
@@ -100,13 +101,21 @@ export default function LanguageSwitcher({
                   role="option"
                   aria-selected={active}
                   onClick={() => choose(code)}
-                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                  className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm transition ${
                     active
                       ? "bg-lime-400 font-semibold text-black"
                       : "hover:bg-gray-50"
                   }`}
                 >
-                  <span>{t(code)}</span>
+                  <span>
+                    <span lang={code}>{names.native}</span>
+                    {names.native !== names.english && (
+                      <span className={active ? "font-medium" : "text-gray-500"}>
+                        {" "}
+                        ({names.english})
+                      </span>
+                    )}
+                  </span>
                   {active && <Check size={14} aria-hidden />}
                 </button>
               </li>
