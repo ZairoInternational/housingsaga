@@ -270,7 +270,7 @@ export default function ProcessSteps() {
 
         <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0a192f] sm:text-4xl md:text-5xl">
           Your Path to{" "}
-          <span className="relative inline-block px-1 italic text-lime-700">
+          <span className="relative inline-block px-1 text-lime-700">
             EU Residency
             <svg
               className="absolute -bottom-1 left-0 h-2 w-full text-lime-400/40"

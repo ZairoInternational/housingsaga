@@ -33,7 +33,7 @@ const faqs = [
   {
     question: "Is a 5% annual growth used?",
     answer:
-      "The estimator uses a fixed 5% a year to illustrate how value might compound. It is not a forecast, and it does not change the rental income figure.",
+      "The estimator starts at 5% a year to illustrate how value might compound. You can change that rate. It is not a forecast, and it does not change the rental income figure.",
   },
   {
     question: "What costs are not included?",
@@ -51,7 +51,7 @@ export default function EarnFaq() {
     <section id="faq" className="scroll-mt-28 bg-[#f6f7f4] py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-lime-600">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-lime-800">
             Before you decide
           </p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
