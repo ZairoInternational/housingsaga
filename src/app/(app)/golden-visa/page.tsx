@@ -13,10 +13,10 @@ import WhyChoose from "@/components/golden-visa/WhyChoose";
 
 export default function Page() {
   return (
-    <>
+    <div style={{ fontFamily: '"Open Sans", ui-sans-serif, system-ui, sans-serif' }}>
       <ScrollProgress />
 
-      <main className=" overflow-x-hidden">
+      <main className="overflow-x-hidden">
         <HeroSection />
         <WhyChoose />
         <Benefits />
@@ -30,6 +30,6 @@ export default function Page() {
 
       <FinalCTA />
       <StickyCTA />
-    </>
+    </div>
   );
 }

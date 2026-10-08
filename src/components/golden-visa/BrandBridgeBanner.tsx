@@ -47,7 +47,7 @@ export default function BrandBridgeBanner() {
   return (
     <section className="bg-[#0a0c10] py-8 sm:py-10 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-[1.25rem] sm:rounded-[1.75rem] bg-[#f7f4ef] shadow-[0_28px_80px_rgba(0,0,0,0.35)]">
+        <div className="relative overflow-hidden rounded-[1.25rem] sm:rounded-[1.75rem] bg-[#f7f4ef]">
           <div className="grid lg:grid-cols-[1.05fr_0.95fr] min-h-[420px] lg:min-h-[470px]">
             {/* ── LEFT ── */}
             <div className="relative z-20 flex flex-col justify-center gap-5 sm:gap-6 px-5 py-8 sm:px-8 lg:px-10 xl:pr-6 xl:pl-12">
@@ -71,7 +71,7 @@ export default function BrandBridgeBanner() {
                 <h2 className="text-[1.85rem] sm:text-[2.35rem] lg:text-[2.6rem] font-extrabold tracking-tight text-[#111] leading-[1.12]">
                   From Homes to Getaways,
                 </h2>
-                <p className="script-accent text-[2.15rem] sm:text-[2.75rem] lg:text-[3.05rem] leading-[0.95] text-[#ff6a00] mt-1">
+                <p className="text-[2.15rem] sm:text-[2.75rem] lg:text-[3.05rem] font-extrabold tracking-tight leading-[0.95] text-[#ff6a00] mt-1">
                   All in One Place
                 </p>
               </div>
@@ -88,7 +88,7 @@ export default function BrandBridgeBanner() {
                       className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                         tone === "orange"
                           ? "bg-orange-100 text-[#ff6a00]"
-                          : "bg-lime-100 text-lime-700"
+                          : "bg-lime-200 text-lime-800"
                       }`}
                     >
                       <Icon size={15} />
@@ -115,7 +115,7 @@ export default function BrandBridgeBanner() {
                   Explore Stays
                   <span aria-hidden>→</span>
                 </a>
-                <p className="script-accent text-xl sm:text-2xl text-[#2a2a2a]">
+                <p className="text-xl sm:text-2xl font-semibold text-[#2a2a2a]">
                   Same dream. More options.
                 </p>
               </div>
@@ -139,15 +139,8 @@ export default function BrandBridgeBanner() {
                 <img
                   src="/palmhouse.jpg"
                   alt="Mediterranean villa getaway"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover shadow-none"
                 />
-                <div className="absolute inset-0 bg-gradient-to-l from-black/20 via-transparent to-black/25" />
-
-                {/* Brand color swooshes on the left edge of the photo */}
-                <div className="absolute inset-y-0 left-0 w-10 sm:w-14 overflow-hidden pointer-events-none">
-                  <div className="absolute inset-y-[-10%] left-0 w-8 sm:w-10 bg-[#ff6a00] rounded-r-[100%]" />
-                  <div className="absolute inset-y-[8%] left-3 sm:left-4 w-5 sm:w-6 bg-lime-400 rounded-r-[100%] opacity-95" />
-                </div>
 
                 {/* Flight path */}
                 <svg
@@ -165,20 +158,20 @@ export default function BrandBridgeBanner() {
                     opacity="0.95"
                   />
                 </svg>
-                <div className="absolute top-[18%] left-[48%] z-20 hidden sm:flex w-9 h-9 items-center justify-center rounded-full bg-white/25 backdrop-blur-sm border border-white/50 text-white shadow-lg">
+                <div className="absolute top-[18%] left-[48%] z-20 hidden sm:flex w-9 h-9 items-center justify-center rounded-full bg-white/25 backdrop-blur-sm border border-white/50 text-white">
                   <FiNavigation2 size={16} className="rotate-[35deg]" />
                 </div>
 
-                <p className="script-accent absolute top-4 left-[20%] z-20 text-white text-2xl sm:text-3xl drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] hidden sm:block">
+                <p className="absolute top-4 left-[20%] z-20 text-white text-2xl sm:text-3xl font-semibold hidden sm:block">
                   Vacation Stays
                 </p>
-                <p className="script-accent absolute bottom-6 right-5 z-20 text-white text-2xl sm:text-3xl drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)] hidden sm:block">
+                <p className="absolute bottom-6 right-5 z-20 text-white text-2xl sm:text-3xl font-semibold hidden sm:block">
                   Long-term Homes
                 </p>
 
                 {/* Polaroids */}
                 <div className="absolute top-[20%] left-[6%] sm:left-[10%] z-20 w-[44%] max-w-[180px] -rotate-6">
-                  <div className="bg-white p-1.5 pb-5 rounded-[6px] shadow-2xl">
+                  <div className="bg-white p-1.5 pb-5 rounded-[6px]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="/rentalexp.jpg"
@@ -192,7 +185,7 @@ export default function BrandBridgeBanner() {
                 </div>
 
                 <div className="absolute bottom-[12%] right-[5%] sm:right-[8%] z-20 w-[48%] max-w-[200px] rotate-[4deg]">
-                  <div className="bg-white p-1.5 pb-5 rounded-[6px] shadow-2xl">
+                  <div className="bg-white p-1.5 pb-5 rounded-[6px]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="/about1.jpg"
@@ -200,12 +193,11 @@ export default function BrandBridgeBanner() {
                       className="w-full aspect-[4/3] object-cover rounded-[3px]"
                     />
                   </div>
-                  <span className="absolute -bottom-1 -left-1 text-lime-400 text-base">
+                  <span className="absolute -bottom-1 -left-1 text-lime-600 text-base">
                     ✦
                   </span>
                 </div>
 
-                <div className="absolute -bottom-8 -right-8 w-[65%] h-28 bg-[#121212] rounded-full opacity-90 pointer-events-none" />
               </div>
             </div>
           </div>

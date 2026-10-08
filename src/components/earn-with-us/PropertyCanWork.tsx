@@ -79,10 +79,10 @@ export default function PropertyCanWork() {
     <section className="bg-[#f4f6f1] py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-800">
             Full-service rental management
           </p>
-          <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.1]">
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-[2.65rem] lg:leading-none">
             Your property can work while you&apos;re away
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -96,10 +96,10 @@ export default function PropertyCanWork() {
             <Reveal key={step.label} delay={index * 0.05}>
               <li className="h-full rounded-3xl border border-white bg-white p-5 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lime-400 text-slate-950">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lime-500 text-white">
                     <step.Icon className="h-5 w-5" aria-hidden />
                   </span>
-                  <span className="text-sm font-semibold text-lime-700">0{index + 1}</span>
+                  <span className="text-sm font-semibold text-lime-800">0{index + 1}</span>
                 </div>
                 <h3 className="mt-4 text-lg font-semibold leading-snug text-slate-950">
                   {step.label}
@@ -124,7 +124,7 @@ export default function PropertyCanWork() {
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-lime-100 text-lime-800">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-lime-500 text-white">
                     <card.Icon className="h-4 w-4" aria-hidden />
                   </span>
                   <h3 className="mt-4 text-lg font-semibold text-slate-950">{card.title}</h3>

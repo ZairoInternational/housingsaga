@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
-export const ILLUSTRATIVE_STANDARD_FEE = 15;
+export const ILLUSTRATIVE_STANDARD_FEE = 20;
 export const FIXED_APPRECIATION_RATE = 5;
 
 type EstimateContextValue = {
@@ -17,6 +17,7 @@ type EstimateContextValue = {
   setOccupiedMonths: (value: number) => void;
   setOccupancyRate: (value: number) => void;
   setManagementFee: (value: number) => void;
+  setAppreciationRate: (value: number) => void;
   bookedMonths: number;
   grossIncome: number;
   feeAmount: number;
@@ -30,12 +31,12 @@ type EstimateContextValue = {
 const EstimateContext = createContext<EstimateContextValue | null>(null);
 
 export function EarnEstimateProvider({ children }: { children: ReactNode }) {
-  const [purchasePrice, setPurchasePrice] = useState(500000);
-  const [monthlyRent, setMonthlyRent] = useState(2000);
+  const [purchasePrice, setPurchasePrice] = useState(250000);
+  const [monthlyRent, setMonthlyRent] = useState(1000);
   const [occupiedMonths, setOccupiedMonths] = useState(10);
-  const [occupancyRate, setOccupancyRate] = useState(100);
+  const [occupancyRate, setOccupancyRate] = useState(80);
   const [managementFee, setManagementFee] = useState(0);
-  const appreciationRate = FIXED_APPRECIATION_RATE;
+  const [appreciationRate, setAppreciationRate] = useState(FIXED_APPRECIATION_RATE);
 
   const value = useMemo<EstimateContextValue>(() => {
     const bookedMonths = occupiedMonths * (occupancyRate / 100);
@@ -57,6 +58,7 @@ export function EarnEstimateProvider({ children }: { children: ReactNode }) {
       setOccupiedMonths,
       setOccupancyRate,
       setManagementFee,
+      setAppreciationRate,
       bookedMonths,
       grossIncome,
       feeAmount,
@@ -72,6 +74,7 @@ export function EarnEstimateProvider({ children }: { children: ReactNode }) {
     occupiedMonths,
     occupancyRate,
     managementFee,
+    appreciationRate,
   ]);
 
   return <EstimateContext.Provider value={value}>{children}</EstimateContext.Provider>;

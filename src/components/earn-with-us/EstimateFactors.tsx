@@ -34,7 +34,7 @@ export default function EstimateFactors() {
     <section className="bg-white py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-800">
             Clearly explained
           </p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
@@ -48,7 +48,7 @@ export default function EstimateFactors() {
           {factors.map((factor, index) => (
             <Reveal key={factor.title} delay={index * 0.05}>
               <article className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lime-100 text-lime-800">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-lime-500 text-white">
                   <factor.Icon className="h-5 w-5" aria-hidden />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-slate-950">{factor.title}</h3>

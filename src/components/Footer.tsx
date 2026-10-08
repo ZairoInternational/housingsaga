@@ -157,7 +157,7 @@ export default function Footer() {
   const officeCards = [
     {
       office: SITE_OFFICES[0],
-      flag: "/greece.png",
+      flag: "/location_pin.png",
       flagAlt: t("greeceAlt"),
       label: t("greeceOffice"),
       thumb: "/office-greece-thumb.jpg",
@@ -165,7 +165,7 @@ export default function Footer() {
     },
     {
       office: SITE_OFFICES[1],
-      flag: "/india.png",
+      flag: "/location_pin.png",
       flagAlt: t("indiaAlt"),
       label: t("indiaOffice"),
       thumb: "/office-india-thumb.jpg",
@@ -291,7 +291,7 @@ export default function Footer() {
                         alt={flagAlt}
                         width={40}
                         height={40}
-                        className="h-10 w-10 rounded-full object-cover object-top ring-2 ring-white/15 shrink-0 bg-white/5"
+                        className="h-10 w-10 rounded-full object-contain object-top shrink-0"
                       />
                       <div className="min-w-0">
                         <p className="text-sm font-bold uppercase tracking-wide text-white">
@@ -318,7 +318,7 @@ export default function Footer() {
                       src={thumb}
                       alt={thumbAlt}
                       fill
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-contain transition duration-500 group-hover:scale-105"
                       sizes="120px"
                     />
                   </div>

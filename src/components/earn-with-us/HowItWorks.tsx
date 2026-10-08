@@ -33,7 +33,7 @@ export default function HowItWorks() {
     <section id="how-it-works" className="scroll-mt-28 bg-white py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-700">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-800">
             Simple. Transparent. No hidden fees.
           </p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
@@ -53,7 +53,7 @@ export default function HowItWorks() {
             >
               <article className="flex h-full flex-col rounded-2xl border border-slate-100 bg-slate-50/80 p-5 transition duration-300 hover:-translate-y-1 hover:shadow-md">
                 <div className="mb-4 flex items-center gap-2.5">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-lime-400 text-[11px] font-bold text-slate-900">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-lime-500 text-[11px] font-bold text-white">
                     {item.step}
                   </span>
                   <item.Icon className="h-5 w-5 text-slate-700" aria-hidden />
@@ -80,20 +80,20 @@ export default function HowItWorks() {
                     A management fee applies, and it varies by property type.
                   </p>
                 </div>
-                <div className="flex flex-col justify-between rounded-2xl bg-lime-300 p-4">
-                  <h4 className="text-sm font-semibold leading-snug text-slate-950">
+                <div className="flex flex-col justify-between rounded-2xl bg-lime-600 p-4 text-white">
+                  <h4 className="text-sm font-semibold leading-snug">
                     HousingSaga property buyer
                   </h4>
                   <div className="mt-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-4xl font-semibold leading-none text-slate-950">
+                      <span className="text-4xl font-semibold leading-none">
                         0%
                       </span>
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-lime-300">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-lime-400">
                         <Check className="h-3.5 w-3.5" aria-hidden />
                       </span>
                     </div>
-                    <p className="mt-2 text-sm font-medium text-slate-900">
+                    <p className="mt-2 text-sm font-medium text-white">
                       management fee
                     </p>
                   </div>
